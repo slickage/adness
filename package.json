@@ -16,6 +16,7 @@
     "express": "~3.4.7",
     "connect-redis": "~1.4.6",
     "ejs": "~0.8.5",
-    "connect-assets": "~2.5.3"
+    "connect-assets": "~2.5.3",
+    "mysql": "~2.0.0-rc1"
   }
 }
