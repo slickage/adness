@@ -51,11 +51,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="bid in bids">
+              <tr ng-repeat="bid in bids" ng-cloak>
                 <td>{{bid.username}}</td>
                 <td>{{bid.slots}}</td>
                 <td>{{bid.btc_per_slot}}</td>
-                <td>{{bid.slots * bid.btcPerSlot}}</td>
+                <td>{{bid.slots * bid.btc_per_slot}}</td>
               </tr>
             </tbody>
           </table>
