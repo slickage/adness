@@ -17,11 +17,10 @@
     "connect-redis": "~1.4.6",
     "ejs": "~0.8.5",
     "connect-assets": "~2.5.3",
-    "mysql": "~2.0.0-rc1",
-    "riak-js": "~0.10.2",
     "charlatan": "~0.1.9",
     "passport": "~0.1.18",
     "passport-local": "~0.1.6",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "restify": "~2.6.1"
   }
 }
