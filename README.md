@@ -1,15 +1,17 @@
-# API Documentation for Adness
+# API Documentation
 
 ### Endpoints
 
 #### Auctions
-Auctions have a start/end time, public/private, enabled/disabled flags that represent a vehicle for the set of bids from the community. 
-##### Fields:
-* description (text)
-* start (datetime)
-* end (datetime)
-* public (bool)
-* enabled (bool) - Emergency stop would set this to false. 
+Auctions have a start/end time, public/private, enabled/disabled flags that represent a vehicle for the set of bids from the community.
+
+```
+description (text)
+start (datetime)
+end (datetime)
+public (bool)
+enabled (bool) - Emergency stop would set this to false. 
+```
 
 Private auctions possible.
 
@@ -23,14 +25,17 @@ Private auctions possible.
 * DELETE /api/auction/
 
 #### Bids
-##### Fields
-* auction_id
-* slots
-* btc_per_slot
-* user_id
-* timestamp
+Bids belong to a particular auction and can only be placed in auctions that are open.
 
-###### Methods
+```
+auction_id (id)
+slots (number)
+btc_per_slot (decimal)
+user_id (id)
+timestamp (datetime)
+```
+
+##### Methods
 
 * GET /api/bids?auction_id=:auction_id Bids for the auction_id
 * POST /api/bids Each bid has a auction_id associated, auction also needs to be open, or else it's rejected
@@ -38,6 +43,8 @@ Private auctions possible.
 * DELETE /api/bids/:bid_id Delete individual bid (admin/moderation)
 
 #### Ads
+
+To be written.
 
 #### Authentication
 
