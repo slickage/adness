@@ -22,6 +22,7 @@
     "passport-local": "~0.1.6",
     "underscore": "~1.5.2",
     "restify": "~2.6.1",
-    "express-jwt": "~0.1.0"
+    "express-jwt": "~0.1.0",
+    "jsonwebtoken": "~0.1.0"
   }
 }

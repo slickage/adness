@@ -5,6 +5,9 @@ var routes = require('./routes');
 var api = require('./routes/api')
 var http = require('http');
 var path = require('path');
+var expressJwt = require('express-jwt');
+
+
 var isProduction = (process.env.NODE_ENV === 'production');
 var port = process.env.PORT || 8080;
 var app = express();
@@ -35,6 +38,8 @@ app.set('view engine', 'ejs');
 app.use(require('connect-assets')());
 app.use(express.favicon());
 app.use(express.logger('dev'));
+// We are going to protect /api routes with JWT
+app.use('/api', expressJwt({secret: 'adness 1234!'}));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
@@ -48,7 +53,6 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-
 app.get('/', routes.index);
 app.get('/login', routes.login);
 
@@ -57,6 +61,25 @@ app.post('/login',
                                    failureRedirect: '/login',
                                    failureFlash: true })
 );
+
+app.post('/authenticate', function (req, res) {
+  if (!(req.body.username === 'slickage' && req.body.password === 'slickage')) {
+    res.send(401, 'Wrong user or password');
+    return;
+  }
+
+  var profile = {
+    first_name: 'Slickage',
+    last_name: 'Studios',
+    email: 'john@doe.com',
+    id: 123
+  };
+
+  // We are sending the profile inside the token
+  var token = jwt.sign(profile, secret, { expiresInMinutes: 60*5 });
+
+  res.json({ token: token });
+});
 
 app.get('/api/bids', api.bids);
 
