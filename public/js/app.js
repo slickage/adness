@@ -9,7 +9,7 @@ angular.module('app',
   })
   .config(function($routeProvider, $locationProvider, $httpProvider){
     // $locationProvider.html5Mode(true);
-    // $routeProvider.when('/', {templateUrl: '/post.html', controller: RandomCtrl});
+    $routeProvider.when('/auctions', {templateUrl: '/auctions.html', controller: AuctionsCtrl});
     // $routeProvider.when('/posts/:postId', { templateUrl: '/post.html', controller: PostsCtrl});
     // $routeProvider.when('/trending', {templateUrl: '/trending.html', controller: TrendingCtrl});
     // $routeProvider.when('/trending/:dareId', {templateUrl: '/trending.html', controller: TrendingCtrl});
