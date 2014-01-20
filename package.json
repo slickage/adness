@@ -25,6 +25,7 @@
     "express-jwt": "~0.1.0",
     "jsonwebtoken": "~0.1.0",
     "couchbase": "~1.2.0",
-    "node-uuid": "~1.4.1"
+    "node-uuid": "~1.4.1",
+    "nodemailer": "~0.6.0"
   }
 }
