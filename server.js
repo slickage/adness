@@ -52,8 +52,8 @@ app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('adness'));  
-app.use(express.session({ store: new RedisStore }));  
+app.use(express.cookieParser('adness'));
+app.use(express.session({ store: new RedisStore }));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
