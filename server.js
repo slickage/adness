@@ -63,7 +63,6 @@ if ('development' == app.get('env')) {
 }
 
 // routes
-app.get('/', routes.index);
 app.get('/login', routes.login);
 
 app.post('/login',
