@@ -18,18 +18,23 @@
   </head>
   <body>
 
-	  <div ng-controller="UserCtrl">
-	    <span></span>
-	    <form ng-submit="submit()">
-	      <input ng-model="user.username" type="text" name="user" placeholder="Username" />
-	      <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
-	      <input type="submit" value="Login" />
-	    </form>
-	  </div>
+
     <div class="container" ng-controller="MainCtrl">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li><a href="/login">Login</a></li>
+		  <div ng-controller="UserCtrl" ng-init="loadProfile()" ng-cloak>
+        <div ng-show="showProfile()" ng-cloak>
+          Logged In: Foo
+          <a href="#" ng-click="logout()">Logout</a>
+        </div>
+		    <form ng-show="showLoginControls()" ng-submit="login()" ng-cloak>
+  			  <span ng-cloak>{{message}}</span>
+		      <input ng-model="user.username" type="text" name="user" placeholder="Username"/>
+		      <input ng-model="user.password" type="password" name="pass" placeholder="Password"/>
+		      <input type="submit" value="Login"/>
+		    </form>
+		    
+		  </div>
         </ul>
         <h3 class="text-muted">Adness</h3>
       </div>

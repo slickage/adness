@@ -73,7 +73,7 @@ app.post('/authenticate', function (req, res) {
   res.json({ token: token });
 });
 
-// app.get('/api/bids', api.bids);
+app.get('/api/bids', api.bids.findAll);
 // app.post('/api/bids', api.bids);
 app.get('/api/auctions', api.auctions.findAll);
 app.post('/api/auctions', api.auctions.addAuction);

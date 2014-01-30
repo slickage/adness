@@ -1,5 +1,5 @@
 angular.module('app')
-.controller('MainCtrl', function($scope) {
+.controller('MainCtrl', function($scope, $http) {
   $scope.bids = [];
   $scope.blankBid = {};
   
@@ -10,5 +10,14 @@ angular.module('app')
       $scope.bids.push(newBid);
       $scope.bid = $scope.blankBid;
     }
+    
+    $http
+      .get('/api/bids')
+      .success(function (data, status, headers, config) {
+        console.log('called api/bids');
+        console.log(data);
+      })
+      .error(function (data, status, headers, config) {
+      });
   }
 });
