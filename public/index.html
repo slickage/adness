@@ -18,6 +18,14 @@
   </head>
   <body>
 
+	  <div ng-controller="UserCtrl">
+	    <span></span>
+	    <form ng-submit="submit()">
+	      <input ng-model="user.username" type="text" name="user" placeholder="Username" />
+	      <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
+	      <input type="submit" value="Login" />
+	    </form>
+	  </div>
     <div class="container" ng-controller="MainCtrl">
       <div class="header">
         <ul class="nav nav-pills pull-right">
@@ -68,13 +76,16 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-cookies.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-resource.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-route.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-cookies.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-resource.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular-route.js"></script>
+
     <script src="js/app.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/controllers/user.js"></script>
+    <script src="js/controllers/auction.js"></script>
   </body>
 </html>
 
