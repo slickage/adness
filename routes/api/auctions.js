@@ -15,7 +15,7 @@ exports.findAll = function(req, res) {
 exports.addAuction = function(req, res) {
   var auction = req.body;
   var auctionId = uuid.v4();
-  console.log('Adding auction: ' + auctionId);
+  console.log('addAuction: ' + auctionId);
   var db = new couchbase.Connection({bucket: "auctions"}, function(err) {
     if (err) throw err;
     db.set(auctionId, auction, function(err, result) {

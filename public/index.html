@@ -19,7 +19,7 @@
   <body>
 
 
-    <div class="container" ng-controller="MainCtrl">
+    <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
 		  <div ng-controller="UserCtrl" ng-init="loadProfile()" ng-cloak>
@@ -38,36 +38,27 @@
         </ul>
         <h3 class="text-muted">Adness</h3>
       </div>
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-controller="AuctionCtrl">
         <!-- Default panel contents -->
-        <div class="panel-heading">Round X</div>
-        
+        <div class="panel-heading">Auctions</div>
         <div class="panel-body">
           <!-- Table -->
-          <form name="form" class="form-inline" role="form">
-            <div class="form-group">
-              <input type="number" class="form-control" ng-model="bid.slots" min="1" step="1" placeholder="# Slots">
-            </div>
-            <div class="form-group">
-              <input type="number" class="form-control" ng-model="bid.btc_per_slot" min="0.05" step="0.05" placeholder="BTC Per Slot">
-            </div>
-            <button class="btn btn-default" ng-disabled="form.$invalid" ng-click="submitBid(bid)">Submit Bid</button>
-          </form>
           <table class="table table-striped">
             <thead>
               <tr>
-                <th>User</th>
-                <th>Desired Ad Slots</th>
-                <th>Bid Per Slot (BTC)</th>
-                <th>Total Bid (BTC)</th>
+                <th>Round</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Slots</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="bid in bids" ng-cloak>
-                <td>{{bid.username}}</td>
-                <td>{{bid.slots}}</td>
-                <td>{{bid.btc_per_slot}}</td>
-                <td>{{bid.slots * bid.btc_per_slot}}</td>
+              <tr ng-repeat="auction in auctions" ng-cloak>
+                <td>{{auction.round}}</td>
+                <td>{{auction.start}}</td>
+                <td>{{auction.end}}</td>
+                <td>{{auction.slots}}</td>
               </tr>
             </tbody>
           </table>
