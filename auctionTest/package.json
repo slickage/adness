@@ -1,0 +1,27 @@
+{
+  "name": "auctionTest",
+  "version": "0.0.1",
+  "description": "A test case for the auction bid system",
+  "main": "app.js",
+  "dependencies": {
+    "charlatan": "~0.1.9",
+    "request": "~2.33.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slickage/smf"
+  },
+  "keywords": [
+    "auction"
+  ],
+  "author": "Edward Kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/slickage/smf/issues"
+  },
+  "homepage": "https://github.com/slickage/smf"
+}

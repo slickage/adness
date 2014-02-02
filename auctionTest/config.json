@@ -1,0 +1,7 @@
+{
+  "numberOfUsers" : 4,
+  "numberOfSlots" : 10,
+  "timeLength"    : 1,
+  "btcStep"       : 0.25,
+  "timeInterval" : 1000
+}
