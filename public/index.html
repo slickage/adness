@@ -27,7 +27,7 @@
           Logged In: Foo
           <a href="#" ng-click="logout()">Logout</a>
         </div>
-		    <form ng-show="showLoginControls()" ng-submit="login()" ng-cloak>
+		    <form ng-show="showLoginControls()" ng-submit="login()" ng-cloak form-autofill-fix>
   			  <span ng-cloak>{{message}}</span>
 		      <input ng-model="user.username" type="text" name="user" placeholder="Username"/>
 		      <input ng-model="user.password" type="password" name="pass" placeholder="Password"/>
