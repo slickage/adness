@@ -14,8 +14,7 @@ exports.addAuction = function(req, res) {
   var auctionId = uuid.v4();
   console.log('addAuction: ' + auctionId);
   db.mainBucket.set(auctionId, auction, function(err, result) {
-      if (err) throw err;
-      res.json({created: true});
-    });
+    if (err) throw err;
+    res.json({created: true});
   });
 }

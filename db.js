@@ -1,4 +1,5 @@
 'use strict';
+var server = require('nano')('http://localhost:5984')
+  , db     = server.use('adness');
 
-var couchbase = require('couchbase');
-module.exports.mainBucket = new couchbase.Connection({bucket:'adness'}, function(){});
+module.exports = db;
