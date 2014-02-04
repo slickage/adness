@@ -14,6 +14,21 @@ var port = process.env.PORT || 8080;
 var app = express();
 var passport = require('./passport');
 
+// Enables CORS
+var enableCORS = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+ 
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+
 // Express config on all environments
 app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
@@ -34,6 +49,7 @@ app.use(passport.session());
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(enableCORS);
 
 // development only
 if ('development' == app.get('env')) {
