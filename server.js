@@ -33,6 +33,7 @@ var enableCORS = function(req, res, next) {
 app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(enableCORS);
 app.use(require('connect-assets')());
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -49,7 +50,7 @@ app.use(passport.session());
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(enableCORS);
+
 
 // development only
 if ('development' == app.get('env')) {
