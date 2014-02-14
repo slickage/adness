@@ -1,6 +1,3 @@
-exports.index = function(req, res) {
+module.exports = function(req, res) {
   res.render('index', {});
-}
-exports.login = function(req, res) {
-  res.render('login', {});
 }
