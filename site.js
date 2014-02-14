@@ -1,7 +1,6 @@
 var express = require('express'),
     site = express(),
     router = require('./router'),
-    MC = require('./models'),
     path = require('path'),
     config = require('./config');
 
@@ -9,17 +8,10 @@ var RedisStore = require('connect-redis')(express);
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 
-var modelLoader = function(req, res, next) {
-  req.model = res.model = new MC;
-  console.log('hi im a middleware');
-  next();
-};
-
-
 // Express config on all environments
 site.set('views', path.join(__dirname, 'views'));
 site.set('view engine', 'ejs');
-site.use(modelLoader);
+site.use(require('./middleware/model_loader'));
 site.use(require('connect-assets')());
 site.use(express.favicon());
 site.use(express.logger('dev'));
