@@ -24,71 +24,97 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+    <!-- Page Start -->
+    <div class="main">
+      <!-- sidebar -->
+      <div class="sidebar">
+        <!-- Logo -->
+        <div class="row logo">
+          Adness    
+        </div>
 
-    <!-- sidebar -->
-    <div class="sidebar col-sm-1">
-      <!-- Logo -->
-      <div class="row logo">
-        Adness    
+        <!-- Links to other pages -->
+        <a class="btn btn-primary btn-block" href="/">Auctions</a> 
+        <a class="btn btn-primary btn-block" href="/profile">Profile</a> 
+
+        <a class="btn btn-primary btn-block" href="/auction/details">auc dets</a> 
+        <a class="btn btn-primary btn-block" href="/ad/edit">ad edit</a> 
+        <a class="btn btn-primary btn-block" href="/admin">admin</a> 
+        <a class="btn btn-primary btn-block" href="/registration">Reg</a> 
       </div>
-      <br>
-      <a class="btn btn-primary btn-block" href="/">Auctions</a> 
-      <a class="btn btn-primary btn-block" href="/profile">Profile</a> 
-      <a class="btn btn-primary btn-block" href="/ads">My Ads</a> 
 
-      <a class="btn btn-primary btn-block" href="/auction/details">auc dets</a> 
-      <a class="btn btn-primary btn-block" href="/ad/edit">ad edit</a> 
-      <a class="btn btn-primary btn-block" href="/admin">admin</a> 
-      <a class="btn btn-primary btn-block" href="/registration">Reg</a> 
-    </div>
-
-    <!-- Header -->
-    <div class="col-sm-offset-1 col-sm-11 header">
-      <div class="container-fluid bootstrap-fluid-fix">
+      <div class="main-container">
+        <!-- Header -->
         <div class="row">
-          <!-- Login module -->
-          <div class="col-sm-12">
-            <div style="display: none;">
-              Logged In: 
-              <a href="#">Logout</a>
+          <div class="col-sm-12 header">
+            <div class="container-fluid bootstrap-fluid-fix">
+              <div class="row">
+                <!-- Login module -->
+                <div class="col-sm-12">
+                  <div style="display: none;">
+                    Logged In: 
+                    <a href="#">Logout</a>
+                  </div>
+                  <form class="form-inline pull-right" role="form">
+                    <div class="form-group">
+                      <!-- <span>{{message}}</span> -->
+                    </div>
+                    <div class="form-group">
+                      <input type="email" class="form-control" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                      <input type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                  </form>
+                </div>
+              </div>
             </div>
-            <form class="form-inline pull-right" role="form">
-              <div class="form-group">
-                <!-- <span>{{message}}</span> -->
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="row">
+          <div class="content-page col-sm-offset-1 col-sm-10">
+            <div class="panel panel-default">
+
+              <div class="panel-heading">
+                Auction Slot # 1
               </div>
-              <div class="form-group">
-                <input type="email" class="form-control" placeholder="Enter email">
+
+              <div class="panel-body">
+                <div class="col-sm-8">
+                  <h3>Auction Details</h3>
+                  Auction Deadline:
+                  2/14/14 12:00:00
+
+                  <br><br>
+
+                  <h3>Auction History</h3>
+                  User: this guy bid 3.5 BTC @ 2/14/14 11:00:00<br>
+                  User: so and so bid 2.5 BTC @ 2/14/14 10:00:00
+                </div>
+
+                <div class="auction_details_right col-sm-4">
+                  <div class="auction_details_bid">
+                    Current Bid
+                    <br>
+                    3.5 BTC
+                  </div>
+
+                  <div class="auction_details_input input-group">
+                    <input type="number" class="form-control" value="3.75" step="0.25" min="3.5">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Bid</button>
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password">
-              </div>
-              <button type="submit" class="btn btn-default">Sign in</button>
-            </form>
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Main Content View -->
-    <div class="main col-sm-offset-1 col-sm-11">
-      <div class="main-container container-fluid bootstrap-fluid-fix">
-        <h4>Auction Details</h4>
-        <div class="row">
-          <div class="col-sm-offset-1 col-sm-10">
-
-            <div class="auction well">
-              Auction Name: <br>
-              Current Bid: 
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      Slickage 2014
     </div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->

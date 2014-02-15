@@ -29,6 +29,7 @@ body { padding: 0; }
   position: fixed;  
   padding: 15px;
   padding-top: 0;
+  width: 125px;
 }
 
 .logo {
@@ -36,6 +37,7 @@ body { padding: 0; }
   text-align: center;
   background-color: #E2E2E2;
   padding-top: 18px;
+  margin-bottom: 15px;
   box-sizing: border-box;
 }
 
@@ -54,14 +56,19 @@ body { padding: 0; }
 }
 
 .main-container {
-  padding: 15px;
+  padding: 0 15px;
+  margin-left: 125px;
   box-sizing: border-box;
 }
+.main-container h3 { margin-top: 10px;}
+.main-container h4 { padding-left: 15px; }
 
-.main-container > h4 { padding-left: 10px; }
+.content-page {
+  padding-top: 15px;
+}
 
 
-/* Pages */
+/* Auction Page */
 
 .auction {
   padding: 15px;
@@ -103,6 +110,26 @@ body { padding: 0; }
 .auction_factoids {
   padding-top: 30px;
 }
+
+
+
+/* Auction Details Page */
+
+.auction_details_desc {
+
+}
+
+.auction_details_right {
+  padding-top: 15px; 
+  text-align: center;
+  font-size: larger;
+  font-weight: 700;
+  background-color: #ECECEC;
+}
+.auction_details_right > div {
+  padding-bottom: 15px;
+}
+
 
 /* Ad Upload page  CSS */
 .upload-header { padding-left: 20px; }

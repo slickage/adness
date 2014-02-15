@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Profile</title>
+    <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -24,65 +24,104 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+    <!-- Page Start -->
+    <div class="main">
+      <!-- sidebar -->
+      <div class="sidebar">
+        <!-- Logo -->
+        <div class="row logo">
+          Adness    
+        </div>
 
-    <!-- sidebar -->
-    <div class="sidebar col-sm-1">
-      <!-- Logo -->
-      <div class="row logo">
-        Adness    
+        <!-- Links to other pages -->
+        <a class="btn btn-primary btn-block" href="/">Auctions</a> 
+        <a class="btn btn-primary btn-block" href="/profile">Profile</a> 
+
+        <a class="btn btn-primary btn-block" href="/auction/details">auc dets</a> 
+        <a class="btn btn-primary btn-block" href="/ad/edit">ad edit</a> 
+        <a class="btn btn-primary btn-block" href="/admin">admin</a> 
+        <a class="btn btn-primary btn-block" href="/registration">Reg</a> 
       </div>
-      <br>
-      <a class="btn btn-primary btn-block" href="/">Auctions</a> 
-      <a class="btn btn-primary btn-block" href="/profile">Profile</a> 
-      <a class="btn btn-primary btn-block" href="/ads">My Ads</a> 
 
-      <a class="btn btn-primary btn-block" href="/auction/details">auc dets</a> 
-      <a class="btn btn-primary btn-block" href="/ad/edit">ad edit</a> 
-      <a class="btn btn-primary btn-block" href="/admin">admin</a> 
-      <a class="btn btn-primary btn-block" href="/registration">Reg</a> 
-    </div>
-
-    <!-- Header -->
-    <div class="col-sm-offset-1 col-sm-11 header">
-      <div class="container-fluid bootstrap-fluid-fix">
+      <div class="main-container">
+        <!-- Header -->
         <div class="row">
-          <!-- Login module -->
-          <div class="col-sm-12">
-            <div style="display: none;">
-              Logged In: 
-              <a href="#">Logout</a>
+          <div class="col-sm-12 header">
+            <div class="container-fluid bootstrap-fluid-fix">
+              <div class="row">
+                <!-- Login module -->
+                <div class="col-sm-12">
+                  <div style="display: none;">
+                    Logged In: 
+                    <a href="#">Logout</a>
+                  </div>
+                  <form class="form-inline pull-right" role="form">
+                    <div class="form-group">
+                      <!-- <span>{{message}}</span> -->
+                    </div>
+                    <div class="form-group">
+                      <input type="email" class="form-control" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                      <input type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                  </form>
+                </div>
+              </div>
             </div>
-            <form class="form-inline pull-right" role="form">
-              <div class="form-group">
-                <!-- <span>{{message}}</span> -->
-              </div>
-              <div class="form-group">
-                <input type="email" class="form-control" placeholder="Enter email">
-              </div>
-              <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password">
-              </div>
-              <button type="submit" class="btn btn-default">Sign in</button>
-            </form>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Main Content View -->
-    <div class="main col-sm-offset-1 col-sm-11">
-      <div class="main-container container-fluid bootstrap-fluid-fix">
-        <h4>Profile</h4>
+        
+        <!-- Main Content -->
         <div class="row">
-          <div class="col-sm-offset-1 col-sm-10">
+          <div class="content-page col-sm-12">
+            
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                User Name
+              </div>
+              <div class="panel-body">
+                <div class="col-sm-3">
+                  Profile Image
+                  <br>
+                  User stats
+
+                </div>
+                <div class="col-sm-9">
+                  User's 
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Your Ads
+              </div>
+              <div class="panel-body">
+                <div class="col-sm-offset-1 col-sm-10">
+                  Show Users ads here
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Your Bids
+              </div>
+              <div class="panel-body">
+                <div class="col-sm-3">
+                  Bid stats
+                </div>
+                <div class="col-sm-9">
+                  Bid History
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      Slickage 2014
     </div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
