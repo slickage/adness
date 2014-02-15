@@ -35,7 +35,11 @@ if ('development' == site.get('env')) {
   site.use(express.errorHandler());
 }
 
+// web routes
 site.get('/', router.index);
+site.get('/auction/details', router.auction_details);
+site.get('/profile', router.profile);
+site.get('/ad/upload', router.ad_upload);
 
 console.log('Initialized.');
 module.exports = site;

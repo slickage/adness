@@ -1,0 +1,70 @@
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header,
+    .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+
+/* CSS resets */
+body { padding: 0; }
+
+/* bootstrap fluid fix */
+.bootstrap-fluid-fix { padding: 0 15px; }
+
+/* Main layout code */
+.header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #ECECEC;
+}
+
+.sidebar {
+  background-color: #F7F7F7;
+  min-height: 100%;
+  box-sizing: border-box;
+  position: fixed;  
+  padding: 15px;
+  padding-top: 0;
+}
+
+.logo {
+  height: 54px; 
+  text-align: center;
+  background-color: #E2E2E2;
+  padding-top: 18px;
+  box-sizing: border-box;
+}
+
+.footer {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+.main {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.main-container {
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+
+/* Pages */
+
+
+/* Ad Upload page  CSS */
+.upload-header { padding-left: 20px; }
+
+.coding-section { padding-top: 20px; }
+
+.review-section { padding-top: 30px; }

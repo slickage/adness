@@ -5,5 +5,4 @@ exports = module.exports = function(req, res) {
     console.log(JSON.stringify(models));
     res.render('index', {auction: models.auction});
   });
-
-}
+};

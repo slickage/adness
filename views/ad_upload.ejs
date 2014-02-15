@@ -1,0 +1,136 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="/css/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="/scripts/codemirror/lib/codemirror.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- endbuild -->
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Main Content -->
+    <div class="upload-header">
+      <h1>Bitcoin Talk Ad Uploader</h1>
+    </div>
+
+    <div class="container-fluid bootstrap-fluid-fix">
+      <div class="row coding-section">
+        <div class="col-sm-offset-3 col-sm-6 well">
+            <div style="padding-bottom: 20px;">
+              Add your Ad HTML/CSS below:
+            </div>
+            <textarea name="upload-code" id="upload-code" rows="3"></textarea>
+            <div style="padding-top: 20px;">
+              <button class="btn btn-primary"onclick="convert();">Preview</button>
+            </div>
+        </div>
+      </div>
+
+      <div id="preview-text" class="row review-section" style="display: none;">
+        <div class="col-sm-offset-3 col-sm-6">
+          This is what your add will look like on the page:</br>
+        </div>
+      </div>
+
+      <div id="preview-container" class="row review-section" style="display: none;">
+        <div class="col-sm-offset-3 col-sm-6 well">
+          <div id="preview"></div>
+          <div style="padding-top: 20px;">
+            <button class="btn btn-primary pull-right"onclick="submitForReview();">Submit for Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="/scripts/jquery/jquery-2.1.0.min.js"></script>
+    <script src="/css/bootstrap/js/bootstrap.js"></script>
+    <script src="/scripts/codemirror/lib/codemirror.js"></script>
+    <script src="/scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="/scripts/codemirror/mode/xml/xml.js"></script>
+    <script src="/scripts/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/scripts/caja/html-sanitizer-minified.js"></script>
+    <script src="/scripts/caja/html-sanitizer-minified.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- custom scripts -->
+    <script>
+      var textArea = document.getElementById("upload-code");
+      var myCodeMirror = CodeMirror.fromTextArea(textArea, {
+        mode:  "htmlmixed",
+        indentWithTabs: false,
+        tabSize: 2,
+        lineNumbers: true
+      });
+      myCodeMirror.setSize(null, 65);
+      // on change event that maxes the number of lines to three
+      myCodeMirror.on(
+        "beforeChange", 
+        function(cm, change) { 
+          var text = cm.getValue();
+          var lines = text.split("\n");
+          if (lines.length === 3 && change.text.length > 1) { 
+            change.cancel();
+          } 
+        }
+      )
+
+      function convert() {
+        // show the preview text
+        document.getElementById('preview-text').style.display = "block";
+        document.getElementById('preview-container').style.display = "block";
+
+        // scrub the raw html for any security leaks
+        var raw_html = myCodeMirror.getValue();
+        function urlX(url) { if(/^https?:\/\//.test(url)) { return url }}
+        function idX(id) { return id }
+        var parsedHtml = html_sanitize(raw_html, urlX, idX);
+
+        // inject the parsed html into the page
+        var preview = document.getElementById('preview');
+        preview.innerHTML = parsedHtml;
+      }
+
+      function submitForReview() {
+        // submit parsed HTML to backend
+        alert('submitted');
+      }
+    </script>
+  </body>
+</html>
