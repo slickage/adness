@@ -49,3 +49,7 @@ To be written.
 #### Authentication
 
 Based on querying PHP based JSON endpoint that will return the current user's profile in JSON format.
+
+#### License
+
+MIT
