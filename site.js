@@ -2,13 +2,15 @@ var express = require('express'),
     site = express(),
     router = require('./router'),
     path = require('path'),
-    config = require('./config');
+    config = require('./config'),
+    engine = require('ejs-locals');
 
 var RedisStore = require('connect-redis')(express);
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 
 // Express config on all environments
+site.engine('ejs', engine);
 site.set('views', path.join(__dirname, 'views'));
 site.set('view engine', 'ejs');
 site.use(require('./middleware/model_loader'));

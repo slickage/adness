@@ -1,633 +1,530 @@
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="/css/bootstrap/css/bootstrap.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" href="/css/main.css">
-    <!-- endbuild -->
-  </head>
-  <body>
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<% layout('layout') %>
+<div class="content-page col-sm-offset-1 col-sm-10">
 
-    <!-- Page Start -->
-    <div class="main">
-      <!-- sidebar -->
-      <div class="sidebar">
-        <!-- Logo -->
-        <div class="row logo">
-          Adness    
-        </div>
+  <h3>Auction List</h3>
 
-        <!-- Links to other pages -->
-        <a class="btn btn-primary btn-block" href="/">Auctions</a> 
-        <a class="btn btn-primary btn-block" href="/profile">Profile</a> 
+  <b>Main slots (1 in 10 chance)</b><br>
+  Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
 
-        <a class="btn btn-primary btn-block" href="/auction/details">auc dets</a> 
-        <a class="btn btn-primary btn-block" href="/ad/edit">ad edit</a> 
-        <a class="btn btn-primary btn-block" href="/admin">admin</a> 
-        <a class="btn btn-primary btn-block" href="/registration">Reg</a> 
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 1</span>
       </div>
-
-      <!-- Main Content -->
-      <div class="main-container">
-        <!-- Header -->
-        <div class="row">
-          <div class="col-sm-12 header">
-            <div class="container-fluid bootstrap-fluid-fix">
-              <div class="row">
-                <!-- Login module -->
-                <div class="col-sm-12">
-                  <div style="display: none;">
-                    Logged In: 
-                    <a href="#">Logout</a>
-                  </div>
-                  <form class="form-inline pull-right" role="form">
-                    <div class="form-group">
-                      <!-- <span>{{message}}</span> -->
-                    </div>
-                    <div class="form-group">
-                      <input type="email" class="form-control" placeholder="Enter email">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control" placeholder="Password">
-                    </div>
-                    <button type="submit" class="btn btn-default">Sign in</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="content-page col-sm-offset-1 col-sm-10">
-            <h3>Auction List</h3>
-
-            <b>Main slots (1 in 10 chance)</b><br>
-            Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 1</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 2</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 3</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 4</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 5</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 6</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 7</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 8</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 9</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <div class="auction">
-              <div class="row">
-                <div class="col-sm-3 auction_desc">
-                  <span class="label label-success">Open</span>
-                  <span class="label label-warning">Closing</span>
-                  <span class="label label-danger">Closed</span>
-                  <br>
-                  <span class="auction_desc_text">Auction Slot # 10</span>
-                </div>
-                <div class="col-sm-3 auction_time">
-                  2/14/14 12:12:12<br>
-                  2/21/14 --:--:--
-                </div>
-                <div class="col-sm-3 auction_bid">
-                  3.5 BTC <br>
-                </div>
-                <div class="col-sm-3 auction_action">
-                  <a class="btn btn-primary" href="/auction/details">
-                    Details/Bid</a>
-                </div>
-              </div>
-
-              <div class="row auction_warning">
-                <small><em>
-                Advertised sites are not endorsed by the Bitcoin Forum. 
-                They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-                </em></small>
-              </div>
-            </div>
-
-            <!-- Factoids -->
-            <div class="auction_factoids">
-              <b>Factoid slots (1 in 710 chance)</b><br>
-              Interesting facts, funny quotes, hints, info, and ads given away to supporters.
-            </div>
-
-            <ul>
-              <li>
-                "Governments are good at cutting off the heads of a centrally controlled networks like Napster, but pure P2P networks like Gnutella and Tor seem to be holding their own." -- Satoshi
-              </li>
-              <li>
-                "There should not be any signed int.  If you've found a signed int somewhere, please tell me (within the next 25 years please) and I'll change it to unsigned int." -- Satoshi
-              </li>
-              <li>
-                "You Asked For Change, We Gave You Coins" -- casascius</li>
-              <li>
-                "The nature of Bitcoin is such that once version 0.1 was released, the core design was set in stone for the rest of its lifetime." -- Satoshi
-              </li>
-              <li>
-                "With e-currency based on cryptographic proof, without the need to trust a third party middleman, money can be secure and transactions effortless." -- Satoshi
-              </li>
-              <li>
-                "In a nutshell, the network works like a distributed timestamp server, stamping the first transaction to spend a coin. It takes advantage of the nature of information being easy to spread but hard to stifle." -- Satoshi
-              </li>
-              <li>
-                Make sure you back up your wallet regularly! With Bitcoin-Qt, it needs to be backed up at least as often as every 100 transactions (both sends and receipts) or new addresses.
-              </li>
-              <li>
-                "Bitcoin:  the cutting edge of begging technology." -- Giraffe.BTC
-              </li>
-              <li>
-                Every time a block is mined, a certain amount of BTC (called the <i>subsidy</i>) is created out of thin air and given to the miner. The subsidy halves every four years and will reach 0 in about 130 years.
-              </li>
-              <li>
-                The block chain is the main innovation of Bitcoin. It is the first distributed timestamping system.
-              </li>
-              <li>
-                Once a transaction has 6 confirmations, it is extremely unlikely that an attacker without at least 50% of the network's computation power would be able to reverse it.
-              </li>
-              <li>
-                Even in the event that an attacker gains more than 50% of the network's computational power, only transactions sent by the attacker could be reversed or double-spent. The network would not be destroyed.
-              </li>
-              <li>
-                Some PGP public keys you should import: <a href="/Satoshi_Nakamoto.asc">Satoshi</a>, <a href="http://bitcoin.org/gavinandresen.asc">Gavin</a>, <a href="http://theymos.com/theymos.txt">theymos</a>, <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0xD16E7B0442B9F02E0660C094C9473700A4B08BF3">Stefan</a>, <a href="http://bitcoin.org/jgarzik-exmulti.asc">Jeff</a>, <a href="http://bitcoin.org/pieterwuille.asc">Pieter</a>, <a href="http://bitcoin.org/schneider.asc">Nils</a>, <a href="http://bitcoin.org/laanwj.asc">Wladimir</a>, <a href="http://bitcoin.org/gmaxwell.asc">Gregory</a>
-              </li>
-              <li>
-                According to NIST and ECRYPT II, the cryptographic algorithms used in Bitcoin are expected to be strong until at least 2030. (After that, it will not be too difficult to transition to different algorithms.)
-              </li>
-              <li>
-                The forum was founded in 2009 by Satoshi and Sirius. It replaced a SourceForge forum.
-              </li>
-              <li>
-                The money raised from these ads will be used to pay for improved forum software and other useful stuff.
-              </li>
-              <li>
-                "This isn't the kind of software where we can leave so many unresolved bugs that we need a tracker for them." -- Satoshi
-              </li>
-              <li>
-                "Bitcoin: mining our own business since 2009" -- Pieter Wuille
-              </li>
-              <li>
-                Unlike traditional banking where clients have only a few account numbers, with Bitcoin people can create an unlimited number of accounts (addresses). This can be used to easily track payments, and it improves anonymity.
-              </li>
-              <li>
-                Even if you use Bitcoin through Tor, the way transactions are handled by the network makes anonymity difficult to achieve. Do not expect your transactions to be anonymous unless you really know what you're doing.
-              </li>
-              <li>
-                Bitcoin addresses contain a checksum, so it is very unlikely that mistyping an address will cause you to lose money.
-              </li>
-              <li>
-                The Bitcoin network protocol was designed to be extremely flexible. It can be used to create timed transactions, escrow transactions, multi-signature transactions, etc. The current features of the client only hint at what will be possible in the future.
-              </li>
-              <li>
-                The network tries to produce one block per 10 minutes. It does this by automatically adjusting how difficult it is to produce blocks.
-              </li>
-              <li>
-                Each block is stacked on top of the previous one. Adding another block to the top makes all lower blocks more difficult to remove: there is more "weight" above each block. A transaction in a block 6 blocks deep (6 <i>confirmations</i>) will be very difficult to remove.
-              </li>
-              <li>
-                Transactions must be included in a block to be properly completed. When you send a transaction, it is broadcast to miners. Miners can then optionally include it in their next blocks. Miners will be more inclined to include your transaction if it has a transaction fee.
-              </li>
-              <li>
-                Transactions can optionally carry transaction fees. Whoever mines the block which ends up containing your transaction will get the fee. The Bitcoin client will sometimes force you to pay a fee when it thinks that no miner will accept your transaction otherwise.
-              </li>
-              <li>
-                Remember that Bitcoin is still beta software. Don't put all of your money into BTC!
-              </li>
-              <li>
-                Bitcoin has more ways of finding peers than most P2P software. It has: a node database, address broadcasting, IRC bootstrapping, DNS bootstraping, seednodes, and you can manually specify peers.
-              </li>
-              <li>
-                The Bitcoin software, network, and concept is called "Bitcoin" with a capitalized "B". Bitcoin currency units are called "bitcoins" with a lowercase "b" -- this is often abbreviated BTC. The Bitcoin client published at bitcoin.org is officially named simply "Bitcoin", though it is sometimes called "Bitcoin-Qt" or the "Satoshi client" to distinguish it from other Bitcoin clients.
-              </li>
-              <li>
-                The forum strives to allow free discussion of <i>any</i> ideas. All policies are built around this principle. This doesn't mean you can post garbage, though: posts should actually <i>contain</i> ideas, and these ideas should be argued reasonably.
-              </li>
-              <li>
-                If you want to be a moderator, report many posts with accuracy. You will be noticed.
-              </li>
-              <li>
-                If you see garbage posts (off-topic, trolling, spam, no point, etc.), use the "report to moderator" links. All reports are investigated, though you will rarely be contacted about your reports.
-              </li>
-              <li>
-                "I'm sure that in 20 years there will either be very large transaction volume or no volume." -- Satoshi
-              </li>
-              <li>
-                "Your bitcoin is secured in a way that is physically impossible for others to access, no matter for what reason, no matter how good the excuse, no matter a majority of miners, no matter what." -- gmaxwell
-              </li>
-              <li>
-                <a href="http://btc-play.com/">Btc-Play.com | Bitcoin Casino | Roulette | BlackJack - and more</a>
-              </li>
-              <li>
-                <a href="http://www.rugatu.com/">Rugatu Q&amp;A</a> - Earn Bitcoins for answering questions
-              </li>
-              <li>
-                <a href="https://nastyfans.org/">NastyFans - The UNOFFICIAL Nasty Mining Fan Club</a>
-              </li>
-              <li>
-                <a href="http://crowncloud.net/">VPN's and Cloud Backups made simple. crowncloud.net</a>
-              </li>
-              <li>
-                I HATE TABLES I HATE TABLES I HA(╯°□°）╯︵ ┻━┻ TABLES I HATE TABLES I HATE TABLES
-              </li>
-              <li>
-                <a href="http://itunes.apple.com/us/app/mybitcoins/id539677499?ls=1&amp;mt=8">myBitcoins -- Bitcoin tracker for iPhone</a>
-              </li>
-              <li>
-                <img src="/Smileys/default/grin.gif" alt="">
-              </li>
-              <li>
-                <a href="http://btcgear.com/">Bitcoin hats, GUNNAR glasses, and more for your Bitcoins!</a>
-              </li>
-              <li>
-                <a href="https://bitcointalk.org/index.php?topic=109294.0">Zero-risk guaranteed Loan. An "incredible" :D 1.5% a month </a>
-              </li>
-              <li>
-                <a href="https://bips.me/landing/bitcointalk">Welcome to the Bitcoin Internet Payment System, BIPS - Start accepting payments in bitcoin, in minutes.</a>
-              </li>
-              <li>
-                <a href="http://www.maquiorac.com/">★ MaquiOrac.com - The Patagonia Super Berry - Lose Weight The Natural Way ★</a>
-              </li>
-              <li>
-                <a href="http://organofcorti.blogspot.com/">Neighbourhood Pool Watch: Keeping an eye on Bitcoin mining</a>
-              </li>
-              <li>
-                <a href="http://organofcorti.blogspot.com/">Neighbourhood Pool Watch: Keeping an eye on Bitcoin mining</a>
-              </li>
-              <li>
-                <a href="https://betbybitcoin.com/">betbybitcoin.com - Open your bet and Get the charge.</a>
-              </li>
-              <li>
-                You can see the statistics of your reports to moderators on the "Report to moderator" pages.
-              </li>
-              <li>
-                Bitcoin mining is now a specialized and very risky industry, just like gold mining. Amateur miners are unlikely to make much money, and may even lose money. Bitcoin is much more than just mining, though!
-              </li>
-              <li>
-                It is a common myth that Bitcoin is ruled by a majority of miners. This is not true. Bitcoin miners "vote" on the ordering of transactions, but that's all they do. They can't vote to change the network rules.
-              </li>
-              <li>
-                <a href="http://suzukidice.com/">SuzukiDICE.com | Our payout is greater than that of our competitors. Now 99.1% Payout!!</a>
-              </li>
-              <li>
-                Visit and contribute to <a href="http://www.reddit.com/r/Bitcoin/top/?sort=top&amp;t=week/">reddit.com/r/Bitcoin</a>
-              </li>
-              <li>
-                <a href="https://btc.sx//">BTC.sx - Leveraged Bitcoin Trading. For an easy way to trade Bitcoin, using Bitcoin, sign up now.</a>
-              </li>
-              <li>
-                <a href="http://bitspoker.com/">♠ BitsPoker.com - Awesome Bitcoin Poker action ♠ Freerolls, Tournaments, Sit'n'Go ♠ Earn BTC by being an Affiliate ♠ Register now! ♠</a>
-              </li>
-              <li>
-                <a href="https://asicminer.info"><b>ASICMINER</b> related News, Forum, Chat... not to mention <b>Weekly ASIC Giveaways</b>.</a>
-              </li>
-              <li>
-                "If you don't want people to know you're a scumbag then don't be a scumbag." -- margaritahuyan
-              </li>
-              <li>
-                "Apparently, so I am told, there exist "people" who prefer to wipe sitting down.  From the front.  Initial research indicates it could be up to half the population." -- benjamindees
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. The most secure are <i>full nodes</i> like Bitcoin-Qt, which will follow the rules of the network no matter what miners do. Even if <i>every</i> miner decided to create 1000 bitcoins per block, full nodes would stick to the rules and reject those blocks.
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. The most secure are <i>full nodes</i> like Bitcoin-Qt, but full nodes are more resource-heavy, and they must do a lengthy initial syncing process. As a result, lightweight clients with somewhat less security are commonly used.
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. <i>Header-only clients</i> like MultiBit trust that the majority of mining power is honest for the purposes of enforcing network rules such as the 21 million BTC limit. Full clients do not trust miners in this way.
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. <i>Server-assisted</i> clients like blockchain.info rely on centralized servers to do their network verification for them. Although the server can't steal the client's bitcoins directly, it can easily execute double-spending-style attacks against the client.
-              </li>
-              <li>
-                Be very wary of relying on JavaScript for security on sites such as blockchain.info and brainwallet.org. The site can change the JavaScript at any time unless you take unusual precautions, and browsers are not generally known for their airtight security.
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. <i>Hybrid server-assisted</i> clients like Electrum get a lot of their network information from centralized servers, but they also check the server's results using blockchain header data. This is perhaps somewhat more secure than either server-assisted clients or header-only clients.
-              </li>
-              <li>
-                There are several different types of Bitcoin clients. <i>EWallets</i> are like banks -- a central organization has complete control over your money. You shouldn't put much money in EWallets.
-              </li>
-              <li>
-                Creating a Bitcoin client that fully implements the network protocol is extremely difficult. Bitcoin-Qt is the only known safe implementation of a full node. Some other projects attempt to compete, but it is not recommended to use such software for anything serious. (Lightweight clients like Electrum and MultiBit are OK.)
-              </li>
-              <li>
-                The grue lurks in the darkest places of the earth. Its favorite diet is adventurers, but its insatiable appetite is tempered by its fear of light. No grue has ever been seen by the light of day, and few have survived its fearsome jaws to tell the tale.
-              </li>
-              <li>
-                Satoshi is no god. He did not come down from the mountain with 10 golden rules engraved in stone for no one to question.
-              </li>
-              <li>
-                <a href="http://bitlist.com">BITLIST.com Electronics Marketplace</a>
-              </li>
-              <li>
-                Goat says: "Bitcoin is NOT Illegal in Thailand. There is no law against Bitcoin in Thailand!"
-              </li>
-              <li>
-                No Gods or Kings. Only Bitcoin
-              </li>
-            </ul>
-
-          </div>
-        </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
       </div>
     </div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 2</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
 
-    <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="/scripts/jquery/jquery-2.1.0.min.js"></script>
-    <script src="/css/bootstrap/js/bootstrap.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-</body>
-</html>
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 3</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 4</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 5</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 6</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 7</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 8</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 9</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <div class="auction">
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br>
+        <span class="auction_desc_text">Auction Slot # 10</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        2/14/14 12:12:12<br>
+        2/21/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_bid">
+        3.5 BTC <br>
+      </div>
+      <div class="col-sm-3 auction_action">
+        <a class="btn btn-primary" href="/auction/details">
+          Details/Bid</a>
+      </div>
+    </div>
+
+    <div class="row auction_warning">
+      <small><em>
+      Advertised sites are not endorsed by the Bitcoin Forum. 
+      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em></small>
+    </div>
+  </div>
+
+  <!-- Factoids -->
+  <div class="auction_factoids">
+    <b>Factoid slots (1 in 710 chance)</b><br>
+    Interesting facts, funny quotes, hints, info, and ads given away to supporters.
+  </div>
+
+  <ul>
+    <li>
+      "Governments are good at cutting off the heads of a centrally controlled networks like Napster, but pure P2P networks like Gnutella and Tor seem to be holding their own." -- Satoshi
+    </li>
+    <li>
+      "There should not be any signed int.  If you've found a signed int somewhere, please tell me (within the next 25 years please) and I'll change it to unsigned int." -- Satoshi
+    </li>
+    <li>
+      "You Asked For Change, We Gave You Coins" -- casascius</li>
+    <li>
+      "The nature of Bitcoin is such that once version 0.1 was released, the core design was set in stone for the rest of its lifetime." -- Satoshi
+    </li>
+    <li>
+      "With e-currency based on cryptographic proof, without the need to trust a third party middleman, money can be secure and transactions effortless." -- Satoshi
+    </li>
+    <li>
+      "In a nutshell, the network works like a distributed timestamp server, stamping the first transaction to spend a coin. It takes advantage of the nature of information being easy to spread but hard to stifle." -- Satoshi
+    </li>
+    <li>
+      Make sure you back up your wallet regularly! With Bitcoin-Qt, it needs to be backed up at least as often as every 100 transactions (both sends and receipts) or new addresses.
+    </li>
+    <li>
+      "Bitcoin:  the cutting edge of begging technology." -- Giraffe.BTC
+    </li>
+    <li>
+      Every time a block is mined, a certain amount of BTC (called the <i>subsidy</i>) is created out of thin air and given to the miner. The subsidy halves every four years and will reach 0 in about 130 years.
+    </li>
+    <li>
+      The block chain is the main innovation of Bitcoin. It is the first distributed timestamping system.
+    </li>
+    <li>
+      Once a transaction has 6 confirmations, it is extremely unlikely that an attacker without at least 50% of the network's computation power would be able to reverse it.
+    </li>
+    <li>
+      Even in the event that an attacker gains more than 50% of the network's computational power, only transactions sent by the attacker could be reversed or double-spent. The network would not be destroyed.
+    </li>
+    <li>
+      Some PGP public keys you should import: <a href="/Satoshi_Nakamoto.asc">Satoshi</a>, <a href="http://bitcoin.org/gavinandresen.asc">Gavin</a>, <a href="http://theymos.com/theymos.txt">theymos</a>, <a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0xD16E7B0442B9F02E0660C094C9473700A4B08BF3">Stefan</a>, <a href="http://bitcoin.org/jgarzik-exmulti.asc">Jeff</a>, <a href="http://bitcoin.org/pieterwuille.asc">Pieter</a>, <a href="http://bitcoin.org/schneider.asc">Nils</a>, <a href="http://bitcoin.org/laanwj.asc">Wladimir</a>, <a href="http://bitcoin.org/gmaxwell.asc">Gregory</a>
+    </li>
+    <li>
+      According to NIST and ECRYPT II, the cryptographic algorithms used in Bitcoin are expected to be strong until at least 2030. (After that, it will not be too difficult to transition to different algorithms.)
+    </li>
+    <li>
+      The forum was founded in 2009 by Satoshi and Sirius. It replaced a SourceForge forum.
+    </li>
+    <li>
+      The money raised from these ads will be used to pay for improved forum software and other useful stuff.
+    </li>
+    <li>
+      "This isn't the kind of software where we can leave so many unresolved bugs that we need a tracker for them." -- Satoshi
+    </li>
+    <li>
+      "Bitcoin: mining our own business since 2009" -- Pieter Wuille
+    </li>
+    <li>
+      Unlike traditional banking where clients have only a few account numbers, with Bitcoin people can create an unlimited number of accounts (addresses). This can be used to easily track payments, and it improves anonymity.
+    </li>
+    <li>
+      Even if you use Bitcoin through Tor, the way transactions are handled by the network makes anonymity difficult to achieve. Do not expect your transactions to be anonymous unless you really know what you're doing.
+    </li>
+    <li>
+      Bitcoin addresses contain a checksum, so it is very unlikely that mistyping an address will cause you to lose money.
+    </li>
+    <li>
+      The Bitcoin network protocol was designed to be extremely flexible. It can be used to create timed transactions, escrow transactions, multi-signature transactions, etc. The current features of the client only hint at what will be possible in the future.
+    </li>
+    <li>
+      The network tries to produce one block per 10 minutes. It does this by automatically adjusting how difficult it is to produce blocks.
+    </li>
+    <li>
+      Each block is stacked on top of the previous one. Adding another block to the top makes all lower blocks more difficult to remove: there is more "weight" above each block. A transaction in a block 6 blocks deep (6 <i>confirmations</i>) will be very difficult to remove.
+    </li>
+    <li>
+      Transactions must be included in a block to be properly completed. When you send a transaction, it is broadcast to miners. Miners can then optionally include it in their next blocks. Miners will be more inclined to include your transaction if it has a transaction fee.
+    </li>
+    <li>
+      Transactions can optionally carry transaction fees. Whoever mines the block which ends up containing your transaction will get the fee. The Bitcoin client will sometimes force you to pay a fee when it thinks that no miner will accept your transaction otherwise.
+    </li>
+    <li>
+      Remember that Bitcoin is still beta software. Don't put all of your money into BTC!
+    </li>
+    <li>
+      Bitcoin has more ways of finding peers than most P2P software. It has: a node database, address broadcasting, IRC bootstrapping, DNS bootstraping, seednodes, and you can manually specify peers.
+    </li>
+    <li>
+      The Bitcoin software, network, and concept is called "Bitcoin" with a capitalized "B". Bitcoin currency units are called "bitcoins" with a lowercase "b" -- this is often abbreviated BTC. The Bitcoin client published at bitcoin.org is officially named simply "Bitcoin", though it is sometimes called "Bitcoin-Qt" or the "Satoshi client" to distinguish it from other Bitcoin clients.
+    </li>
+    <li>
+      The forum strives to allow free discussion of <i>any</i> ideas. All policies are built around this principle. This doesn't mean you can post garbage, though: posts should actually <i>contain</i> ideas, and these ideas should be argued reasonably.
+    </li>
+    <li>
+      If you want to be a moderator, report many posts with accuracy. You will be noticed.
+    </li>
+    <li>
+      If you see garbage posts (off-topic, trolling, spam, no point, etc.), use the "report to moderator" links. All reports are investigated, though you will rarely be contacted about your reports.
+    </li>
+    <li>
+      "I'm sure that in 20 years there will either be very large transaction volume or no volume." -- Satoshi
+    </li>
+    <li>
+      "Your bitcoin is secured in a way that is physically impossible for others to access, no matter for what reason, no matter how good the excuse, no matter a majority of miners, no matter what." -- gmaxwell
+    </li>
+    <li>
+      <a href="http://btc-play.com/">Btc-Play.com | Bitcoin Casino | Roulette | BlackJack - and more</a>
+    </li>
+    <li>
+      <a href="http://www.rugatu.com/">Rugatu Q&amp;A</a> - Earn Bitcoins for answering questions
+    </li>
+    <li>
+      <a href="https://nastyfans.org/">NastyFans - The UNOFFICIAL Nasty Mining Fan Club</a>
+    </li>
+    <li>
+      <a href="http://crowncloud.net/">VPN's and Cloud Backups made simple. crowncloud.net</a>
+    </li>
+    <li>
+      I HATE TABLES I HATE TABLES I HA(╯°□°）╯︵ ┻━┻ TABLES I HATE TABLES I HATE TABLES
+    </li>
+    <li>
+      <a href="http://itunes.apple.com/us/app/mybitcoins/id539677499?ls=1&amp;mt=8">myBitcoins -- Bitcoin tracker for iPhone</a>
+    </li>
+    <li>
+      <img src="/Smileys/default/grin.gif" alt="">
+    </li>
+    <li>
+      <a href="http://btcgear.com/">Bitcoin hats, GUNNAR glasses, and more for your Bitcoins!</a>
+    </li>
+    <li>
+      <a href="https://bitcointalk.org/index.php?topic=109294.0">Zero-risk guaranteed Loan. An "incredible" :D 1.5% a month </a>
+    </li>
+    <li>
+      <a href="https://bips.me/landing/bitcointalk">Welcome to the Bitcoin Internet Payment System, BIPS - Start accepting payments in bitcoin, in minutes.</a>
+    </li>
+    <li>
+      <a href="http://www.maquiorac.com/">★ MaquiOrac.com - The Patagonia Super Berry - Lose Weight The Natural Way ★</a>
+    </li>
+    <li>
+      <a href="http://organofcorti.blogspot.com/">Neighbourhood Pool Watch: Keeping an eye on Bitcoin mining</a>
+    </li>
+    <li>
+      <a href="http://organofcorti.blogspot.com/">Neighbourhood Pool Watch: Keeping an eye on Bitcoin mining</a>
+    </li>
+    <li>
+      <a href="https://betbybitcoin.com/">betbybitcoin.com - Open your bet and Get the charge.</a>
+    </li>
+    <li>
+      You can see the statistics of your reports to moderators on the "Report to moderator" pages.
+    </li>
+    <li>
+      Bitcoin mining is now a specialized and very risky industry, just like gold mining. Amateur miners are unlikely to make much money, and may even lose money. Bitcoin is much more than just mining, though!
+    </li>
+    <li>
+      It is a common myth that Bitcoin is ruled by a majority of miners. This is not true. Bitcoin miners "vote" on the ordering of transactions, but that's all they do. They can't vote to change the network rules.
+    </li>
+    <li>
+      <a href="http://suzukidice.com/">SuzukiDICE.com | Our payout is greater than that of our competitors. Now 99.1% Payout!!</a>
+    </li>
+    <li>
+      Visit and contribute to <a href="http://www.reddit.com/r/Bitcoin/top/?sort=top&amp;t=week/">reddit.com/r/Bitcoin</a>
+    </li>
+    <li>
+      <a href="https://btc.sx//">BTC.sx - Leveraged Bitcoin Trading. For an easy way to trade Bitcoin, using Bitcoin, sign up now.</a>
+    </li>
+    <li>
+      <a href="http://bitspoker.com/">♠ BitsPoker.com - Awesome Bitcoin Poker action ♠ Freerolls, Tournaments, Sit'n'Go ♠ Earn BTC by being an Affiliate ♠ Register now! ♠</a>
+    </li>
+    <li>
+      <a href="https://asicminer.info"><b>ASICMINER</b> related News, Forum, Chat... not to mention <b>Weekly ASIC Giveaways</b>.</a>
+    </li>
+    <li>
+      "If you don't want people to know you're a scumbag then don't be a scumbag." -- margaritahuyan
+    </li>
+    <li>
+      "Apparently, so I am told, there exist "people" who prefer to wipe sitting down.  From the front.  Initial research indicates it could be up to half the population." -- benjamindees
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. The most secure are <i>full nodes</i> like Bitcoin-Qt, which will follow the rules of the network no matter what miners do. Even if <i>every</i> miner decided to create 1000 bitcoins per block, full nodes would stick to the rules and reject those blocks.
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. The most secure are <i>full nodes</i> like Bitcoin-Qt, but full nodes are more resource-heavy, and they must do a lengthy initial syncing process. As a result, lightweight clients with somewhat less security are commonly used.
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. <i>Header-only clients</i> like MultiBit trust that the majority of mining power is honest for the purposes of enforcing network rules such as the 21 million BTC limit. Full clients do not trust miners in this way.
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. <i>Server-assisted</i> clients like blockchain.info rely on centralized servers to do their network verification for them. Although the server can't steal the client's bitcoins directly, it can easily execute double-spending-style attacks against the client.
+    </li>
+    <li>
+      Be very wary of relying on JavaScript for security on sites such as blockchain.info and brainwallet.org. The site can change the JavaScript at any time unless you take unusual precautions, and browsers are not generally known for their airtight security.
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. <i>Hybrid server-assisted</i> clients like Electrum get a lot of their network information from centralized servers, but they also check the server's results using blockchain header data. This is perhaps somewhat more secure than either server-assisted clients or header-only clients.
+    </li>
+    <li>
+      There are several different types of Bitcoin clients. <i>EWallets</i> are like banks -- a central organization has complete control over your money. You shouldn't put much money in EWallets.
+    </li>
+    <li>
+      Creating a Bitcoin client that fully implements the network protocol is extremely difficult. Bitcoin-Qt is the only known safe implementation of a full node. Some other projects attempt to compete, but it is not recommended to use such software for anything serious. (Lightweight clients like Electrum and MultiBit are OK.)
+    </li>
+    <li>
+      The grue lurks in the darkest places of the earth. Its favorite diet is adventurers, but its insatiable appetite is tempered by its fear of light. No grue has ever been seen by the light of day, and few have survived its fearsome jaws to tell the tale.
+    </li>
+    <li>
+      Satoshi is no god. He did not come down from the mountain with 10 golden rules engraved in stone for no one to question.
+    </li>
+    <li>
+      <a href="http://bitlist.com">BITLIST.com Electronics Marketplace</a>
+    </li>
+    <li>
+      Goat says: "Bitcoin is NOT Illegal in Thailand. There is no law against Bitcoin in Thailand!"
+    </li>
+    <li>
+      No Gods or Kings. Only Bitcoin
+    </li>
+  </ul>
+  
+</div>

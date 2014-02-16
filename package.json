@@ -27,6 +27,7 @@
     "node-uuid": "~1.4.1",
     "nodemailer": "~0.6.0",
     "nano": "~4.4.0",
-    "emcee": "0.0.4"
+    "emcee": "0.0.4",
+    "ejs-locals": "~1.0.2"
   }
 }
