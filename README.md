@@ -1,3 +1,9 @@
+# Adness
+
+Real-time ad auction system.
+
+[![Build Status](https://travis-ci.org/slickage/adness-api.png?branch=master)](https://travis-ci.org/slickage/adness-api)
+
 # API Documentation
 
 ### Endpoints
