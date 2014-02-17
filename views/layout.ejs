@@ -30,7 +30,7 @@
       <div class="sidebar">
         <!-- Logo -->
         <div class="row logo">
-          Adness    
+          Adness
         </div>
 
         <!-- Links to other pages -->
@@ -55,15 +55,15 @@
                     Logged In: 
                     <a href="#">Logout</a>
                   </div>
-                  <form class="form-inline pull-right" role="form">
+                  <form class="form-inline pull-right" role="form" method="post" action="/login">
                     <div class="form-group">
                       <!-- <span>{{message}}</span> -->
                     </div>
                     <div class="form-group">
-                      <input type="email" class="form-control" placeholder="Enter email">
+                      <input name="username" type="username" class="form-control" placeholder="Username">
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control" placeholder="Password">
+                      <input name="password" type="password" class="form-control" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-default">Sign in</button>
                   </form>

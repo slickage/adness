@@ -5,6 +5,12 @@ module.exports = {
     url: 'http://127.0.0.1:9200/tng',
     pageSize: 20
   },
-  secret: 'secret string for adness 1234!'
+  secret: 'secret string for adness 1234!',
+  mysql: {
+    host: process.env.MYSQL_HOST || 'localhost',
+    username: process.env.MYSQL_USERNAME || 'root',
+    password: process.env.MYSQL_PASSWORD || '',
+    database: process.env.MYSQL_DATABASE || 'smf'
+  }
 };
 
