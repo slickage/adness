@@ -8,7 +8,7 @@ var express = require('express'),
     jwt = require('jsonwebtoken'),
     expressJwt = require('express-jwt'),
     router = require('./router'),
-    config = require('./config')
+    config = require('./config'),
     smfAuth = require('./integration/smf-auth');
 passport.serializeUser(function(user, done) {
   done(null, 1);
@@ -57,7 +57,7 @@ site.get('/', router.index);
 site.get('/auction/details', router.auction_details);
 site.get('/profile', router.profile);
 site.get('/ad/upload', router.ad_upload);
-site.post('/login', 
+site.post('/login',
   passport.authenticate(
     'local',
     { failureRedirect: '/login'}
@@ -67,7 +67,7 @@ site.post('/login',
     res.redirect('/');
   }
 );
-
+site.get('/registration', router.registration);
 
 console.log('Initialized.');
 module.exports = site;

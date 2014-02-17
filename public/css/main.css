@@ -9,18 +9,17 @@
 }
 
 
-/* CSS resets */
+/* CSS resets and bootstrap fluid fixes */
 body { padding: 0; }
-
-/* bootstrap fluid fix */
 .bootstrap-fluid-fix { padding: 0 15px; }
 
+
 /* Main layout code */
+
 .header {
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: #ECECEC;
-}
+  background-color: #ECECEC; }
 
 .sidebar {
   background-color: #F7F7F7;
@@ -29,8 +28,7 @@ body { padding: 0; }
   position: fixed;  
   padding: 15px;
   padding-top: 0;
-  width: 125px;
-}
+  width: 125px; }
 
 .logo {
   height: 54px; 
@@ -38,8 +36,7 @@ body { padding: 0; }
   background-color: #E2E2E2;
   padding-top: 18px;
   margin-bottom: 15px;
-  box-sizing: border-box;
-}
+  box-sizing: border-box; }
 
 .footer {
   width: 100%;
@@ -47,25 +44,18 @@ body { padding: 0; }
   padding-bottom: 20px;
   padding-top: 20px;
   color: #777;
-  border-top: 1px solid #e5e5e5;
-}
+  border-top: 1px solid #e5e5e5; }
 
-.main {
-  padding: 0px;
-  box-sizing: border-box;
-}
+.main { padding: 0px; box-sizing: border-box; }
 
 .main-container {
   padding: 0 15px;
   margin-left: 125px;
-  box-sizing: border-box;
-}
+  box-sizing: border-box; }
 .main-container h3 { margin-top: 10px;}
 .main-container h4 { padding-left: 15px; }
 
-.content-page {
-  padding-top: 15px;
-}
+.content-page { padding-top: 15px; }
 
 
 /* Auction Page */
@@ -73,62 +63,47 @@ body { padding: 0; }
 .auction {
   padding: 15px;
   background-color: #ECECEC;
-  margin: 10px 0; 
-}
+  margin: 10px 0; }
 
-.auction_label {
-  padding: 0 15px 10px;
-}
+.auction_label { padding: 0 15px 10px; }
 
 .auction_desc { text-align: center; }
-.auction_desc_text {
-  font-size: larger;
-  font-weight: 700;
-}
+.auction_desc_text { font-size: larger; font-weight: 700; }
 
 .auction_time {
   text-align: center;
   font-size: larger;
-  font-weight: 700;
-}
+  font-weight: 700; }
 
 .auction_bid {
   text-align: center;
   font-size: larger;
-  font-weight: 700;
-}
+  font-weight: 700; }
 
-.auction_action {
-  text-align: center;
-}
+.auction_action { text-align: center; }
 
-.auction_warning {
-  padding: 10px 15px 0;
-  text-align: center;
-}
+.auction_warning { padding: 10px 15px 0; text-align: center; }
 
-.auction_factoids {
-  padding-top: 30px;
-}
-
+.auction_factoids { padding-top: 30px; }
 
 
 /* Auction Details Page */
-
-.auction_details_desc {
-
-}
 
 .auction_details_right {
   padding-top: 15px; 
   text-align: center;
   font-size: larger;
   font-weight: 700;
-  background-color: #ECECEC;
-}
-.auction_details_right > div {
-  padding-bottom: 15px;
-}
+  background-color: #ECECEC; }
+.auction_details_right > div { padding-bottom: 15px; }
+
+
+/* Registration Page */
+
+.reg_qr { padding: 15px; background-color: #ECECEC; text-align: center; }
+.reg_qr_text { font-size: larger; font-weight: 700; }
+.reg_qr_img { text-align: center; padding-top: 15px; }
+.reg_qr_img img { display: inline; }
 
 
 /* Ad Upload page  CSS */
