@@ -1,29 +1,13 @@
 var express = require('express'),
     site = express(),
-    passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
+    passport = require('./passport'),
     path = require('path'),
     engine = require('ejs-locals'),
     RedisStore = require('connect-redis')(express),
     jwt = require('jsonwebtoken'),
     expressJwt = require('express-jwt'),
     router = require('./router'),
-    config = require('./config'),
-    smfAuth = require('./integration/smf-auth');
-passport.serializeUser(function(user, done) {
-  done(null, 1);
-});
-
-passport.deserializeUser(function(id, done) {
-  done(null, {username: 'slickage'});
-});
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    smfAuth.authenticate(username, password, function(err, user) {
-      (err) ? done(err) : done(null, user);
-    });
-  }
-));
+    config = require('./config');
 
 // Express config on all environments
 site.engine('ejs', engine);
@@ -33,19 +17,23 @@ site.use(require('./middleware/model_loader'));
 site.use(require('connect-assets')());
 site.use(express.favicon());
 site.use(express.logger('dev'));
+site.use(express.cookieParser('adness'));
 site.use(express.bodyParser());
+site.use(express.methodOverride());
 site.use(express.json());
 site.use(express.urlencoded());
-site.use(express.methodOverride());
-site.use(express.cookieParser('adness'));
-site.use(express.session({store: new RedisStore}));
+site.use(express.session({
+  store: new RedisStore,
+  cookie: {
+    secure: false,
+    maxAge:86400000
+  }
+}));
 site.use(passport.initialize());
 site.use(passport.session());
 
 site.use(site.router);
 site.use(express.static(path.join(__dirname, 'public')));
-
-
 
 // development only
 if ('development' == site.get('env')) {
@@ -54,20 +42,30 @@ if ('development' == site.get('env')) {
 
 // web routes
 site.get('/', router.index);
-site.get('/auction/details', router.auction_details);
-site.get('/profile', router.profile);
-site.get('/ad/upload', router.ad_upload);
-site.post('/login',
-  passport.authenticate(
-    'local',
-    { failureRedirect: '/login'}
-  ),
+site.get('/auction/details', ensureAuthenticated, router.auction_details);
+site.get('/profile', ensureAuthenticated, router.profile);
+site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
+site.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
-    console.log('test');
     res.redirect('/');
   }
 );
 site.get('/registration', router.registration);
+
+site.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/')
+}
 
 console.log('Initialized.');
 module.exports = site;

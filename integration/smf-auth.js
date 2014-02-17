@@ -1,6 +1,7 @@
 var mysql = require('mysql');
+var shacrypt = require('shacrypt');
 var config = require(__dirname + '/../config');
-var connection = mysql.createConnection({
+var pool = mysql.createPool({
   host: config.mysql.host,
   user: config.mysql.username,
   password: config.mysql.password,
@@ -10,12 +11,28 @@ var connection = mysql.createConnection({
 // interface for user later, but this for now
 module.exports = {
   authenticate: function(username, password, cb) {
-    console.log('Authenticating.');
+    pool.getConnection(function(err, connection) {
+      // connected! (unless `err` is set)
+      if (err) cb(err, undefined);
+      else {
+        connection.query(
+          'SELECT passwd FROM smf_members WHERE memberName = ? LIMIT 1',
+          username,
+          function(err, rows) {
+            connection.release();
+            var hash = rows[0].passwd;
+            if (hash == shacrypt.sha256crypt(password, hash)) { 
+              var user = {username: username};
+              cb(null, user);
+            }
+            else {
+              cb(null, false);
+            }
+          }
+        );
+      }
+    });
     
-    
-    
-    var user = {username: 'slickage'};
-    cb(null, user);
   }
 }
 
