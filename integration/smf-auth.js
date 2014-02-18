@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var shacrypt = require('shacrypt');
 var config = require(__dirname + '/../config');
+
 var pool = mysql.createPool({
   host: config.mysql.host,
   user: config.mysql.username,
