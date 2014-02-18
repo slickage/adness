@@ -20,10 +20,15 @@ module.exports = {
           username,
           function(err, rows) {
             connection.release();
-            var hash = rows[0].passwd;
-            if (hash == shacrypt.sha256crypt(password, hash)) { 
-              var user = {username: username};
-              cb(null, user);
+            if (rows.length > 0) {
+              var hash = rows[0].passwd;
+              if (hash == shacrypt.sha256crypt(password, hash)) { 
+                var user = {username: username};
+                cb(null, user);
+              }
+              else {
+                cb(null, false);
+              }
             }
             else {
               cb(null, false);
