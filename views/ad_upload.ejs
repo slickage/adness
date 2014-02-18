@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Ad Upload</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -98,17 +98,10 @@
         tabSize: 2,
         lineNumbers: true
       });
-      myCodeMirror.setSize(null, 65);
+      myCodeMirror.setSize(null, 150);
       // on change event that maxes the number of lines to three
       myCodeMirror.on(
-        "beforeChange", 
-        function(cm, change) { 
-          var text = cm.getValue();
-          var lines = text.split("\n");
-          if (lines.length === 3 && change.text.length > 1) { 
-            change.cancel();
-          } 
-        }
+        "change", function(cm, change) { convert(); }
       )
 
       function convert() {

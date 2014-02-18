@@ -54,7 +54,7 @@ site.get('/logout', function(req, res){
   res.redirect('/');
 });
 // private web routes
-site.get('/admin', router.admin);
+site.get('/admin', ensureAuthenticated, router.admin);
 site.get('/auction/details', ensureAuthenticated, router.auction_details);
 site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
@@ -67,7 +67,7 @@ site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 //   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/')
+  res.redirect('/');
 }
 
 console.log('Initialized.');

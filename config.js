@@ -1,7 +1,7 @@
 module.exports = {
   port: process.env.PORT || 8080,
   redis: {
-    host: process.env.REDIS_IP || '127.0.0.1', 
+    host: process.env.REDIS_IP || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
   },
   elasticsearch: {
@@ -15,4 +15,4 @@ module.exports = {
     password: process.env.MYSQL_PASSWORD || 'password',
     database: process.env.MYSQL_DATABASE || 'smf'
   }
-}
+};
