@@ -1,6 +1,9 @@
 module.exports = {
   port: process.env.PORT || 8080,
-  redis: { host: '127.0.0.1', port: 6379 },
+  redis: {
+    host: process.env.REDIS_IP || '127.0.0.1', 
+    port: process.env.REDIS_PORT || 6379
+  },
   elasticsearch: {
     url: 'http://127.0.0.1:9200/tng',
     pageSize: 20
