@@ -1,0 +1,533 @@
+<% layout('layout') %>
+<div class="content-page col-sm-offset-1 col-sm-10">
+
+  <h3>Admin List</h3>
+
+  <b>This is a list of auction shown to the user.</b><br>
+  Add auctions as needed. <br>
+  Delete or close auctions via the auction controls. 
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_time">
+        Auction Start Time:
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+      <div class="col-sm-3 auction_time">
+        Auction End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+      <div class="col-sm-3 auction_bid">
+        Bidding starting at 0.05<br>
+        <input type="number" class="form-control" value="0.05" step="0.05" min="0.05">
+      </div>
+      <div class="col-sm-3 auction_add_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Add Auction
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 1</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 2</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 3</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 4</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 5</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 6</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 7</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 8</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 9</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="auction"> 
+    <div class="row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Auction Slot # 10</span>
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current Start Time:<br>
+        2/15/14 12:12:00
+      </div>
+      <div class="col-sm-3 auction_time">
+        Current End Time:<br>
+        2/22/14 --:--:--
+      </div>
+      <div class="col-sm-3 auction_save_button">
+        <a class="btn btn-primary btn-block" href="/auction/details">
+          Save</a>
+      </div>
+    </div>
+
+    <div class="row auction_second_row">
+      <div class="col-sm-3 auction_desc">
+        <span class="auction_desc_text">Set Auction Status: </span>
+        <span class="label label-success">Open</span>
+        <span class="label label-warning">Closing</span>
+        <span class="label label-danger">Closed</span>
+        <br><br>
+        <span class="auction_desc_text">Status: Open</span>
+      </div>
+  
+      <div class="col-sm-3 auction_time">
+        New Start Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_time">
+        New End Time: 
+        <input type="date" class="form-control">
+        <input type="time" class="form-control">
+      </div>
+
+      <div class="col-sm-3 auction_delete_button">
+        <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAuctionModal">Delete</a>
+      </div>
+
+    </div>
+  </div>
+  
+</div>
+
+
+<div id="deleteAuctionModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Delete Auction?</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this auction?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

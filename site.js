@@ -40,23 +40,26 @@ if ('development' == site.get('env')) {
   site.use(express.errorHandler());
 }
 
-// web routes
+// public web routes
 site.get('/', router.index);
-site.get('/auction/details', ensureAuthenticated, router.auction_details);
-site.get('/profile', ensureAuthenticated, router.profile);
-site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
-site.post('/login', 
+site.get('/registration', router.registration);
+site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
     res.redirect('/');
   }
 );
-site.get('/registration', router.registration);
-
 site.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+// private web routes
+site.get('/admin', router.admin);
+site.get('/auction/details', ensureAuthenticated, router.auction_details);
+site.get('/profile', ensureAuthenticated, router.profile);
+site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
+
+
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),

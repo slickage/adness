@@ -15,5 +15,4 @@ module.exports = {
     password: process.env.MYSQL_PASSWORD || 'password',
     database: process.env.MYSQL_DATABASE || 'smf'
   }
-};
-
+}

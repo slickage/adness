@@ -3,5 +3,6 @@ module.exports = {
   auction_details: require('./routes/auction_details'),
   profile: require('./routes/profile'),
   ad_upload: require('./routes/ad_upload'),
-  registration: require('./routes/registration')
+  registration: require('./routes/registration'),
+  admin: require('./routes/admin')
 };

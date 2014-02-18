@@ -12,7 +12,15 @@
 /* CSS resets and bootstrap fluid fixes */
 body { padding: 0; }
 .bootstrap-fluid-fix { padding: 0 15px; }
-
+.vertical-align {
+  position: relative;
+  top: 50%;
+  -o-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
 
 /* Main layout code */
 
@@ -55,7 +63,7 @@ body { padding: 0; }
 .main-container h3 { margin-top: 10px;}
 .main-container h4 { padding-left: 15px; }
 
-.content-page { padding-top: 15px; }
+.content-page { padding-top: 15px; padding-bottom: 30px; }
 
 
 /* Auction Page */
@@ -96,6 +104,13 @@ body { padding: 0; }
   font-weight: 700;
   background-color: #ECECEC; }
 .auction_details_right > div { padding-bottom: 15px; }
+
+
+/* Admin Page */
+.auction_add_button { text-align: center; padding-top: 30px; }
+.auction_second_row { padding-top: 15px; }
+.auction_save_button { padding-top: 10px; }
+.auction_delete_button { padding-top: 35px; }
 
 
 /* Registration Page */
