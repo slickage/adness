@@ -1,15 +1,15 @@
-var couchbase = require('couchbase');
-var db = new couchbase.Connection({bucket: "default"}, function(err) {
-  if (err) throw err;
+var nano = require('nano')('http://localhost:5984');
 
-  db.set('testdoc', {name:'Frank'}, function(err, result) {
-    if (err) throw err;
-
-    db.get('testdoc', function(err, result) {
-      if (err) throw err;
-
-      console.log(result.value);
-      // {name: Frank}
+nano.db.destroy('foo', function() {
+  nano.db.create('foo', function() {
+    var foo = nano.use('foo');
+    foo.insert({ mundane: true }, 'bar', function(err, body, header) {
+      if (err) {
+        console.log('[foo.insert] ', err.message);
+        return;
+      }
+      console.log(body);
     });
   });
 });
+
