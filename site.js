@@ -23,7 +23,10 @@ site.use(express.methodOverride());
 site.use(express.json());
 site.use(express.urlencoded());
 site.use(express.session({
-  store: new RedisStore,
+  store: new RedisStore({
+    host: config.redis.host,
+    port: config.redis.port,
+  }),
   cookie: {
     secure: false,
     maxAge:86400000

@@ -29,7 +29,6 @@ passport.use(new LocalStrategy(
           return done(null, false);
         }
         else {
-          console.log('user: ' + JSON.stringify(user));
           users[user.username] = user;
           return done(null, user);
         }
