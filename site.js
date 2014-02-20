@@ -45,6 +45,9 @@ if ('development' == site.get('env')) {
 
 // public web routes
 site.get('/', router.index);
+site.get('/slot', router.slot);
+site.get('/history', router.history);
+site.get('/history/all', router.history_all);
 site.get('/registration', router.registration);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
@@ -58,7 +61,6 @@ site.get('/logout', function(req, res){
 });
 // private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
-site.get('/auction/details', ensureAuthenticated, router.auction_details);
 site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 

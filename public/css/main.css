@@ -1,26 +1,6 @@
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-    /* Remove the padding we set earlier */
-    .header,
-    .footer {
-        padding-left: 0;
-        padding-right: 0;
-    }
-}
-
-
 /* CSS resets and bootstrap fluid fixes */
 body { padding: 0; }
 .bootstrap-fluid-fix { padding: 0 15px; }
-.vertical-align {
-  position: relative;
-  top: 50%;
-  -o-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
 
 /* Main layout code */
 
@@ -46,71 +26,38 @@ body { padding: 0; }
   margin-bottom: 15px;
   box-sizing: border-box; }
 
-.footer {
-  width: 100%;
-  text-align: center;
-  padding-bottom: 20px;
-  padding-top: 20px;
-  color: #777;
-  border-top: 1px solid #e5e5e5; }
-
-.main { padding: 0px; box-sizing: border-box; }
-
 .main-container {
   padding: 0 15px;
   margin-left: 125px;
   box-sizing: border-box; }
-.main-container h3 { margin-top: 10px;}
-.main-container h4 { padding-left: 15px; }
+.main-container h3 { margin-top: 10px; }
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }
 
 
 /* Auction Page */
 
-.auction {
-  padding: 15px;
+.slot {
+  padding: 10px;
   background-color: #ECECEC;
   margin: 10px 0; }
-
-.auction_label { padding: 0 15px 10px; }
-
-.auction_desc { text-align: center; }
-.auction_desc_text { font-size: larger; font-weight: 700; }
-
-.auction_time {
-  text-align: center;
-  font-size: larger;
-  font-weight: 700; }
-
-.auction_bid {
-  text-align: center;
-  font-size: larger;
-  font-weight: 700; }
-
-.auction_action { text-align: center; }
-
-.auction_warning { padding: 10px 15px 0; text-align: center; }
-
-.auction_factoids { padding-top: 30px; }
+.slot_text { text-align: center; font-weight: 700; }
+.slot_factoids { padding-top: 30px; }
 
 
 /* Auction Details Page */
 
-.auction_details_right {
+.slot_details_right {
   padding-top: 15px; 
   text-align: center;
-  font-size: larger;
   font-weight: 700;
   background-color: #ECECEC; }
-.auction_details_right > div { padding-bottom: 15px; }
+.slot_details_right > div { padding-bottom: 15px; }
 
 
 /* Admin Page */
+
 .auction_add_button { text-align: center; padding-top: 30px; }
-.auction_second_row { padding-top: 15px; }
-.auction_save_button { padding-top: 10px; }
-.auction_delete_button { padding-top: 35px; }
 
 
 /* Registration Page */
