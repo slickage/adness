@@ -22,7 +22,7 @@ body { padding: 0; }
   padding-top: 15px;
   font-weight: bold;
 }
-.sidebar > a { color: black; }
+.sidebar > a { color: #6C6C6C; }
 .sidebar > a:hover { text-decoration: none; }
 .sidebar-button:hover { background-color: #D7D7D7; }
 .icon-large { font-size: 25px; }
@@ -36,8 +36,7 @@ body { padding: 0; }
 
 .main-container {
   padding: 0 15px;
-  margin-left: 100px;
-  box-sizing: border-box; }
+  margin-left: 100px; }
 .main-container h3 { margin-top: 10px; }
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }
