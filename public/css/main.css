@@ -12,23 +12,31 @@ body { padding: 0; }
 .sidebar {
   background-color: #F7F7F7;
   min-height: 100%;
-  box-sizing: border-box;
   position: fixed;  
-  padding: 15px;
-  padding-top: 0;
-  width: 125px; }
+  width: 100px; }
+
+.sidebar-button {
+  width: 100%;
+  text-align: center;
+  background-color: #ECECEC;
+  padding: 10px;
+  font-weight: bold;
+}
+.sidebar > a { color: black; }
+.sidebar > a:hover { text-decoration: none; }
+.sidebar-button:hover { background-color: #D7D7D7; }
+.icon-large { font-size: 40px; }
 
 .logo {
   height: 54px; 
   text-align: center;
   background-color: #E2E2E2;
   padding-top: 18px;
-  margin-bottom: 15px;
-  box-sizing: border-box; }
+  margin: 0; }
 
 .main-container {
   padding: 0 15px;
-  margin-left: 125px;
+  margin-left: 100px;
   box-sizing: border-box; }
 .main-container h3 { margin-top: 10px; }
 
