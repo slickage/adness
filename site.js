@@ -61,8 +61,10 @@ site.get('/logout', function(req, res){
 });
 // private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
+site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ads', ensureAuthenticated, router.ads);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
+site.get('/payment', ensureAuthenticated, router.payment);
 
 
 // Simple route middleware to ensure user is authenticated.

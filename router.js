@@ -6,5 +6,7 @@ module.exports = {
   registration: require('./routes/registration'),
   admin: require('./routes/admin'),
   history: require('./routes/history'),
-  history_all: require('./routes/history_all')
+  history_all: require('./routes/history_all'),
+  payment: require('./routes/payment'),
+  profile: require('./routes/profile')
 };
