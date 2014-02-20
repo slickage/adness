@@ -1,7 +1,7 @@
 module.exports = {
   index: require('./routes/index'),
   slot: require('./routes/slot'),
-  profile: require('./routes/profile'),
+  ads: require('./routes/ads'),
   ad_upload: require('./routes/ad_upload'),
   registration: require('./routes/registration'),
   admin: require('./routes/admin'),
