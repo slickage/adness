@@ -18,14 +18,14 @@ body { padding: 0; }
 .sidebar-button {
   width: 100%;
   text-align: center;
-  background-color: #ECECEC;
   padding: 10px;
+  padding-top: 15px;
   font-weight: bold;
 }
 .sidebar > a { color: black; }
 .sidebar > a:hover { text-decoration: none; }
 .sidebar-button:hover { background-color: #D7D7D7; }
-.icon-large { font-size: 40px; }
+.icon-large { font-size: 25px; }
 
 .logo {
   height: 54px; 
