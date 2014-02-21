@@ -8,5 +8,6 @@ module.exports = {
   history: require('./routes/history'),
   history_all: require('./routes/history_all'),
   payment: require('./routes/payment'),
-  profile: require('./routes/profile')
+  profile: require('./routes/profile'),
+  auction: require('./routes/auction')
 };

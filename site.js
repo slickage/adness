@@ -65,7 +65,7 @@ site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ads', ensureAuthenticated, router.ads);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 site.get('/payment', ensureAuthenticated, router.payment);
-
+site.post('/auctions', router.auction.addAuction);
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If

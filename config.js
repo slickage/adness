@@ -14,5 +14,8 @@ module.exports = {
     username: process.env.MYSQL_USERNAME || 'root',
     password: process.env.MYSQL_PASSWORD || 'password',
     database: process.env.MYSQL_DATABASE || 'smf'
+  },
+  couchdb: {
+    url: 'http://localhost:5984'
   }
 };
