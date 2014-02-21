@@ -9,25 +9,30 @@
     </div>
     <div class="panel-body slot_text">
       
+      <form role="form" method="post" action="/auctions">
+
       <div class="col-sm-3">
         Start Time:
-        <input type="date" class="form-control">
-        <input type="time" class="form-control">
+        <input name="startDate" type="date" class="form-control">
+        <input name="startTime" type="time" class="form-control">
       </div>
       <div class="col-sm-3">
         End Time: 
-        <input type="date" class="form-control">
-        <input type="time" class="form-control">
+        <input name="endDate" type="date" class="form-control">
+        <input name="endTime" type="time" class="form-control">
       </div>
       <div class="col-sm-3">
         Number of slots:<br>
-        <input type="number" class="form-control" value="8" step="1" min="1" max="8">
+        <input name="slotNumber" type="number" class="form-control" value="8" step="1" min="1" max="8">
       </div>
       <div class="col-sm-3 auction_add_button">
-        <a class="btn btn-primary btn-block" href="/auction/details">
+        <button class="btn btn-primary btn-block" type="submit">
           Add Auction
-        </a>
+        </button>
       </div>
+
+      </form>
+
     </div>
   </div>
 
