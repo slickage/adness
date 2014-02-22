@@ -11,15 +11,17 @@ module.exports = {
       res.render('index', {auction: models.auction, user: req.user});
     })
     */
-    var newAuction = req.body;
-    newAuction['type'] = 'auction'
+    var newAuction = {};
+    newAuction['start'] = Date();
+    newAuction['end'] = Date();
+    newAuction['slots'] = req.body.slots || 0;
+    newAuction['type'] = 'auction';
     var db = nano.use('adness');
     db.insert(newAuction, function(err, body, header) {
       if (err) {
         console.log('[auction.insert] ', err.message);
         return;
       }
-      console.log('you have inserted the auction.')
       console.log(body);
     });
 

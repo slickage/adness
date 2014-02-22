@@ -3,6 +3,6 @@ exports = module.exports = function(req, res) {
   req.model.end(function(err, models) {
     if (err) console.log(err);
     console.log(JSON.stringify(models));
-    res.render('admin', {auction: models.auction, user: req.user});
+    res.render('admin', {auctions: [], user: req.user});
   });
 };
