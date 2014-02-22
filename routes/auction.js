@@ -1,5 +1,6 @@
 var config = require(__dirname + '/../config');
 var nano = require('nano')(config.couchdb.url);
+var db = require(__dirname + '/../db');
 
 module.exports = {
   addAuction: function(req, res) {
@@ -13,7 +14,7 @@ module.exports = {
     var newAuction = req.body;
     newAuction['type'] = 'auction'
     var db = nano.use('adness');
-    db.insert(newAuction, 'auction1234', function(err, body, header) {
+    db.insert(newAuction, function(err, body, header) {
       if (err) {
         console.log('[auction.insert] ', err.message);
         return;
