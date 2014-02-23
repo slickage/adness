@@ -7,6 +7,7 @@ var express = require('express'),
     jwt = require('jsonwebtoken'),
     expressJwt = require('express-jwt'),
     router = require('./router'),
+    apiRouter = require('./apiRouter'),
     config = require('./config');
 
 // Express config on all environments
@@ -67,6 +68,12 @@ site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 site.get('/payment', ensureAuthenticated, router.payment);
 site.post('/auctions', router.auction.newAuction);
 site.get('/auctions/:auctionId', router.auction.showAuction);
+
+var apiPrefix = '/api';
+site.get(apiPrefix + '/auctions', apiRouter.auctions);
+site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
+
+
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
