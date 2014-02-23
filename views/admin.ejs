@@ -43,13 +43,13 @@
     <% for (var i = 0; i < auctions.length; i++) { %>
     <div class="panel-body slot_text">
       <div class="col-sm-3">
-        Auction: <%= auction._id %>
+        Auction: <%= auctions[i].id %>
       </div>
       <div class="col-sm-3">
         Status: <span class="label label-success">Open</span>
       </div>
       <div class="col-sm-3">
-        <a href="/">
+        <a href="/auctions/<%= auctions[i].id %>">
           Details
         </a>
       </div>

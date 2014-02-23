@@ -60,12 +60,13 @@ site.get('/logout', function(req, res){
   res.redirect('/');
 });
 // private web routes
-site.get('/admin', ensureAuthenticated, router.admin);
+site.get('/admin', router.admin);
 site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ads', ensureAuthenticated, router.ads);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 site.get('/payment', ensureAuthenticated, router.payment);
-site.post('/auctions', router.auction.addAuction);
+site.post('/auctions', router.auction.newAuction);
+site.get('/auctions/:auctionId', router.auction.showAuction);
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
