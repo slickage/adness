@@ -60,7 +60,7 @@ site.get('/logout', function(req, res){
   res.redirect('/');
 });
 // private web routes
-site.get('/admin', router.admin);
+site.get('/admin', ensureAuthenticated, router.admin);
 site.get('/profile', ensureAuthenticated, router.profile);
 site.get('/ads', ensureAuthenticated, router.ads);
 site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
