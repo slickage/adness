@@ -68,11 +68,12 @@ site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
 site.get('/payment', ensureAuthenticated, router.payment);
 site.post('/auctions', router.auction.newAuction);
 site.get('/auctions/:auctionId', router.auction.showAuction);
-
+// api routes
 var apiPrefix = '/api';
-site.get(apiPrefix + '/auctions', apiRouter.auctions);
+site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
+site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
 site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
-
+site.get(apiPrefix + '/auctions', apiRouter.auctions);
 
 
 // Simple route middleware to ensure user is authenticated.

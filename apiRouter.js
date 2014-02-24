@@ -14,6 +14,20 @@ module.exports = {
       if (err) console.log(err);
       res.json({ auctions: models.auctions });
     });
+  },
+  auctionsOpen: function(req, res) {
+    req.model.load('auctionsOpen', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({ auctions: models.auctionsOpen });
+    });
+  },
+  auctionsClosed: function(req, res) {
+    req.model.load('auctionsClosed', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({ auctions: models.auctionsClosed });
+    });
   }
 };
 

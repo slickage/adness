@@ -44,6 +44,26 @@ var db = {
         cb(err, undefined);
       }
     });
+  },
+  auctionsOpen: function(cb) {
+    couch.view('adness', 'auctionsOpen', function(err, body) {
+      if (!err) {
+        cb(null, body.rows);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
+  },
+  auctionsClosed: function(cb) {
+    couch.view('adness', 'auctionsClosed', function(err, body) {
+      if (!err) {
+        cb(null, body.rows);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
   }
 };
 
