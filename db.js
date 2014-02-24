@@ -4,20 +4,29 @@ var couch = nano.use('adness');
 
 var db = {
   newAuction: function(body, cb) {
+    console.log(body);
     var auction = {
-      start: Date(),
-      end: Date(),
+      start: new Date(body.startDate + ' ' + body.startTime).getTime(),
+      end: new Date(body.endDate + ' ' + body.endTime).getTime(),
       slots: body.slots || 0,
-      type: 'auction'
+      type: 'auction',
+      enabled: true
     };
     couch.insert(auction, cb);
   },
   allAuctions: function(cb) {
+    var currentTime = new Date().getTime();
     console.log('all auctions');
     couch.view('adness', 'auctions', function(err, body) {
       if (!err) {
         body.rows.forEach(function(doc) {
-          console.log(doc.value);
+          var value = doc.value;
+          console.log(currentTime);
+          console.log(value.start);
+          console.log(value.end);
+          var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
+          value.open = open;
+          console.log(value);
         });
         cb(null, body.rows);
       }
