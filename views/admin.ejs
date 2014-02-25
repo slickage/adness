@@ -40,25 +40,25 @@
     <div class="panel-heading">
       <b>Open Auctions</b>
     </div>
-    <% for (var i = 0; i < auctions.length; i++) { %>
-    <div class="panel-body slot_text">
-      <div class="col-sm-3">
-        Auction: <%= auctions[i].id %>
+    <% for (var i = 0; i < auctionsOpen.length; i++) { %>
+      <div class="panel-body slot_text">
+        <div class="col-sm-3">
+          Auction: <%= auctionsOpen[i].id %>
+        </div>
+        <div class="col-sm-3">
+          Status: <span class="label label-success">Open</span>
+        </div>
+        <div class="col-sm-3">
+          <a href="/auctions/<%= auctions[i].id %>">
+            Details
+          </a>
+        </div>
+        <div class="col-sm-3">
+          <a class="" href="/auction/details">
+            Close Auction
+          </a>
+        </div>
       </div>
-      <div class="col-sm-3">
-        Status: <span class="label label-success">Open</span>
-      </div>
-      <div class="col-sm-3">
-        <a href="/auctions/<%= auctions[i].id %>">
-          Details
-        </a>
-      </div>
-      <div class="col-sm-3">
-        <a class="" href="/auction/details">
-          Close Auction
-        </a>
-      </div>
-    </div>
     <% } %>
   </div>
 
@@ -66,24 +66,26 @@
     <div class="panel-heading">
       <b>Closed Auctions</b>
     </div>
-    <div class="panel-body slot_text">
-      <div class="col-sm-3">
-        Auction #112
+    <% for (var i = 0; i < auctionsClosed.length; i++) { %>
+      <div class="panel-body slot_text">
+        <div class="col-sm-3">
+          Auction: <%= auctionsClosed[i].id %>
+        </div>
+        <div class="col-sm-3">
+          Status: <span class="label label-danger">Closed</span>
+        </div>
+        <div class="col-sm-3">
+          <a href="/history">
+            Details
+          </a>
+        </div>
+        <div class="col-sm-3">
+          <a class="" href="/auction/details">
+            Re-Open Auction
+          </a>
+        </div>
       </div>
-      <div class="col-sm-3">
-        Status: <span class="label label-danger">Closed</span>
-      </div>
-      <div class="col-sm-3">
-        <a href="/history">
-          Details
-        </a>
-      </div>
-      <div class="col-sm-3">
-        <a class="" href="/auction/details">
-          Re-Open Auction
-        </a>
-      </div>
-    </div>
+      <% } %>
   </div>
 
 </div>

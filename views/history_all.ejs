@@ -9,64 +9,19 @@
   <b>Final Ad Slot Results</b>
   <br>
 
+  <% for(var i=0; i < auctions.length; i++) { %>
+
   <div class="slot slot_text">
     <div class="row">
-      <div class="col-sm-3">Auction #112</div>
-      <div class="col-sm-6">End Date: 2/12/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
+      <div class="col-sm-5">Auction: <br><%= auctions[i].id %></div>
+      <div class="col-sm-5">End Date: <br>2/12/14 (249 bids, 5h 25m 23s)</div>
+      <div class="col-sm-2">
         <a href="/history/">History</a>
       </div>
     </div>
   </div>
 
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Auction #111</div>
-      <div class="col-sm-6">End Date: 2/5/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
-        <a href="/history/">History</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Auction #110</div>
-      <div class="col-sm-6">End Date: 1/29/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
-        <a href="/history/">History</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Auction #109</div>
-      <div class="col-sm-6">End Date: 1/22/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
-        <a href="/history/">History</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Auction #108</div>
-      <div class="col-sm-6">End Date: 1/15/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
-        <a href="/history/">History</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Auction #107</div>
-      <div class="col-sm-6">End Date: 1/8/14 (249 bids, 5h 25m 23s)</div>
-      <div class="col-sm-3">
-        <a href="/history/">History</a>
-      </div>
-    </div>
-  </div>
+  <% } %>
+  
   
 </div>

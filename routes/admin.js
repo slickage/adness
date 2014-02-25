@@ -1,7 +1,14 @@
 exports = module.exports = function(req, res) {
-  req.model.load('auctions', req);
+  req.model.load('auctionsOpen', req);
+  req.model.load('auctionsClosed', req);
   req.model.end(function(err, models) {
     if (err) console.log(err);
-    res.render('admin', {auctions: models.auctions, user: req.user});
+    res.render('admin',
+      {
+        auctionsOpen: models.auctionsOpen,
+        auctionsClosed: models.auctionsClosed,
+        user: req.user
+      }
+    );
   });
 };
