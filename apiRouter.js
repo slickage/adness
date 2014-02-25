@@ -28,6 +28,13 @@ module.exports = {
       if (err) console.log(err);
       res.json({ auctions: models.auctionsClosed });
     });
+  },
+  bids: function(req, res) {
+    req.model.load('bids', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({bids: models.bids});
+    });
   }
 };
 

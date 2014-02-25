@@ -74,6 +74,7 @@ site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
 site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/auctions', apiRouter.auctions);
+site.get(apiPrefix + '/bids/:auctionId', apiRouter.bids);
 
 
 // Simple route middleware to ensure user is authenticated.

@@ -64,6 +64,17 @@ var db = {
         cb(err, undefined);
       }
     });
+  },
+  getBidsPerAuction: function (auctionId, cb) {
+    console.log("key at db.js: " + auctionId);
+    couch.view('adness', 'auctionBids', {keys: [auctionId]}, function(err, body) {
+      if (!err) {
+        cb(null, body.rows);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
   }
 };
 
