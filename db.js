@@ -66,8 +66,17 @@ var db = {
     });
   },
   getBidsPerAuction: function (auctionId, cb) {
-    console.log("key at db.js: " + auctionId);
-    couch.view('adness', 'auctionBids', {keys: [auctionId]}, function(err, body) {
+    var startkey = [];
+    startkey.push(parseInt(auctionId));
+    startkey.push(0);
+    console.log(startkey);
+    var endkey = [];
+    endkey.push(parseInt(auctionId));
+    endkey.push({});
+    console.log(endkey);
+    couch.view('adness', 'auctionBids', {startkey: [1,0], endkey: [1,1]}, function(err, body) {
+      console.log("body");
+      console.log(body);
       if (!err) {
         cb(null, body.rows);
       }
@@ -75,6 +84,17 @@ var db = {
         cb(err, undefined);
       }
     });
+  },
+  newBid: function(body, cb) {
+    console.log(body);
+    var bid = {
+      created_at: new Date().getTime(),
+      type: 'bid',
+      price: body.price,
+      slots: body.slots,
+      auctionId: body.auctionId
+    };
+    couch.insert(bid, cb);
   }
 };
 
