@@ -5,3 +5,4 @@ tmp/*
 public/assets
 .vagrant
 .env
+/id_deploy
