@@ -1,4 +1,4 @@
-<% layout('layout') %>
+<% layout('sblayout') %>
 <div class="content-page col-sm-offset-1 col-sm-10">
 
   <h3>Admin Tools</h3>
@@ -13,13 +13,13 @@
 
       <div class="col-sm-3">
         Start Time:
-        <input name="startDate" type="date" class="form-control">
-        <input name="startTime" type="time" class="form-control">
+        <input name="startDate" id="startDate" type="date" class="form-control">
+        <input name="startTime" id="startTime" type="time" class="form-control">
       </div>
       <div class="col-sm-3">
         End Time: 
-        <input name="endDate" type="date" class="form-control">
-        <input name="endTime" type="time" class="form-control">
+        <input name="endDate" id="endDate" type="date" class="form-control">
+        <input name="endTime" id="endTime" type="hour" class="form-control">
       </div>
       <div class="col-sm-3">
         Number of slots:<br>
@@ -49,12 +49,12 @@
           Status: <span class="label label-success">Open</span>
         </div>
         <div class="col-sm-3">
-          <a href="/auctions/<%= auctionsOpen[i].id %>">
+          <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i].id %>">
             Details
           </a>
         </div>
         <div class="col-sm-3">
-          <a class="" href="/auction/details">
+          <a class="" href="<%= browsePrefix %>/auction/details">
             Close Auction
           </a>
         </div>
@@ -75,12 +75,12 @@
           Status: <span class="label label-danger">Closed</span>
         </div>
         <div class="col-sm-3">
-          <a href="/history">
+          <a href="<%= browsePrefix %>/history">
             Details
           </a>
         </div>
         <div class="col-sm-3">
-          <a class="" href="/auction/details">
+          <a class="" href="<%= browsePrefix %>/auction/details">
             Re-Open Auction
           </a>
         </div>

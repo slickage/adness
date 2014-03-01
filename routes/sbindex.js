@@ -1,9 +1,10 @@
 module.exports = function(req, res) {
-  req.model.load('auction', req);
+  console.log(req.browsePrefix);
+  req.model.load('auctionsOpen', req);
   req.model.end(function(err, models) {
     if (err) console.log('error: ' + JSON.stringify(err));
-    res.render('history', {
-      auction: models.auction,
+    res.render('sbindex', {
+      auction: models.auctionsOpen,
       browsePrefix: req.browsePrefix,
       user: req.user
     });

@@ -3,6 +3,9 @@ exports = module.exports = function(req, res) {
   req.model.end(function(err, models) {
     if (err) console.log(err);
     console.log(JSON.stringify(models));
-    res.render('slot', {auction: models.auction, user: req.user});
+    res.render('slot', {
+      auction: models.auction,
+      browsePrefix: req.browsePrefix,
+      user: req.user});
   });
 };

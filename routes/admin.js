@@ -7,6 +7,7 @@ exports = module.exports = function(req, res) {
       {
         auctionsOpen: models.auctionsOpen,
         auctionsClosed: models.auctionsClosed,
+        browsePrefix: req.browsePrefix,
         user: req.user
       }
     );

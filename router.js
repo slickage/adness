@@ -1,5 +1,6 @@
 module.exports = {
   index: require('./routes/index'),
+  sbindex: require('./routes/sbindex'),
   slot: require('./routes/slot'),
   ads: require('./routes/ads'),
   ad_upload: require('./routes/ad_upload'),

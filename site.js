@@ -20,6 +20,7 @@ site.use(express.favicon());
 site.use(express.logger('dev'));
 site.use(express.cookieParser('adness'));
 site.use(express.bodyParser());
+site.use(browsePrefix);
 site.use(express.methodOverride());
 site.use(express.json());
 site.use(express.urlencoded());
@@ -39,17 +40,46 @@ site.use(passport.session());
 site.use(site.router);
 site.use(express.static(path.join(__dirname, 'public')));
 
+
 // development only
 if ('development' == site.get('env')) {
   site.use(express.errorHandler());
 }
 
-// public web routes
+
+// StarBurst middleware - TODO change to module
+var nojsprefix = '/sb';
+function browsePrefix(req, res, next) {
+  req.browsePrefix = nojsprefix;
+  return next();
+}
+
+// StarBurst routes
+site.get(nojsprefix, router.sbindex);
+site.get(nojsprefix + '/slot', router.slot);
+site.get(nojsprefix + '/history', router.history);
+site.get(nojsprefix + '/history/all', router.history_all);
+site.get(nojsprefix + '/registration', router.registration);
+// StarBurst private web routes
+site.get(nojsprefix + '/profile', ensureAuthenticated, router.profile);
+site.get(nojsprefix + '/ads', ensureAuthenticated, router.ads);
+site.get(nojsprefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
+site.get(nojsprefix + '/payment', ensureAuthenticated, router.payment);
+site.get(nojsprefix + '/auctions/:auctionId', router.auction.showAuction);
+// normal public web routes
 site.get('/', router.index);
-site.get('/slot', router.slot);
-site.get('/history', router.history);
-site.get('/history/all', router.history_all);
-site.get('/registration', router.registration);
+// normal private web routes
+site.get('/admin', ensureAuthenticated, router.admin);
+
+// api routes
+site.post('/auctions', router.auction.newAuction); // this should be private
+site.post('/bid', router.bid.newBid);
+var apiPrefix = '/api';
+site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
+site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
+site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
+site.get(apiPrefix + '/auctions', apiRouter.auctions);
+site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
@@ -60,22 +90,7 @@ site.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
-// private web routes
-site.get('/admin', ensureAuthenticated, router.admin);
-site.get('/profile', ensureAuthenticated, router.profile);
-site.get('/ads', ensureAuthenticated, router.ads);
-site.get('/ad/upload', ensureAuthenticated, router.ad_upload);
-site.get('/payment', ensureAuthenticated, router.payment);
-site.get('/auctions/:auctionId', router.auction.showAuction);
-// api routes
-site.post('/auctions', router.auction.newAuction); // this should be private
-site.post('/bid', router.bid.newBid);
-var apiPrefix = '/api';
-site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
-site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
-site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
-site.get(apiPrefix + '/auctions', apiRouter.auctions);
-site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
+
 
 
 // Simple route middleware to ensure user is authenticated.
@@ -87,6 +102,8 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/');
 }
+
+
 
 console.log('Initialized.');
 module.exports = site;
