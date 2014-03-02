@@ -1,7 +1,7 @@
 module.exports = {
   port: process.env.PORT || 8080,
   redis: {
-    host: process.env.REDIS_HOST || '127.0.0.1', 
+    host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
   },
   elasticsearch: {
@@ -17,5 +17,11 @@ module.exports = {
   },
   couchdb: {
     url: 'http://localhost:5984'
+  },
+  bitcoind:  {
+    host: process.env.BITCOIND_HOST || 'localhost',
+    port: Number(process.env.BITCOIND_PORT) || 18332,
+    user: process.env.BITCOIND_USER || 'bitcoinrpc',
+    pass: process.env.BITCOIND_PASS || 'asdf1234'
   }
 };

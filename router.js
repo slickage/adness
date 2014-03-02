@@ -11,5 +11,5 @@ module.exports = {
   payment: require('./routes/payment'),
   profile: require('./routes/profile'),
   auction: require('./routes/auction'),
-  bid: require('./routes/bid')
+  bid: require('./routes/bid'),
 };

@@ -70,6 +70,7 @@ site.get(nojsprefix + '/auctions/:auctionId', router.auction.showAuction);
 site.get('/', router.index);
 // normal private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
+site.get('/payment', router.payment);
 
 // api routes
 site.post('/auctions', router.auction.newAuction); // this should be private
@@ -107,4 +108,3 @@ function ensureAuthenticated(req, res, next) {
 
 console.log('Initialized.');
 module.exports = site;
-
