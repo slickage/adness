@@ -64,13 +64,14 @@ site.get(nojsprefix + '/registration', router.registration);
 site.get(nojsprefix + '/profile', ensureAuthenticated, router.profile);
 site.get(nojsprefix + '/ads', ensureAuthenticated, router.ads);
 site.get(nojsprefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
-site.get(nojsprefix + '/payment', ensureAuthenticated, router.payment);
 site.get(nojsprefix + '/auctions/:auctionId', router.auction.showAuction);
+site.get(nojsprefix + '/payment', router.payment);
+site.get(nojsprefix + '/qr/:qrString', router.qr);
+
 // normal public web routes
 site.get('/', router.index);
 // normal private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
-site.get('/payment', router.payment);
 
 // api routes
 site.post('/auctions', router.auction.newAuction); // this should be private

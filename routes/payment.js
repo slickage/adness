@@ -4,11 +4,12 @@ module.exports = function(req, res) {
     if (err) console.log('error: ' + JSON.stringify(err));
 
     payments.getPaymentAddress(function(err, address) {
+      var paymentAddress = 'bitcoin:' + address
       if (err) address = 'error';
       res.render('payment', {
         auction: models.auction,
         browsePrefix: req.browsePrefix,
-        address: address,
+        paymentAddress: paymentAddress,
         user: req.user});
     })
   });
