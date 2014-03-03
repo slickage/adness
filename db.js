@@ -68,7 +68,7 @@ var db = {
   getBidsPerAuction: function (auctionId, cb) {
     console.log(auctionId);
     var key = auctionId.toString();
-    couch.view('adness', 'auctionBids', {startkey: [key,0], endkey: [key,1]}, function(err, body) {
+    couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
       console.log("body");
       console.log(body);
       if (!err) {
