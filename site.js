@@ -48,25 +48,25 @@ if ('development' == site.get('env')) {
 
 
 // StarBurst middleware - TODO change to module
-var nojsprefix = '/sb';
+var nojsPrefix = '/sb';
 function browsePrefix(req, res, next) {
-  req.browsePrefix = nojsprefix;
+  req.browsePrefix = nojsPrefix;
   return next();
 }
 
 // StarBurst routes
-site.get(nojsprefix, router.sbindex);
-site.get(nojsprefix + '/slot', router.slot);
-site.get(nojsprefix + '/history', router.history);
-site.get(nojsprefix + '/history/all', router.history_all);
-site.get(nojsprefix + '/registration', router.registration);
+site.get(nojsPrefix, router.sbindex);
+site.get(nojsPrefix + '/slot', router.slot);
+site.get(nojsPrefix + '/history', router.history);
+site.get(nojsPrefix + '/history/all', router.history_all);
+site.get(nojsPrefix + '/registration', router.registration);
 // StarBurst private web routes
-site.get(nojsprefix + '/profile', ensureAuthenticated, router.profile);
-site.get(nojsprefix + '/ads', ensureAuthenticated, router.ads);
-site.get(nojsprefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
-site.get(nojsprefix + '/auctions/:auctionId', router.auction.showAuction);
-site.get(nojsprefix + '/payment', router.payment);
-site.get(nojsprefix + '/qr/:qrString', router.qr);
+site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
+site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
+site.get(nojsPrefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
+site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
+site.get(nojsPrefix + '/payment', router.payment);
+site.get(nojsPrefix + '/qr/:qrString', router.qr);
 
 // normal public web routes
 site.get('/', router.index);
@@ -85,15 +85,13 @@ site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
-    res.redirect('/');
+    res.redirect(nojsPrefix + '/');
   }
 );
 site.get('/logout', function(req, res){
   req.logout();
-  res.redirect('/');
+  res.redirect(nojsPrefix + '/');
 });
-
-
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
@@ -102,7 +100,7 @@ site.get('/logout', function(req, res){
 //   login page.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/');
+  res.redirect(nojsPrefix + '/');
 }
 
 

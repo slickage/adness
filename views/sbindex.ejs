@@ -3,14 +3,14 @@
 
   <h3>
     <span class="label label-success">Open</span>
-    Bitcoin Talk Ad Auction #113 (2/21/14)
+    Latest Bitcoin Talk Ad Auction #113 (2/21/14)
   </h3>
 
   <div class="row bidding">
 
     <form role="form" method="post" action="/bid">
 
-    <input type="hidden" name="auctionId" value="<%= auction[0].id %>">
+    <input type="hidden" name="auctionId" value="<%= latestAuction._id %>">
 
     <div class="col-sm-4 slot_text">
       Advertising Slot(s):<br>
@@ -19,7 +19,7 @@
 
     <div class="col-sm-4 slot_text">
       Bid Per Slot:<br>
-      <input type="number" name="price" class="form-control" value="3.55" step="0.05" min="3.5">
+      <input type="number" name="price" class="form-control" value="3.55" step="0.05">
     </div>
 
     <div class="col-sm-4 slot_text">
@@ -40,94 +40,18 @@
     </em>
   </small>
 
+<% for (var i = 0; i < latestAuction.bidPerSlot.length; i++ ) { %>
   <div class="slot slot_text">
     <div class="row">
-      <div class="col-sm-3">Ad Slot #1</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
+      <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
+      <div class="col-sm-3">Username</div>
+      <div class="col-sm-3"><%= latestAuction.bidPerSlot[i].price %> BTC</div>
       <div class="col-sm-3">
         <a href="<%= browsePrefix %>/slot">Details</a>
       </div>
     </div>
   </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #2</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #3</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #4</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #5</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #6</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #7</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #8</div>
-      <div class="col-sm-3">"Username"</div>
-      <div class="col-sm-3">3.5 BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
-      </div>
-    </div>
-  </div>
-  
+<% } %>
 
   <!-- Factoids -->
   <div class="slot_factoids">

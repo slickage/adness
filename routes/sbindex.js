@@ -4,7 +4,8 @@ module.exports = function(req, res) {
   req.model.end(function(err, models) {
     if (err) console.log('error: ' + JSON.stringify(err));
     res.render('sbindex', {
-      auction: models.auctionsOpen,
+      auctionsOpen: models.auctionsOpen,
+      latestAuction: models.auctionsOpen[0],
       browsePrefix: req.browsePrefix,
       user: req.user
     });

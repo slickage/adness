@@ -22,7 +22,7 @@ module.exports = {
     });
 
     console.log(req.body);
-    res.redirect('/');
+    res.redirect('/sb/');
   }
 };
 
