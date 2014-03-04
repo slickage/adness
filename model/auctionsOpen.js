@@ -18,9 +18,9 @@ module.exports = function(req, cb) {
       console.log("Raw Auctions: " + JSON.stringify(auctions));
 
       // for each auction that's open
-      for (var i=0; i < auctions.length; i++) {
+      auctions.forEach(function(auction) {
         // get bids for this open auction
-        db.getBidsPerAuction(auctions[i].id, function(err, auctionAndBids) {
+        db.getBidsPerAuction(auction.id, function(err, auctionAndBids) {
           console.log("Auction And Bids: " + JSON.stringify(auctionAndBids));
 
           // first object is the auction itself
@@ -55,7 +55,7 @@ module.exports = function(req, cb) {
           retVal.push(openAuction);
           coalateCalls(cb);
         }); // end getBidsPerAuction
-      } // end for
+      }); // end forEach
     } // end if
     else {
       cb(err, undefined);
