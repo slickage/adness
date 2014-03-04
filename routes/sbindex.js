@@ -6,6 +6,7 @@ module.exports = function(req, res) {
     res.render('sbindex', {
       auctionsOpen: models.auctionsOpen,
       latestAuction: models.auctionsOpen[0],
+      latestAuctionBids: models.auctionsOpen[0].bidPerSlot || [],
       browsePrefix: req.browsePrefix,
       user: req.user
     });

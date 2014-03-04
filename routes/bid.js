@@ -13,7 +13,10 @@ module.exports = {
 
   // POST bid
   newBid: function(req, res) {
-    db.newBid(req.body, function(err, body, header) {
+    var bid = req.body;
+    bid.username = req.user;
+
+    db.newBid(bid, function(err, body, header) {
       if (err) {
         console.log('[bid.insert] ', err.message);
         return;

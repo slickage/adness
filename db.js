@@ -78,13 +78,12 @@ var db = {
     });
   },
   newBid: function(body, cb) {
-    console.log(body);
     var bid = {
       created_at: new Date().getTime(),
       type: 'bid',
       price: Number(body.price),
       slots: Number(body.slots),
-      user: body.user,
+      user: body.username,
       auctionId: body.auctionId
     };
     couch.insert(bid, cb);

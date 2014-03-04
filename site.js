@@ -75,7 +75,7 @@ site.get('/admin', ensureAuthenticated, router.admin);
 
 // api routes
 site.post('/auctions', router.auction.newAuction); // this should be private
-site.post('/bid', router.bid.newBid);
+site.post('/bid', ensureAuthenticated, router.bid.newBid);
 var apiPrefix = '/api';
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
