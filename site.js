@@ -40,12 +40,10 @@ site.use(passport.session());
 site.use(site.router);
 site.use(express.static(path.join(__dirname, 'public')));
 
-
 // development only
 if ('development' == site.get('env')) {
   site.use(express.errorHandler());
 }
-
 
 // StarBurst middleware - TODO change to module
 var nojsPrefix = '/sb';
@@ -103,7 +101,4 @@ function ensureAuthenticated(req, res, next) {
   res.redirect(nojsPrefix + '/');
 }
 
-
-
-console.log('Initialized.');
 module.exports = site;

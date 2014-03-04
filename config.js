@@ -4,10 +4,6 @@ module.exports = {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
   },
-  elasticsearch: {
-    url: 'http://127.0.0.1:9200/tng',
-    pageSize: 20
-  },
   secret: 'secret string for adness 1234!',
   mysql: {
     host: process.env.MYSQL_HOST || 'localhost',
