@@ -8,7 +8,7 @@ var db = {
     var auction = {
       start: new Date(body.startDate + ' ' + body.startTime).getTime(),
       end: new Date(body.endDate + ' ' + body.endTime).getTime(),
-      slots: body.slots || 0,
+      slots: Number(body.slots, 10) || 0,
       type: 'auction',
       enabled: true
     };
@@ -69,8 +69,6 @@ var db = {
     console.log(auctionId);
     var key = auctionId.toString();
     couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
-      console.log("body");
-      console.log(body);
       if (!err) {
         cb(null, body.rows);
       }
@@ -84,8 +82,8 @@ var db = {
     var bid = {
       created_at: new Date().getTime(),
       type: 'bid',
-      price: body.price,
-      slots: body.slots,
+      price: Number(body.price),
+      slots: Number(body.slots),
       user: body.user,
       auctionId: body.auctionId
     };
