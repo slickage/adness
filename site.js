@@ -72,13 +72,19 @@ site.get('/', router.index);
 site.get('/admin', ensureAuthenticated, router.admin);
 
 // api routes
-site.post('/auctions', router.auction.newAuction); // this should be private
+site.post('/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
+site.post('/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
+site.post('/auctions', ensureAuthenticated, router.auction.newAuction);
+// make a bid
 site.post('/bid', ensureAuthenticated, router.bid.newBid);
 var apiPrefix = '/api';
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
+site.get(apiPrefix + '/auctions/coming', apiRouter.auctionsComing);
+site.get(apiPrefix + '/auctions/past', apiRouter.auctionsPast);
 site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/auctions', apiRouter.auctions);
+// show bids per auction
 site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),

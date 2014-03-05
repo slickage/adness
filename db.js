@@ -4,7 +4,6 @@ var couch = nano.use('adness');
 
 var db = {
   newAuction: function(body, cb) {
-    console.log(body);
     var auction = {
       start: new Date(body.startDate + ' ' + body.startTime).getTime(),
       end: new Date(body.endDate + ' ' + body.endTime).getTime(),
@@ -12,6 +11,9 @@ var db = {
       type: 'auction',
       enabled: true
     };
+    couch.insert(auction, cb);
+  },
+  updateAuction: function(auction, cb) {
     couch.insert(auction, cb);
   },
   allAuctions: function(cb) {
@@ -57,6 +59,26 @@ var db = {
   },
   auctionsClosed: function(cb) {
     couch.view('adness', 'auctionsClosed', function(err, body) {
+      if (!err) {
+        cb(null, body.rows);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
+  },
+  auctionsComing: function(cb) {
+    couch.view('adness', 'auctionsComing', function(err, body) {
+      if (!err) {
+        cb(null, body.rows);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
+  },
+  auctionsPast: function(cb) {
+    couch.view('adness', 'auctionsPast', function(err, body) {
       if (!err) {
         cb(null, body.rows);
       }

@@ -36,9 +36,9 @@
     </div>
   </div>
 
-  <div class="panel panel-default"> 
+  <div class="panel panel-success"> 
     <div class="panel-heading">
-      <b>Open Auctions</b>
+      <b>Open Scheduled Auctions</b>
     </div>
     <% for (var i = 0; i < auctionsOpen.length; i++) { %>
       <div class="panel-body slot_text">
@@ -46,7 +46,7 @@
           Auction: <%= auctionsOpen[i]._id %>
         </div>
         <div class="col-sm-3">
-          Status: <span class="label label-success">Open</span>
+          Status: <span class="label label-success">Enabled</span>
         </div>
         <div class="col-sm-3">
           <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i].id %>">
@@ -54,17 +54,20 @@
           </a>
         </div>
         <div class="col-sm-3">
-          <a class="" href="<%= browsePrefix %>/auction/details">
-            Close Auction
-          </a>
+          <form role="form" method="post" action="/auction/disable/<%=auctionsOpen[i]._id%>">
+            <input type="hidden" value="wtf">
+            <button class="btn btn-primary btn-block" type="submit">
+              Close Auction
+            </button>
+          </form>
         </div>
       </div>
     <% } %>
   </div>
 
-  <div class="panel panel-default"> 
+  <div class="panel panel-danger"> 
     <div class="panel-heading">
-      <b>Closed Auctions</b>
+      <b>Closed Scheduled Auctions</b>
     </div>
     <% for (var i = 0; i < auctionsClosed.length; i++) { %>
       <div class="panel-body slot_text">
@@ -72,7 +75,7 @@
           Auction: <%= auctionsClosed[i].id %>
         </div>
         <div class="col-sm-3">
-          Status: <span class="label label-danger">Closed</span>
+          Status: <span class="label label-danger">Disabled</span>
         </div>
         <div class="col-sm-3">
           <a href="<%= browsePrefix %>/history">
@@ -80,9 +83,61 @@
           </a>
         </div>
         <div class="col-sm-3">
-          <a class="" href="<%= browsePrefix %>/auction/details">
-            Re-Open Auction
+          <form role="form" method="post" action="/auction/enable/<%=auctionsClosed[i].id%>">
+            <button class="btn btn-primary btn-block" type="submit">
+              Open Auction
+            </button>
+          </form>
+        </div>
+      </div>
+      <% } %>
+  </div>
+
+  <div class="panel panel-primary"> 
+    <div class="panel-heading">
+      <b>Coming Auctions</b>
+    </div>
+    <% for (var i = 0; i < auctionsComing.length; i++) { %>
+      <div class="panel-body slot_text">
+        <div class="col-sm-3">
+          Auction: <%= auctionsComing[i].id %>
+        </div>
+        <div class="col-sm-3">
+          Status: <span class="label label-success">Enabled</span>
+        </div>
+        <div class="col-sm-3">
+          <a href="<%= browsePrefix %>/history">
+            Details
           </a>
+        </div>
+        <div class="col-sm-3">
+          <a href="<%= browsePrefix %>/auction/details">
+            Enable Auction
+          </a>
+        </div>
+      </div>
+      <% } %>
+  </div>
+
+  <div class="panel panel-default"> 
+    <div class="panel-heading">
+      <b>Past Auctions</b>
+    </div>
+    <% for (var i = 0; i < auctionsPast.length; i++) { %>
+      <div class="panel-body slot_text">
+        <div class="col-sm-3">
+          Auction: <%= auctionsPast[i].id %>
+        </div>
+        <div class="col-sm-3">
+          Status: <span class="label label-danger">Disabled</span>
+        </div>
+        <div class="col-sm-3">
+          <a href="<%= browsePrefix %>/history">
+            Details
+          </a>
+        </div>
+        <div class="col-sm-3">
+          
         </div>
       </div>
       <% } %>

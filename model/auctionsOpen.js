@@ -10,6 +10,11 @@ module.exports = function(req, cb) {
   db.auctionsOpen(function(err, auctions) {
 
     if (!err) {
+      // check that there's anything to process
+      if (auctions.length < 1) {
+        cb(null, {});
+      }
+
       // set number of auctions to process
       callLimit = auctions.length;
       calls = 0;

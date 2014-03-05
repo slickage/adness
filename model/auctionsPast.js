@@ -1,9 +1,9 @@
 var db = require(__dirname + '/../db');
 module.exports = function(req, cb) {
   // database call
-  db.getAuction(req.params.auctionId, function(err, auction) {
+  db.auctionsPast(function(err, auctions) {
     if (!err) {
-      cb(null, auction);
+      cb(null, auctions);
     }
     else {
       cb(err, undefined);

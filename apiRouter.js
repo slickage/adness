@@ -29,6 +29,20 @@ module.exports = {
       res.json({ auctions: models.auctionsClosed });
     });
   },
+  auctionsComing: function(req, res) {
+    req.model.load('auctionsComing', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({ auctions: models.auctionsComing });
+    });
+  },
+  auctionsPast: function(req, res) {
+    req.model.load('auctionsPast', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({ auctions: models.auctionsPast });
+    });
+  },
   bids: function(req, res) {
     req.model.load('bids', req);
     req.model.end(function(err, models) {

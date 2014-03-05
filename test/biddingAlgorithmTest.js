@@ -2,6 +2,10 @@ var bidding = require('../bidding');
 
 var bidTest = function() {
 
+  // need to test for no bid scenario
+  // need to test for under filled slots
+  // need to test for sorting by same price
+
   // test data
   slots = 8;
   bids = [
