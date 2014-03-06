@@ -4,10 +4,12 @@ var couch = nano.use('adness');
 
 var db = {
   newAuction: function(body, cb) {
+    console.log("New Auction");
+    console.log(body);
     var auction = {
-      start: new Date(body.startDate + ' ' + body.startTime).getTime(),
-      end: new Date(body.endDate + ' ' + body.endTime).getTime(),
-      slots: Number(body.slots, 10) || 0,
+      start: body.start,
+      end: body.end,
+      slots: Number(body.slots) || 0,
       type: 'auction',
       enabled: true
     };

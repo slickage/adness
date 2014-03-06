@@ -17,6 +17,9 @@
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.css">
+    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.date.css">
+    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.time.css">
     <!-- endbuild -->
   </head>
   <body>
@@ -58,7 +61,6 @@
             My Ads
           </div>
         </a> 
-
         <a href="<%= browsePrefix %>/history/all">
           <div class="sidebar-button">
             <span class="glyphicon glyphicon-list-alt icon-large"></span><br>
@@ -234,7 +236,7 @@
     </div><!-- /.modal -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
+    <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -253,6 +255,80 @@
     <!-- bower:js -->
     <script src="/scripts/jquery/jquery-2.1.0.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.js"></script>
+    <script src="/scripts/pickadate/legacy.js"></script>
+    <script src="/scripts/pickadate/picker.js"></script>
+    <script src="/scripts/pickadate/picker.date.js"></script>
+    <script src="/scripts/pickadate/picker.time.js"></script>
+    <script type="text/javascript">
+      var $startDate, $startTime, $endDate, $endTime;
+
+      // initialize the pickadate ui
+      $(document).ready(function() {
+        $startDate = $("#startDate").pickadate({
+          editable: true
+        });
+        $startTime = $("#startTime").pickatime({
+          editable: true
+        });
+        $endDate = $("#endDate").pickadate({
+          editable: true
+        });
+        $endTime = $("#endTime").pickatime({
+          editable: true
+        });
+      });
+
+      function submitAuction(event) {
+        var startDate = parseDate($startDate);
+        var startTime = parseTime($startTime);
+        var start = buildDateTime(startDate, startTime);
+
+        var endDate = parseDate($endDate);
+        var endTime = parseTime($endTime);
+        var end = buildDateTime(endDate, endTime);
+
+        var slots = $('#slots').val();
+        console.log("slots: " + slots);
+
+        // ajax post call to server to create auction
+        $.ajax({ 
+          type: "POST", 
+          url: '/auctions', 
+          data: {
+            start: start, 
+            end: end,
+            slots: slots
+          }, 
+          success: function() {
+            location.reload();
+          },
+          error: function() {
+            alert("There was an error creating the auction.");
+          }          
+        });
+      }
+
+      function parseDate($date, $time) {
+        var datePicker = $date.pickadate('picker');
+        var date = datePicker.get('select');
+        return date;
+      }
+
+      function parseTime($time) {
+        var timePicker = $time.pickatime('picker');
+        var time = timePicker.get('select');
+        return time;
+      }
+
+      function buildDateTime(date, time) {
+        var datetime = new Date();
+        datetime.setFullYear(date.year);
+        datetime.setMonth(date.month, date.date);
+        datetime.setHours(time.hour, time.mins);
+        console.log(datetime.getTime());
+        return datetime.getTime();
+      }
+    </script>
     <!-- endbower -->
     <!-- endbuild -->
 </body>

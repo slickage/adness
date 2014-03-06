@@ -10,28 +10,26 @@
     <div class="panel-body slot_text">
       
       <form role="form" method="post" action="/auctions">
-
-      <div class="col-sm-3">
-        Start Time:
-        <input name="startDate" id="startDate" type="date" class="form-control">
-        <input name="startTime" id="startTime" type="time" class="form-control">
-      </div>
-      <div class="col-sm-3">
-        End Time: 
-        <input name="endDate" id="endDate" type="date" class="form-control">
-        <input name="endTime" id="endTime" type="hour" class="form-control">
-      </div>
-      <div class="col-sm-3">
-        Number of slots:<br>
-        <input name="slotNumber" type="number" class="form-control" value="8" step="1" min="1" max="8">
-      </div>
+        <div class="col-sm-3">
+          Start Time:
+          <input name="startDate" id="startDate" type="date" class="form-control">
+          <input name="startTime" id="startTime" type="time" class="form-control">
+        </div>
+        <div class="col-sm-3">
+          End Time: 
+          <input name="endDate" id="endDate" type="date" class="form-control">
+          <input name="endTime" id="endTime" type="hour" class="form-control">
+        </div>
+        <div class="col-sm-3">
+          Number of slots:<br>
+          <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1" max="8">
+        </div>
+      </form>
       <div class="col-sm-3 auction_add_button">
-        <button class="btn btn-primary btn-block" type="submit">
+        <button class="btn btn-primary btn-block" onclick="submitAuction();">
           Add Auction
         </button>
       </div>
-
-      </form>
 
     </div>
   </div>
