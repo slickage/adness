@@ -1,10 +1,10 @@
 [Service]
-ExecStart=/usr/local/bin/node /home/deploy/adness-api/current/index.js
+ExecStart=/usr/bin/node /home/deploy/adness-api/current/index.js
 Restart=always
 StandardOutput=syslog
 SyslogIdentifier=adness-api
 User=deploy
-Group=nobody
+Group=deploy
 Environment=PATH=/usr/bin:/usr/local/bin
 
 [Install]
