@@ -2,15 +2,15 @@
 // bids is all the bids from one auction, already sorted by bid price
 
 module.exports = function(slots, bids) {
-  // if no bids, return nothing
-  if (bids.length < 1) { return {}; }
-
   // the winning bids and the slots filled by the set of bids
   var retVal = {
     winningBids: [],
     bidPerSlot: []
   };
   var slotsFilled = 0; // slot (filling loop) counter
+
+  // if no bids, return nothing
+  if (bids.length < 1) { return retVal; }
 
   // filling loop
   while (slotsFilled < slots) {
@@ -30,12 +30,18 @@ module.exports = function(slots, bids) {
     slotsFilled += highestBid.slots;
 
     // fill the slots with the winning bid
-    for (var i = 0; i < highestBid.slots; i++) {
-      if (retVal.bidPerSlot.length < slots){
-        retVal.bidPerSlot.push(highestBid);
-      }
-      else { break; }
+    var counter = 0;
+    while (retVal.bidPerSlot.length < slots &&
+           counter < highestBid.slots) {
+      retVal.bidPerSlot.push(highestBid);
+      counter++;
     }
+    // for (var i = 0; i < highestBid.slots; i++) {
+    //   if (retVal.bidPerSlot.length < slots){
+    //     retVal.bidPerSlot.push(highestBid);
+    //   }
+    //   else { break; }
+    // }
 
     // remove highest bid
     bids.splice(0, 1);

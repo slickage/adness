@@ -32,7 +32,8 @@
     "mysql": "~2.0.1",
     "shacrypt": "0.0.2",
     "bitcoin": "~2.0.1",
-    "qr-image": "^1.0.0"
+    "qr-image": "^1.0.0",
+    "async": "~0.2.10"
   },
   "devDependencies": {
     "tap": "~0.4.8"
