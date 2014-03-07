@@ -44,8 +44,6 @@ module.exports = {
     });
   },
   newAuction: function(req, res) {
-    console.log("newAuction body: ");
-    console.log(req.body);
     db.newAuction(req.body, function(err, body, header) {
       if (err) { return; }
     });

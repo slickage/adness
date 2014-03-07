@@ -40,16 +40,16 @@
     </em>
   </small>
 
-<% for (var i = 0; i < latestAuctionBids.length; i++ ) { %>
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
-      <div class="col-sm-3">Winner: <%= latestAuctionBids[i].user.username %></div>
-      <div class="col-sm-3"><%= latestAuctionBids[i].price %> BTC</div>
-      <div class="col-sm-3">
-        <a href="<%= browsePrefix %>/slot">Details</a>
+  <% for (var i = 0; i < latestAuctionBids.length; i++ ) { %>
+    <div class="slot slot_text">
+      <div class="row">
+        <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
+        <div class="col-sm-3">Winner: <%= latestAuctionBids[i].user.username %></div>
+        <div class="col-sm-3"><%= latestAuctionBids[i].price %> BTC</div>
+        <div class="col-sm-3">
+          <a href="<%= browsePrefix %>/slot">Details</a>
+        </div>
       </div>
     </div>
-  </div>
-<% } %>
+  <% } %>
 </div>

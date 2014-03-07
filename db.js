@@ -4,11 +4,9 @@ var couch = nano.use('adness');
 
 var db = {
   newAuction: function(body, cb) {
-    console.log("New Auction");
-    console.log(body);
     var auction = {
-      start: body.start,
-      end: body.end,
+      start: Number(body.start),
+      end: Number(body.end),
       slots: Number(body.slots) || 0,
       type: 'auction',
       enabled: true
@@ -20,7 +18,6 @@ var db = {
   },
   allAuctions: function(cb) {
     var currentTime = new Date().getTime();
-    console.log('all auctions');
     couch.view('adness', 'auctions', function(err, body) {
       if (!err) {
         body.rows.forEach(function(doc) {
@@ -90,7 +87,6 @@ var db = {
     });
   },
   getBidsPerAuction: function (auctionId, cb) {
-    console.log(auctionId);
     var key = auctionId.toString();
     couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
       if (!err) {

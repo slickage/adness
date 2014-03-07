@@ -4,7 +4,14 @@ exports = module.exports = function(req, res) {
   req.model.load('auctionsComing', req);
   req.model.load('auctionsPast', req);
   req.model.end(function(err, models) {
-    if (err) console.log(err);
+    if (err) { console.log(err); }
+
+    console.log("Auctions Past");
+    console.log(models.auctionsPast);
+
+    console.log("Auctions Coming");
+    console.log(models.auctionsComing);
+
     res.render('admin',
       {
         auctionsOpen: models.auctionsOpen,

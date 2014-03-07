@@ -11,21 +11,21 @@
 
   <% for(var i=0; i < auctions.length; i++) { %>
 
-  <div class="slot slot_text">
-    <div class="row">
-      <div class="col-sm-5">
-        Auction: <br>
-        <%= auctions[i].id %>
-      </div>
-      <div class="col-sm-5">
-        End Date: <br>
-        <%= auctions[i].value.end %> (249 bids, 5h 25m 23s)
-      </div>
-      <div class="col-sm-2">
-        <a href="<%= browsePrefix %>/history/">History</a>
+    <div class="slot slot_text">
+      <div class="row">
+        <div class="col-sm-5">
+          Auction: <br>
+          <%= auctions[i]._id %>
+        </div>
+        <div class="col-sm-5">
+          End Date: <br>
+          <%= auctions[i].end %> (249 bids, 5h 25m 23s)
+        </div>
+        <div class="col-sm-2">
+          <a href="<%= browsePrefix %>/history/">History</a>
+        </div>
       </div>
     </div>
-  </div>
 
   <% } %>
   
