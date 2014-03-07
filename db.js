@@ -1,6 +1,7 @@
 var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couch = nano.use('adness');
+var biddingAlg = require('./bidding');
 
 var db = {
   newAuction: function(body, cb) {
@@ -78,46 +79,6 @@ var db = {
       }
     });
   },
-  auctionsOpen: function(cb) {
-    couch.view('adness', 'auctionsOpen', function(err, body) {
-      if (!err) {
-        cb(null, body.rows);
-      }
-      else {
-        cb(err, undefined);
-      }
-    });
-  },
-  auctionsClosed: function(cb) {
-    couch.view('adness', 'auctionsClosed', function(err, body) {
-      if (!err) {
-        cb(null, body.rows);
-      }
-      else {
-        cb(err, undefined);
-      }
-    });
-  },
-  auctionsComing: function(cb) {
-    couch.view('adness', 'auctionsComing', function(err, body) {
-      if (!err) {
-        cb(null, body.rows);
-      }
-      else {
-        cb(err, undefined);
-      }
-    });
-  },
-  auctionsPast: function(cb) {
-    couch.view('adness', 'auctionsPast', function(err, body) {
-      if (!err) {
-        cb(null, body.rows);
-      }
-      else {
-        cb(err, undefined);
-      }
-    });
-  },
   getBidsPerAuction: function (auctionId, cb) {
     var key = auctionId.toString();
     couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
@@ -127,6 +88,33 @@ var db = {
       else {
         cb(err, undefined);
       }
+    });
+  },
+  appendBidsToAuction: function(auction, cb) {
+    var key = auction.id;
+    var params = {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]};
+    couch.view('adness', 'auctionBids', params, function(err, body) {
+      if (!err) {
+        // first object is the auction itself
+        var openAuction = body.rows.splice(0,1)[0].value;
+        // the rest of the array are the bids
+
+        // parse out the bids
+        var bids = [];
+        body.rows.forEach(function(rawBids) {
+          bids.push(rawBids.value);
+        });
+
+        // figure out winning bids
+        var results = biddingAlg(Number(openAuction.slots), bids);
+
+        // add winning bids and bids per slot to openAuction
+        openAuction.winningBids = results.winningBids;
+        openAuction.bidPerSlot = results.bidPerSlot;
+
+        cb(null, openAuction);
+      }
+      else { cb(err, undefined); }
     });
   },
   newBid: function(body, cb) {
