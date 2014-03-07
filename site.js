@@ -80,7 +80,7 @@ site.post('/bid', ensureAuthenticated, router.bid.newBid);
 var apiPrefix = '/api';
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
-site.get(apiPrefix + '/auctions/coming', apiRouter.auctionsComing);
+site.get(apiPrefix + '/auctions/future', apiRouter.auctionsFuture);
 site.get(apiPrefix + '/auctions/past', apiRouter.auctionsPast);
 site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/auctions', apiRouter.auctions);

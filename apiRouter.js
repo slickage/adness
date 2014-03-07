@@ -16,31 +16,31 @@ module.exports = {
     });
   },
   auctionsOpen: function(req, res) {
-    req.model.load('auctionsOpen', req);
+    req.model.load('auctionsTimeRelative', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
-      res.json({ auctions: models.auctionsOpen });
+      res.json({ auctions: models.auctionsTimeRelative.open });
     });
   },
   auctionsClosed: function(req, res) {
-    req.model.load('auctionsClosed', req);
+    req.model.load('auctionsTimeRelative', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
-      res.json({ auctions: models.auctionsClosed });
+      res.json({ auctions: models.auctionsTimeRelative.closed });
     });
   },
-  auctionsComing: function(req, res) {
-    req.model.load('auctionsComing', req);
+  auctionsFuture: function(req, res) {
+    req.model.load('auctionsTimeRelative', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
-      res.json({ auctions: models.auctionsComing });
+      res.json({ auctions: models.auctionsTimeRelative.future });
     });
   },
   auctionsPast: function(req, res) {
-    req.model.load('auctionsPast', req);
+    req.model.load('auctionsTimeRelative', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
-      res.json({ auctions: models.auctionsPast });
+      res.json({ auctions: models.auctionsTimeRelative.past });
     });
   },
   bids: function(req, res) {
