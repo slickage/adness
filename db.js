@@ -22,12 +22,8 @@ var db = {
       if (!err) {
         body.rows.forEach(function(doc) {
           var value = doc.value;
-          console.log(currentTime);
-          console.log(value.start);
-          console.log(value.end);
           var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
           value.open = open;
-          console.log(value);
         });
         cb(null, body.rows);
       }
@@ -35,6 +31,42 @@ var db = {
         cb(err, undefined);
       }
     });
+  },
+  auctionsTimeRelative: function(cb) {
+    var currentTime = new Date().getTime();
+    var auctions = {
+      open: [],
+      closed: [],
+      future: [],
+      past: []
+    };
+    couch.view('adness', 'auctions', function(err, body) {
+      if (!err) {
+        body.rows.forEach(function(doc) {
+          var value = doc.value;
+          var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
+          value.open = open;
+          
+          if ((currentTime >= value.start && currentTime < value.end) && value.enabled) {
+            auctions.open.push(doc);
+          }
+          else if ((currentTime >= value.start && currentTime < value.end) && !value.enabled) {
+            auctions.closed.push(doc);
+          }
+          else if (value.start > currentTime) {
+            auctions.future.push(doc);
+          }
+          else if (value.end < currentTime) {
+            auctions.past.push(doc);
+          }
+        });
+        cb(null, auctions);
+      }
+      else {
+        cb(err, undefined);
+      }
+    });
+
   },
   getAuction: function(auctionId, cb) {
     couch.get(auctionId, null, function(err, body) {
