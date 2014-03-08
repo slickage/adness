@@ -4,57 +4,62 @@
 
 <div class="content-page col-sm-offset-1 col-sm-10">
 
-  <h3>
-    <span class="label label-success">Open</span>
-    Latest Bitcoin Talk Ad Auction #113 (2/21/14)
-  </h3>
-
-  <div class="row bidding">
-
-    <form role="form" method="post" action="/bid">
-
-    <input type="hidden" name="auctionId" value="<%= latestAuction._id %>">
-
-    <div class="col-sm-4 slot_text">
-      Advertising Slot(s):<br>
-      <input type="number" name="slots" class="form-control" value="1" min="1">
-    </div>
-
-    <div class="col-sm-4 slot_text">
-      Bid Per Slot:<br>
-      <input type="number" name="price" class="form-control" value="3.55" step="0.05">
-    </div>
-
-    <div class="col-sm-4 slot_text">
-      <button type="submit" class="btn btn-primary btn-block">Bid</button>
-    </div>
-
-    </form>
-
+  <div class="row">
+    <h3>
+      <span class="label label-success">Open</span>
+      Latest Bitcoin Talk Ad Auction #113 (2/21/14)
+    </h3>
   </div>
 
-  <b>Main slots (1 in 10 chance)</b><br>
-  Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-  <br>
-  <small>
-    <em>
-      Advertised sites are not endorsed by the Bitcoin Forum. 
-      They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-    </em>
-  </small>
+  <% if (user) { %>
+    <div class="row bidding">
+      <form role="form" method="post" action="/bid">
 
-  <% for (var i = 0; i < latestAuctionBids.length; i++ ) { %>
-    <div class="slot slot_text">
-      <div class="row">
-        <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
-        <div class="col-sm-3">Winner: <%= latestAuctionBids[i].user.username %></div>
-        <div class="col-sm-3"><%= latestAuctionBids[i].price %> BTC</div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/slot">Details</a>
+        <input type="hidden" name="auctionId" value="<%= latestAuction._id %>">
+
+        <div class="col-sm-4 slot_text">
+          Advertising Slot(s):<br>
+          <input type="number" name="slots" class="form-control" value="1" min="1">
         </div>
-      </div>
+
+        <div class="col-sm-4 slot_text">
+          Bid Per Slot:<br>
+          <input type="number" name="price" class="form-control" value="3.55" step="0.05">
+        </div>
+
+        <div class="col-sm-4 slot_text bid_button">
+          <button type="submit" class="btn btn-primary btn-block">Bid</button>
+        </div>
+
+      </form>
     </div>
   <% } %>
+
+  <div class="row slot_listing">
+    <b>Advertising slots (1 in 10 chance)</b><br>
+    Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
+    <br>
+    <small>
+      <em>
+        Advertised sites are not endorsed by the Bitcoin Forum. 
+        They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em>
+    </small>
+
+    <% for (var i = 0; i < latestAuctionBids.length; i++ ) { %>
+      <div class="slot slot_text">
+        <div class="row">
+          <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
+          <div class="col-sm-3">Winner: <%= latestAuctionBids[i].user.username %></div>
+          <div class="col-sm-3"><%= latestAuctionBids[i].price %> BTC</div>
+          <div class="col-sm-3">
+            <a href="<%= browsePrefix %>/slot">Details</a>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
 </div>
 
 <% } else { %>

@@ -50,7 +50,9 @@ body { padding: 0; }
   margin: 10px 0; }
 .slot_text { text-align: center; font-weight: 700; }
 .slot_factoids { padding-top: 30px; }
-.bidding { padding: 15px 0;}
+.bidding { padding: 15px 0; }
+.bid_button { padding-top: 19px; }
+.slot_listing { margin-top: 15px;}
 
 /* Auction Details Page */
 
