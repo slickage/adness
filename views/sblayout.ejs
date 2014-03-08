@@ -265,30 +265,53 @@
       // initialize the pickadate ui
       $(document).ready(function() {
         $startDate = $("#startDate").pickadate({
+          min: new Date(),
+          format: 'yyyy-m-d',
           editable: true
         });
         $startTime = $("#startTime").pickatime({
+          interval: 5, 
           editable: true
         });
         $endDate = $("#endDate").pickadate({
+          min: new Date(),
+          format: 'yyyy-m-d',
           editable: true
         });
         $endTime = $("#endTime").pickatime({
+          interval: 5, 
           editable: true
         });
       });
 
       function submitAuction(event) {
-        var startDate = parseDate($startDate);
-        var startTime = parseTime($startTime);
-        var start = buildDateTime(startDate, startTime);
-
-        var endDate = parseDate($endDate);
-        var endTime = parseTime($endTime);
-        var end = buildDateTime(endDate, endTime);
-
+        var start = buildDateTime($startDate, $startTime);
+        var end = buildDateTime($endDate, $endTime);
         var slots = $('#slots').val();
-        console.log("slots: " + slots);
+
+        // validate startDate, endDate and slots
+        var startValid = !isNaN(parseFloat(start)) && isFinite(start);
+        if (startValid === false) {
+          alert("The Start date/time is not valid.");
+          return;
+        }
+
+        var endValid = !isNaN(parseFloat(end)) && isFinite(end);
+        if (endValid === false) {
+          alert("The End date/time is not valid.");
+          return;
+        }
+
+        if (end < start) {
+          alert("The End date/time is before Start date/time.");
+          return;
+        }
+
+        var slotsValid = !isNaN(parseFloat(slots)) && isFinite(slots);
+        if (slotsValid === false) {
+          alert("The number of slots is not valid.");
+          return;
+        }
 
         // ajax post call to server to create auction
         $.ajax({ 
@@ -308,24 +331,35 @@
         });
       }
 
-      function parseDate($date, $time) {
+      function buildDateTime($date, $time) {
+        // get the date, format yyyy-mm-dd
         var datePicker = $date.pickadate('picker');
-        var date = datePicker.get('select');
-        return date;
-      }
+        var date = datePicker.get();
+        var year = date.split("-")[0];
+        var month = date.split("-")[1];
+        var day = date.split("-")[2];
 
-      function parseTime($time) {
+        // get the time, format HH:MM (AM/PM)
         var timePicker = $time.pickatime('picker');
-        var time = timePicker.get('select');
-        return time;
-      }
+        var time = timePicker.get();
+        var hours = Number(time.split(":")[0]); // hours from [12]:00 AM
+        var timeSplit = time.split(":")[1]; // split second half 12:[00 AM]
+        var mins = 0;
+        if (timeSplit) { mins = timeSplit.split(" ")[0]; } // mins 12:[00] AM
+        if (timeSplit) {
+          var period = timeSplit.split(" ")[1]; // period 12:00 [AM]
+          if (period && period.toUpperCase() === "PM") {
+            hours = hours + 12;
+            if (hours === 24) { hours = 12; } 
+          }
+          // if no period, assume first 12 hours
+        }
 
-      function buildDateTime(date, time) {
+        // parse datetime into millisecs
         var datetime = new Date();
-        datetime.setFullYear(date.year);
-        datetime.setMonth(date.month, date.date);
-        datetime.setHours(time.hour, time.mins);
-        console.log(datetime.getTime());
+        datetime.setFullYear(Number(year));
+        datetime.setMonth(Number(month) -1, Number(day));
+        datetime.setHours(Number(hours), Number(mins));
         return datetime.getTime();
       }
     </script>
