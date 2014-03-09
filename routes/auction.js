@@ -31,7 +31,7 @@ module.exports = {
       if (!err) {
         // disable auction
         auction.enabled = false;
-        // save?
+        // save
         db.updateAuction(auction, function(err, body, header) {
           if (err) { res.json({ err: err }); }
           else { res.redirect('/admin'); }

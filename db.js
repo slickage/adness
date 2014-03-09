@@ -67,11 +67,15 @@ var db = {
         cb(err, undefined);
       }
     });
-
   },
   getAuction: function(auctionId, cb) {
     couch.get(auctionId, null, function(err, body) {
       if (!err) {
+        var currentTime = new Date().getTime();
+        var open = (currentTime >= body.start &&
+            currentTime < body.end) &&
+            body.enabled;
+        body.open = open;
         cb(null, body);
       }
       else {
@@ -118,15 +122,33 @@ var db = {
     });
   },
   newBid: function(body, cb) {
-    var bid = {
-      created_at: new Date().getTime(),
-      type: 'bid',
-      price: Number(body.price),
-      slots: Number(body.slots),
-      user: body.username,
-      auctionId: body.auctionId
-    };
-    couch.insert(bid, cb);
+    // get auction first to see if it's open
+    couch.get(body.auctionId, null, function(err, auction) {
+      if (!err) {
+        // check to see if auction is open
+        var currentTime = new Date().getTime();
+        if ((currentTime >= auction.start &&
+             currentTime < auction.end) &&
+            auction.enabled) {
+
+          // auction is open so make the bid
+          var bid = {
+            created_at: new Date().getTime(),
+            type: 'bid',
+            price: Number(body.price),
+            slots: Number(body.slots),
+            user: body.username,
+            auctionId: body.auctionId
+          };
+          couch.insert(bid, cb);
+        }
+        else {
+          // auction is not open
+          cb({ message: "Auction is not open." }, undefined);
+        }
+      }
+      else { cb(err, undefined); }
+    });
   }
 };
 
