@@ -282,6 +282,29 @@
           interval: 5, 
           editable: true
         });
+
+        // default date in input
+        var defaultStart = new Date();
+        defaultStart.setDate(defaultStart.getDate()+1);
+        defaultStart.setHours(0);
+        defaultStart.setMinutes(0);
+        defaultStart.setSeconds(0);
+        defaultStart.setMilliseconds(0);
+        var startDatePicker = $startDate.pickadate('picker');
+        var startTimePicker = $startTime.pickatime('picker');
+        startDatePicker.set('select', defaultStart);
+        startTimePicker.set('select', defaultStart);
+
+        var defaultEnd = new Date();
+        defaultEnd.setDate(defaultEnd.getDate() +3);
+        defaultEnd.setHours(0);
+        defaultEnd.setMinutes(0);
+        defaultEnd.setSeconds(0);
+        defaultEnd.setMilliseconds(0);
+        var endDatePicker = $endDate.pickadate('picker');
+        var endTimePicker = $endTime.pickatime('picker');
+        endDatePicker.set('select', defaultEnd);
+        endTimePicker.set('select', defaultEnd);
       });
 
       function submitAuction(event) {
