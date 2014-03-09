@@ -285,8 +285,37 @@
       });
 
       function submitAuction(event) {
-        var start = buildDateTime($startDate, $startTime);
-        var end = buildDateTime($endDate, $endTime);
+        // Initial input validation
+        var datePicker = $startDate.pickadate('picker');
+        var startDateInput = datePicker.get();
+        if (!startDateInput || startDateInput.length === 0) {
+          alert("The Start Date is not filled out.");
+          return;
+        }
+
+        var timePicker = $startTime.pickatime('picker');
+        var startTimeInput = timePicker.get();
+        if (!startTimeInput || startTimeInput.length === 0) {
+          alert("The Start Time is not filled out.");
+          return;
+        }
+
+        var datePicker = $endDate.pickadate('picker');
+        var endDateInput = datePicker.get();
+        if (!endDateInput || endDateInput.length === 0) {
+          alert("The End Date is not filled out.");
+          return;
+        }
+
+        var timePicker = $endTime.pickatime('picker');
+        var endTimeInput = timePicker.get();
+        if (!endTimeInput || endTimeInput.length === 0) {
+          alert("The End Time is not filled out.");
+          return;
+        }
+
+        var start = buildDateTime(startDateInput, startTimeInput);
+        var end = buildDateTime(endDateInput, endTimeInput);
         var slots = $('#slots').val();
 
         // validate startDate, endDate and slots
@@ -343,17 +372,13 @@
         });
       }
 
-      function buildDateTime($date, $time) {
+      function buildDateTime(date, time) {
         // get the date, format yyyy-mm-dd
-        var datePicker = $date.pickadate('picker');
-        var date = datePicker.get();
         var year = date.split("-")[0];
         var month = date.split("-")[1];
         var day = date.split("-")[2];
 
         // get the time, format HH:MM (AM/PM)
-        var timePicker = $time.pickatime('picker');
-        var time = timePicker.get();
         var hours = Number(time.split(":")[0]); // hours from [12]:00 AM
         var timeSplit = time.split(":")[1]; // split second half 12:[00 AM]
         var mins = 0;
@@ -364,7 +389,13 @@
             hours = hours + 12;
             if (hours === 24) { hours = 12; } 
           }
-          // if no period, assume first 12 hours
+          else if (period && period.toUpperCase() === "AM") {
+            // if no period, assume first 12 hours
+            // so do nothing
+          }
+          else {
+            return "";
+          }
         }
 
         // parse datetime into millisecs
