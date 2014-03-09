@@ -4,7 +4,8 @@ module.exports = function(req, res) {
     if (err) console.log('error: ' + JSON.stringify(err));
     res.render('history', {
       auctions: models.auctionsTimeRelative.closed,
-      browsePrefix: req.browsePrefix
+      browsePrefix: req.browsePrefix,
+      user: req.user
     });
   });
 };

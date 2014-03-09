@@ -5,7 +5,11 @@ module.exports = {
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
-      res.render('auction', {auction: models.auction, user: req.user});
+      res.render('auction', {
+        auction: models.auction,
+        browsePrefix: req.browsePrefix,
+        user: req.user
+      });
     });
   },
   enableAuction: function(req, res) {

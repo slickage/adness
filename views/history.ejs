@@ -5,24 +5,25 @@
     Auction History
   </h3>
 
-  <br>
-  <b>Final Ad Slot Results</b>
+  <b>Final Auction Results</b>
   <br>
 
   <% for(var i=0; i < auctions.length; i++) { %>
 
-    <div class="slot slot_text">
+    <div class="slot">
       <div class="row">
-        <div class="col-sm-5">
-          Auction: <br>
-          <%= auctions[i]._id %>
+        <div class="col-sm-12">
+          Auction: <%= auctions[i]._id %>
         </div>
-        <div class="col-sm-5">
-          End Date: <br>
-          <%= auctions[i].end %> (249 bids, 5h 25m 23s)
+        <div class="col-sm-6">
+          <span class="auction_header">Start: </span>
+          <%= new Date(auctions[i].start) %>
+          <br>
+          <span class="auction_header">End: </span>
+          <%= new Date(auctions[i].end) %>
         </div>
-        <div class="col-sm-2">
-          <a href="<%= browsePrefix %>/history/">History</a>
+        <div class="col-sm-offset-3 col-sm-3">
+          <a href="<%= browsePrefix %>/auctions/<%= auctions[i]._id %>" class="btn btn-primary btn-block">Details</a>
         </div>
       </div>
     </div>

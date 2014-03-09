@@ -21,12 +21,14 @@ var db = {
     var currentTime = new Date().getTime();
     couch.view('adness', 'auctions', function(err, body) {
       if (!err) {
+        var auctions = [];
         body.rows.forEach(function(doc) {
           var value = doc.value;
           var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
           value.open = open;
+          auctions.push(value);
         });
-        cb(null, body.rows);
+        cb(null, auctions);
       }
       else {
         cb(err, undefined);
@@ -49,16 +51,16 @@ var db = {
           value.open = open;
           
           if ((currentTime >= value.start && currentTime < value.end) && value.enabled) {
-            auctions.open.push(doc);
+            auctions.open.push(value);
           }
           else if ((currentTime >= value.start && currentTime < value.end) && !value.enabled) {
-            auctions.closed.push(doc);
+            auctions.closed.push(value);
           }
           else if (value.start > currentTime) {
-            auctions.future.push(doc);
+            auctions.future.push(value);
           }
           else if (value.end < currentTime) {
-            auctions.past.push(doc);
+            auctions.past.push(value);
           }
         });
         cb(null, auctions);
@@ -84,10 +86,14 @@ var db = {
     });
   },
   getBidsPerAuction: function (auctionId, cb) {
-    var key = auctionId.toString();
+    var key = auctionId;
     couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
       if (!err) {
-        cb(null, body.rows);
+        var bids = [];
+        body.rows.forEach(function(bid) {
+          bids.push(bid.value);
+        });
+        cb(null, bids);
       }
       else {
         cb(err, undefined);
@@ -95,7 +101,7 @@ var db = {
     });
   },
   appendBidsToAuction: function(auction, cb) {
-    var key = auction.id;
+    var key = auction._id;
     var params = {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]};
     couch.view('adness', 'auctionBids', params, function(err, body) {
       if (!err) {
@@ -113,10 +119,10 @@ var db = {
         var results = biddingAlg(Number(openAuction.slots), bids);
 
         // add winning bids and bids per slot to openAuction
-        openAuction.winningBids = results.winningBids;
-        openAuction.bidPerSlot = results.bidPerSlot;
+        auction.winningBids = results.winningBids;
+        auction.bidPerSlot = results.bidPerSlot;
 
-        cb(null, openAuction);
+        cb(null, auction);
       }
       else { cb(err, undefined); }
     });
