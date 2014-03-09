@@ -62,6 +62,13 @@ body { padding: 0; }
   font-weight: 700;
   background-color: #ECECEC; }
 .slot_details_right > div { padding-bottom: 15px; }
+.auction_listing {
+  padding: 10px 0;
+}
+.auction_header {
+  font-weight: 700;
+}
+
 
 
 /* Admin Page */

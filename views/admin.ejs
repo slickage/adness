@@ -38,107 +38,136 @@
     <div class="panel-heading">
       <b>Open Scheduled Auctions</b>
     </div>
-    <% for (var i = 0; i < auctionsOpen.length; i++) { %>
-      <div class="panel-body slot_text">
-        <div class="col-sm-3">
-          Auction: <%= auctionsOpen[i]._id %>
+    <div class="panel-body">
+      <% for (var i = 0; i < auctionsOpen.length; i++) { %>
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Auction: </span>
+            <%= auctionsOpen[i]._id %>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Start-End Date/Time: </span><br>
+            <%= new Date(auctionsOpen[i].start) %><br>
+            <%= new Date(auctionsOpen[i].end) %>
+          </div>
+
+          <div class="col-sm-3 text-center">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i]._id %>" class="btn btn-primary btn-block">
+              Details
+            </a>
+          </div>
+          
+          <div class="col-sm-3">
+            <form role="form" method="post" action="/auction/disable/<%=auctionsOpen[i]._id%>">
+              <button class="btn btn-primary btn-block" type="submit">
+                Close Auction
+              </button>
+            </form>
+          </div>
+
         </div>
-        <div class="col-sm-3">
-          Status: <span class="label label-success">Enabled</span>
-        </div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i]._id %>">
-            Details
-          </a>
-        </div>
-        <div class="col-sm-3">
-          <form role="form" method="post" action="/auction/disable/<%=auctionsOpen[i]._id%>">
-            <input type="hidden" value="wtf">
-            <button class="btn btn-primary btn-block" type="submit">
-              Close Auction
-            </button>
-          </form>
-        </div>
-      </div>
-    <% } %>
+      <% } %>
+    </div>
   </div>
 
   <div class="panel panel-danger"> 
     <div class="panel-heading">
       <b>Closed Scheduled Auctions</b>
     </div>
-    <% for (var i = 0; i < auctionsClosed.length; i++) { %>
-      <div class="panel-body slot_text">
-        <div class="col-sm-3">
-          Auction: <%= auctionsClosed[i]._id %>
+    <div class="panel-body">
+      <% for (var i = 0; i < auctionsClosed.length; i++) { %>
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Auction: </span>
+            <%= auctionsClosed[i]._id %>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Start-End Date/Time: </span><br>
+            <%= new Date(auctionsClosed[i].start) %><br>
+            <%= new Date(auctionsClosed[i].end) %>
+          </div>
+
+          <div class="col-sm-3 text-center">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsClosed[i]._id %>" class="btn btn-primary btn-block">
+              Details
+            </a>
+          </div>
+          
+          <div class="col-sm-3">
+            <form role="form" method="post" action="/auction/enable/<%=auctionsClosed[i]._id%>">
+              <button class="btn btn-primary btn-block" type="submit">
+                Open Auction
+              </button>
+            </form>
+          </div>
+
         </div>
-        <div class="col-sm-3">
-          Status: <span class="label label-danger">Disabled</span>
-        </div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/history">
-            Details
-          </a>
-        </div>
-        <div class="col-sm-3">
-          <form role="form" method="post" action="/auction/enable/<%=auctionsClosed[i]._id%>">
-            <button class="btn btn-primary btn-block" type="submit">
-              Open Auction
-            </button>
-          </form>
-        </div>
-      </div>
       <% } %>
+    </div>
   </div>
 
   <div class="panel panel-primary"> 
     <div class="panel-heading">
       <b>Future Auctions</b>
     </div>
-    <% for (var i = 0; i < auctionsFuture.length; i++) { %>
-      <div class="panel-body slot_text">
-        <div class="col-sm-3">
-          Auction: <%= auctionsFuture[i]._id %>
+    <div class="panel-body">
+      <% for (var i = 0; i < auctionsFuture.length; i++) { %>
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Auction: </span>
+            <%= auctionsFuture[i]._id %>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Start-End Date/Time: </span><br>
+            <%= new Date(auctionsFuture[i].start) %><br>
+            <%= new Date(auctionsFuture[i].end) %>
+          </div>
+
+          <div class="col-sm-offset-3 col-sm-3 text-center">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsFuture[i]._id %>" class="btn btn-primary btn-block">
+              Details
+            </a>
+          </div>
+
         </div>
-        <div class="col-sm-3">
-          Status: <span class="label label-success">Enabled</span>
-        </div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/history">
-            Details
-          </a>
-        </div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/auction/details">
-            Enable Auction
-          </a>
-        </div>
-      </div>
       <% } %>
+    </div>
   </div>
 
   <div class="panel panel-default"> 
     <div class="panel-heading">
       <b>Past Auctions</b>
     </div>
-    <% for (var i = 0; i < auctionsPast.length; i++) { %>
-      <div class="panel-body slot_text">
-        <div class="col-sm-3">
-          Auction: <%= auctionsPast[i]._id %>
+    <div class="panel-body">
+      <% for (var i = 0; i < auctionsPast.length; i++) { %>
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Auction: </span>
+            <%= auctionsPast[i]._id %>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Start-End Date/Time: </span><br>
+            <%= new Date(auctionsPast[i].start) %><br>
+            <%= new Date(auctionsPast[i].end) %>
+          </div>
+
+          <div class="col-sm-offset-3 col-sm-3 text-center">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsPast[i]._id %>" class="btn btn-primary btn-block">
+              Details
+            </a>
+          </div>
+
         </div>
-        <div class="col-sm-3">
-          Status: <span class="label label-danger">Disabled</span>
-        </div>
-        <div class="col-sm-3">
-          <a href="<%= browsePrefix %>/history">
-            Details
-          </a>
-        </div>
-        <div class="col-sm-3">
-          
-        </div>
-      </div>
       <% } %>
+    </div>
   </div>
 
 </div>
