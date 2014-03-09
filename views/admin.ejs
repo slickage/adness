@@ -62,7 +62,7 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/auction/disable/<%=auctionsOpen[i]._id%>">
+            <form role="form" method="post" action="/api/auction/disable/<%=auctionsOpen[i]._id%>">
               <button class="btn btn-primary btn-block" type="submit">
                 Close Auction
               </button>
@@ -102,7 +102,7 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/auction/enable/<%=auctionsClosed[i]._id%>">
+            <form role="form" method="post" action="/api/auction/enable/<%=auctionsClosed[i]._id%>">
               <button class="btn btn-primary btn-block" type="submit">
                 Open Auction
               </button>

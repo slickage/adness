@@ -52,31 +52,25 @@ function browsePrefix(req, res, next) {
   return next();
 }
 
-// StarBurst routes
+
+// VIEWS - StarBurst routes
 site.get(nojsPrefix, router.sbindex);
-site.get(nojsPrefix + '/slot', router.slot);
 site.get(nojsPrefix + '/history', router.history);
-site.get(nojsPrefix + '/history/all', router.history_all);
 site.get(nojsPrefix + '/registration', router.registration);
+site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
 // StarBurst private web routes
 site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
 site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
 site.get(nojsPrefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
-site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
 site.get(nojsPrefix + '/payment', router.payment);
 site.get(nojsPrefix + '/qr/:qrString', router.qr);
-
-// normal public web routes
-site.get('/', router.index);
 // normal private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
+// normal public web routes
+site.get('/', router.index);
+
 
 // api routes
-site.post('/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
-site.post('/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
-site.post('/auctions', ensureAuthenticated, router.auction.newAuction);
-// make a bid
-site.post('/bid', ensureAuthenticated, router.bid.newBid);
 var apiPrefix = '/api';
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
@@ -86,6 +80,11 @@ site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/auctions', apiRouter.auctions);
 // show bids per auction
 site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
+site.post(apiPrefix + '/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
+site.post(apiPrefix + '/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
+site.post(apiPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
+// make a bid
+site.post(apiPrefix + '/bid', ensureAuthenticated, router.bid.newBid);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {

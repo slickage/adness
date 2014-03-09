@@ -1,11 +1,10 @@
 module.exports = function(req, res) {
-  req.model.load('auction', req);
+  req.model.load('auctionsTimeRelative', req);
   req.model.end(function(err, models) {
     if (err) console.log('error: ' + JSON.stringify(err));
     res.render('history', {
-      auction: models.auction,
-      browsePrefix: req.browsePrefix,
-      user: req.user
+      auctions: models.auctionsTimeRelative.closed,
+      browsePrefix: req.browsePrefix
     });
   });
 };
