@@ -9,7 +9,7 @@
     </div>
     <div class="panel-body slot_text">
       
-      <form role="form" method="post" action="/auctions">
+      <form role="form" method="post" action="/auction">
         <div class="col-sm-3">
           Start Date/Time: 
           <input name="startDate" id="startDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
@@ -56,7 +56,7 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/api/auction/disable/<%=auctionsOpen[i]._id%>">
+            <form role="form" method="post" action="/sb/auction/disable/<%=auctionsOpen[i]._id%>">
               <button class="btn btn-primary btn-block" type="submit">
                 Close Auction
               </button>
@@ -96,7 +96,7 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/api/auction/enable/<%=auctionsClosed[i]._id%>">
+            <form role="form" method="post" action="/sb/auction/enable/<%=auctionsClosed[i]._id%>">
               <button class="btn btn-primary btn-block" type="submit">
                 Open Auction
               </button>

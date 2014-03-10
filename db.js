@@ -6,8 +6,8 @@ var biddingAlg = require('./bidding');
 var db = {
   newAuction: function(body, cb) {
     var auction = {
-      start: Number(body.start),
-      end: Number(body.end),
+      start: Number(body.start) || 0,
+      end: Number(body.end) || 0,
       slots: Number(body.slots) || 0,
       type: 'auction',
       enabled: true
@@ -15,7 +15,31 @@ var db = {
     couch.insert(auction, cb);
   },
   updateAuction: function(auction, cb) {
-    couch.insert(auction, cb);
+    // ensure that the auction exists first
+    couch.get(auction._id, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting an auction
+        if (body.type !== 'auction') {
+          cb({ message: 'Id is not for an auction.'}, undefined );
+          return;
+        }
+
+        // copy over on the allowed values into the retrieved auction
+        body.start = Number(auction.start) || 0;
+        body.end = Number(auction.end) || 0;
+        body.slots = Number(auction.slots) || 0;
+        // handle both boolean and String true/false
+        if (String(auction.enabled).toLowerCase()  == "true") {
+          body.enabled = true;
+        }
+        else if (String(auction.enabled).toLowerCase() == "false") {
+          body.enabled = false;
+        }
+        // update auction
+        couch.insert(body, cb);
+      }
+      else { cb(err, undefined); }
+    });
   },
   allAuctions: function(cb) {
     var currentTime = new Date().getTime();
@@ -84,9 +108,7 @@ var db = {
         body.open = open;
         cb(null, body);
       }
-      else {
-        cb(err, undefined);
-      }
+      else { cb(err, undefined); }
     });
   },
   getBidsPerAuction: function (auctionId, cb) {
@@ -134,14 +156,13 @@ var db = {
   getBid: function(bidId, cb) {
     couch.get(bidId, null, function(err, body) {
       if (!err) {
-        if (body.type === "bid") {
-          cb(null, body);
+        if (body.type !== "bid") {
+          cb({ message: "Id is not for a Bid." }, undefined);
           return;
         }
+        cb(null, body);
       }
-      else {
-        cb(err, undefined);
-      }
+      else { cb(err, undefined); }
     });
   },
   newBid: function(body, cb) {
@@ -158,9 +179,9 @@ var db = {
           var bid = {
             created_at: new Date().getTime(),
             type: 'bid',
-            price: Number(body.price),
-            slots: Number(body.slots),
-            user: body.username,
+            price: Number(body.price) || 0,
+            slots: Number(body.slots) || 0,
+            user: body.user,
             auctionId: body.auctionId
           };
           couch.insert(bid, cb);
@@ -172,7 +193,51 @@ var db = {
       }
       else { cb(err, undefined); }
     });
-  }
+  },
+  updateBid: function(bid, cb) {
+    // ensure that the bid exists first
+    couch.get(bid._id, null, function(err, body) {
+      if (!err) {
+        // ensure what we got is a bid
+        if (body.type !== 'bid') {
+          cb({ message: 'Id is not for a bid.'}, undefined );
+          return;
+        }
+
+        // check that this user is the same user as the bid
+        if (body.user.username !== bid.user.username) {
+          cb({ message: "Editing another users bid is not allowed."}, undefined);
+          return;
+        }
+
+        // check that this is the right bid and revision
+        couch.get(body.auctionId, null, function(err, auction) {
+          if (!err) {
+            if (auction.type !== 'auction') {
+              cb({ message: 'Id is not for an auction.'}, undefined );
+              return;
+            }
+
+            // check that the auction is open
+            var currentTime = new Date().getTime();
+            var open = (currentTime >= auction.start &&
+                        currentTime < auction.end) &&
+                        auction.enabled;
+            if (open === true) {
+              body.price = Number(bid.price) || 0;
+              body.slots = Number(bid.slots) || 0;
+              couch.insert(body, cb);
+            }
+            else {
+              cb({ message: "This auction is not open."}, undefined);
+            }
+          }
+          else { cb(err, undefined); }
+        });
+      }
+      else { cb(err, undefined); }
+    });
+  },
 };
 
 

@@ -58,12 +58,19 @@ site.get(nojsPrefix, router.sbindex);
 site.get(nojsPrefix + '/history', router.history);
 site.get(nojsPrefix + '/registration', router.registration);
 site.get(nojsPrefix + '/auction/:auctionId', router.auction.showAuction);
+site.get(nojsPrefix + '/payment', router.payment);
+site.get(nojsPrefix + '/qr/:qrString', router.qr);
 // StarBurst private web routes
 site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
 site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
 site.get(nojsPrefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
-site.get(nojsPrefix + '/payment', router.payment);
-site.get(nojsPrefix + '/qr/:qrString', router.qr);
+// StarBurst api calls (modified callback)
+site.post(nojsPrefix + '/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
+site.post(nojsPrefix + '/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
+site.post(nojsPrefix + '/auction/edit', ensureAuthenticated, router.auction.updateAuction);
+site.post(nojsPrefix + '/auction', ensureAuthenticated, router.auction.newAuction);
+site.post(nojsPrefix + '/bid/edit', ensureAuthenticated, router.bid.updateBid);
+site.post(nojsPrefix + '/bid', ensureAuthenticated, router.bid.newBid);
 // normal private web routes
 site.get('/admin', ensureAuthenticated, router.admin);
 // normal public web routes
@@ -81,10 +88,12 @@ site.get(apiPrefix + '/auctions', apiRouter.auctions);
 site.get(apiPrefix + '/auction/:auctionId/bids', apiRouter.bids);
 site.get(apiPrefix + '/auction/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/bid/:bidId', apiRouter.bid);
-site.post(apiPrefix + '/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
-site.post(apiPrefix + '/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
-site.post(apiPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
-site.post(apiPrefix + '/bid', ensureAuthenticated, router.bid.newBid);
+site.post(apiPrefix + '/auction/enable/:auctionId', ensureAuthenticated, apiRouter.enableAuction);
+site.post(apiPrefix + '/auction/disable/:auctionId', ensureAuthenticated, apiRouter.disableAuction);
+site.post(apiPrefix + '/auction/edit', ensureAuthenticated, apiRouter.updateAuction);
+site.post(apiPrefix + '/auction', ensureAuthenticated, apiRouter.newAuction);
+site.post(apiPrefix + '/bid/edit', ensureAuthenticated, apiRouter.updateBid);
+site.post(apiPrefix + '/bid', ensureAuthenticated, apiRouter.newBid);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {

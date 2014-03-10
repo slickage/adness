@@ -13,44 +13,58 @@ module.exports = {
     });
   },
   enableAuction: function(req, res) {
-    // get auction by ID
-    db.getAuction(req.params.auctionId, function(err, auction) {
-      if (!err) {
-        // enable auction
-        auction.enabled = true;
-        // save
-        db.updateAuction(auction, function(err, body, header) {
-          if (err) { res.json({ err: err }); }
-          else { res.redirect('/admin'); }
-        });
-      }
+    req.model.load('auction', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.redirect('/admin'); }
       else {
-        res.json({ err: "Auction not found." });
+        // enable auction
+        models.auction.enabled = true;
+        // save auction
+        db.updateAuction(models.auction, function(err, body, header) {
+          if (err) { console.log(err); }
+          res.redirect('/admin');
+        });
       }
     });
   },
   disableAuction: function(req, res) {
-    // get auction by ID
-    db.getAuction(req.params.auctionId, function(err, auction) {
-      if (!err) {
-        // disable auction
-        auction.enabled = false;
-        // save
-        db.updateAuction(auction, function(err, body, header) {
-          if (err) { res.json({ err: err }); }
-          else { res.redirect('/admin'); }
-        });
-      }
+    req.model.load('auction', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.redirect('/admin'); }
       else {
-        res.json({ err: "Auction not found." });
+        // disable auction
+        models.auction.enabled = false;
+        // save auction
+        db.updateAuction(models.auction, function(err, body, header) {
+          if (err) { console.log(err); }
+          res.redirect('/admin');
+        });
       }
     });
   },
   newAuction: function(req, res) {
     db.newAuction(req.body, function(err, body, header) {
-      if (err) { return; }
+      if (err) { console.log(err); }
+      res.redirect('/admin');
     });
-    res.redirect('/admin');
+  },
+  updateAuction: function(req, res) {
+    req.params.auctionId = req.body.auctionId;
+    req.model.load('auction', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.redirect('/admin'); }
+      else {
+        var auction = models.auction;
+        if (req.body.start) auction.start = req.body.start;
+        if (req.body.end) auction.end = req.body.end;
+        if (req.body.slots) auction.slots = req.body.slots;
+        if (req.body.enabled) auction.enabled = req.body.enabled;
+        db.updateAuction(auction, function(err, body) {
+          if (err) { console.log(err); }
+          res.redirect('/admin');
+        });
+      }
+    });
   }
 };
 
