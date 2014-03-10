@@ -73,6 +73,10 @@ var db = {
   getAuction: function(auctionId, cb) {
     couch.get(auctionId, null, function(err, body) {
       if (!err) {
+        if (body.type !== 'auction') {
+          cb({ message: 'Id is not for an auction.'}, undefined );
+          return;
+        }
         var currentTime = new Date().getTime();
         var open = (currentTime >= body.start &&
             currentTime < body.end) &&
@@ -125,6 +129,19 @@ var db = {
         cb(null, auction);
       }
       else { cb(err, undefined); }
+    });
+  },
+  getBid: function(bidId, cb) {
+    couch.get(bidId, null, function(err, body) {
+      if (!err) {
+        if (body.type === "bid") {
+          cb(null, body);
+          return;
+        }
+      }
+      else {
+        cb(err, undefined);
+      }
     });
   },
   newBid: function(body, cb) {

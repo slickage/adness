@@ -57,7 +57,7 @@ function browsePrefix(req, res, next) {
 site.get(nojsPrefix, router.sbindex);
 site.get(nojsPrefix + '/history', router.history);
 site.get(nojsPrefix + '/registration', router.registration);
-site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
+site.get(nojsPrefix + '/auction/:auctionId', router.auction.showAuction);
 // StarBurst private web routes
 site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
 site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
@@ -76,14 +76,13 @@ site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
 site.get(apiPrefix + '/auctions/future', apiRouter.auctionsFuture);
 site.get(apiPrefix + '/auctions/past', apiRouter.auctionsPast);
-site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
 site.get(apiPrefix + '/auctions', apiRouter.auctions);
-// show bids per auction
-site.get(apiPrefix + '/bids/:startkey', apiRouter.bids);
+site.get(apiPrefix + '/auction/:auctionId/bids', apiRouter.bids);
+site.get(apiPrefix + '/auction/:auctionId', apiRouter.auction);
+site.get(apiPrefix + '/bid/:bidId', apiRouter.bid);
 site.post(apiPrefix + '/auction/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
 site.post(apiPrefix + '/auction/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
 site.post(apiPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
-// make a bid
 site.post(apiPrefix + '/bid', ensureAuthenticated, router.bid.newBid);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),

@@ -49,6 +49,13 @@ module.exports = {
       if (err) console.log(err);
       res.json({bids: models.bids});
     });
+  },
+  bid: function(req, res) {
+    req.model.load('bid', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({bid: models.bid});
+    });
   }
 };
 
