@@ -72,6 +72,7 @@ site.get('/', router.index);
 
 // api routes
 var apiPrefix = '/api';
+site.get(apiPrefix + '/auctions/time', apiRouter.auctionsTime);
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
 site.get(apiPrefix + '/auctions/future', apiRouter.auctionsFuture);

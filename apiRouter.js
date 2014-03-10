@@ -6,13 +6,19 @@ module.exports = {
       console.log(JSON.stringify(models));
       res.json({ auction: models.auction });
     });
-
   },
   auctions: function(req, res) {
     req.model.load('auctions', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
       res.json({ auctions: models.auctions });
+    });
+  },
+  auctionsTime: function(req, res) {
+    req.model.load('auctionsTimeRelative', req);
+    req.model.end(function(err, models) {
+      if (err) console.log(err);
+      res.json({ auctions: models.auctionsTimeRelative });
     });
   },
   auctionsOpen: function(req, res) {
