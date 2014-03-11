@@ -1,31 +1,70 @@
 module.exports = {
-  datetimeMilli: function(datetime) {
+  isNumber: function(datetime) {
     // return true if this is a number
     return !isNaN(parseFloat(datetime)) && isFinite(datetime);
   },
-  auctionTimes: function(start, end) {
+  createAuction: function(start, end, slots) {
+    // ensure all three parameters are given
+    if (start && end && slots) {
+      return this.updateAuction(start, end, slots);
+    }
+    else { return false; }
+  },
+  updateAuction: function(start, end, slots) {
+    // validate all inputs are numbers
+    // validate that slots can't be negative
+    // validate end time is after start time
+
     // check that start datetime is valid millisec
-    var startValid = this.datetimeMilli(start);
-    // fails if start or end time is not valid
-    if (!startValid) {
-      return { err: "Start date/time is not valid." };
+    if (start && !this.isNumber(start)) {
+      return false;
     }
 
     // check that end datetime is a valid milli sec
-    var endValid = this.datetimeMilli(end);
-    // fails if start or end time is not valid
-    if (!endValid) {
-      return { err: "End date/time is not valid." };
+    if (end && !this.isNumber(end)) {
+      return false;
+    }
+
+    if (slots && !this.isNumber(slots)) {
+      return false;
+    }
+
+    if (slots && slots < 0) {
+      return false;
     }
 
     // check that end is after start
-    if (end < start) {
-      return { err: "End date/time is before Start" };
+    if (start && end && end < start) {
+      return false;
     }
 
-    return {};
+    return true;
   },
-  slots: function(slots) {
-    return this.datetimeMilli(slots);
+  createBid: function(price, slots) {
+    // ensure all parameters are given
+    if (price && slots) {
+      return this.updateBid(price, slots);
+    }
+    else { return false; }
+  },
+  updateBid: function(price, slots) {
+    // validate all inputs are numbers
+    // validate that slots can't be negative
+    // validate end time is after start time
+
+    // check that start datetime is valid millisec
+    if (price && !this.isNumber(price)) {
+      return false;
+    }
+
+    // check that end datetime is a valid milli sec
+    if (slots && !this.isNumber(slots)) {
+      return false;
+    }
+
+    if (price && price < 0) { return false; }
+    if (slots && slots < 0) { return false; }
+
+    return true;
   }
 };

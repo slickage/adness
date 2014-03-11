@@ -359,21 +359,14 @@
           return;
         }
 
-        var current = new Date().getTime();
-        // minus five minutes for user input
-        current = current - (1000 * 60 * 5);
-        if (current > start) {
-          alert("Start Date/Time cannot be in the past");
-          return;
-        }
-        if (current > end) {
-          alert("End Date/Time cannot be in the past");
-          return;
-        }
-
         var slotsValid = !isNaN(parseFloat(slots)) && isFinite(slots);
         if (slotsValid === false) {
           alert("The number of slots is not valid.");
+          return;
+        }
+
+        if (slotsValid < 0) {
+          alert("Slots Cannot be negative.");
           return;
         }
 

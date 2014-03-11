@@ -2,13 +2,19 @@ var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couch = nano.use('adness');
 var biddingAlg = require('./bidding');
+var validate = require('./validation');
 
 var db = {
   newAuction: function(body, cb) {
+    // validate input
+    if (!validate.createAuction(body.start, body.end, body.slots)) {
+      return cb({ message: 'Auction parameters were not valid.'}, undefined );
+    }
+
     var auction = {
-      start: Number(body.start) || 0,
-      end: Number(body.end) || 0,
-      slots: Number(body.slots) || 0,
+      start: Number(body.start),
+      end: Number(body.end),
+      slots: Number(body.slots),
       type: 'auction',
       enabled: true
     };
@@ -20,14 +26,18 @@ var db = {
       if (!err) {
         // make sure we're getting an auction
         if (body.type !== 'auction') {
-          cb({ message: 'Id is not for an auction.'}, undefined );
-          return;
+          return cb({ message: 'Id is not for an auction.'}, undefined );
         }
 
+        // validate input
+        if (!validate.updateAuction(auction.start, auction.end, auction.slots)) {
+          return cb({ message: 'Auction parameters were not valid.'}, undefined );
+        }
+        
         // copy over on the allowed values into the retrieved auction
-        body.start = Number(auction.start) || 0;
-        body.end = Number(auction.end) || 0;
-        body.slots = Number(auction.slots) || 0;
+        if (auction.start) body.start = Number(auction.start);
+        if (auction.end) body.end = Number(auction.end);
+        if (auction.slots) body.slots = Number(auction.slots);
         // handle both boolean and String true/false
         if (String(auction.enabled).toLowerCase()  == "true") {
           body.enabled = true;
@@ -175,12 +185,17 @@ var db = {
              currentTime < auction.end) &&
             auction.enabled) {
 
+          // validate input
+          if (!validate.createBid(body.price, body.slots)) {
+            return cb({ message: 'Bid parameters were not valid.'}, undefined );
+          }
+
           // auction is open so make the bid
           var bid = {
             created_at: new Date().getTime(),
             type: 'bid',
-            price: Number(body.price) || 0,
-            slots: Number(body.slots) || 0,
+            price: Number(body.price),
+            slots: Number(body.slots),
             user: body.user,
             auctionId: body.auctionId
           };
@@ -200,22 +215,20 @@ var db = {
       if (!err) {
         // ensure what we got is a bid
         if (body.type !== 'bid') {
-          cb({ message: 'Id is not for a bid.'}, undefined );
-          return;
+          return cb({ message: 'Id is not for a bid.'}, undefined );
         }
 
+        // deprecated since only admins could possibly update bids
         // check that this user is the same user as the bid
-        if (body.user.username !== bid.user.username) {
-          cb({ message: "Editing another users bid is not allowed."}, undefined);
-          return;
-        }
+        // if (body.user.username !== bid.user.username) {
+        //   return cb({ message: "Editing another users bid is not allowed."}, undefined);
+        // }
 
         // check that this is the right bid and revision
         couch.get(body.auctionId, null, function(err, auction) {
           if (!err) {
             if (auction.type !== 'auction') {
-              cb({ message: 'Id is not for an auction.'}, undefined );
-              return;
+              return cb({ message: 'Id is not for an auction.'}, undefined );
             }
 
             // check that the auction is open
@@ -224,8 +237,13 @@ var db = {
                         currentTime < auction.end) &&
                         auction.enabled;
             if (open === true) {
-              body.price = Number(bid.price) || 0;
-              body.slots = Number(bid.slots) || 0;
+              // validate input
+              if (!validate.updateBid(bid.price, bid.slots)) {
+                return cb({ message: 'Bid parameters were not valid.'}, undefined );
+              }
+
+              if (bid.price) body.price = Number(bid.price);
+              if (bid.slots) body.slots = Number(bid.slots);
               couch.insert(body, cb);
             }
             else {

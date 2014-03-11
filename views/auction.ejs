@@ -5,7 +5,13 @@
     <% if(auction.open) { %>
       <span class="label label-success">Open</span>
     <% } else { %>
-      <span class="label label-danger">Closed</span>
+      <% if (auction.start > new Date().getTime()) { %>
+        <span class="label label-primary">Upcoming</span>
+      <% } else if (auction.end < new Date().getTime()) { %>
+        <span class="label label-default">Past</span>
+      <% } else { %>
+        <span class="label label-danger">Closed</span>
+      <% } %>
     <% } %>
     <%= auction._id %>
   </h3>
