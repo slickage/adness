@@ -76,6 +76,12 @@ module.exports = {
         });
       }
     });
+  },
+  deleteAuction: function(req, res) {
+    db.deleteAuction(req.params.auctionId, function(err, body) {
+      if (err) { console.log(err); }
+      res.end();
+    });
   }
 };
 

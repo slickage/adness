@@ -26,6 +26,12 @@ module.exports = {
         });
       }
     });
+  },
+  deleteBid: function(req, res) {
+    db.deleteBid(req.params.bidId, function(err, body) {
+      if (err) { console.log(err); }
+      res.redirect('/admin');
+    });
   }
 };
 

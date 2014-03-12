@@ -69,7 +69,9 @@ site.post(nojsPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, route
 site.post(nojsPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
 site.post(nojsPrefix + '/auctions/edit', ensureAuthenticated, router.auction.updateAuction);
 site.post(nojsPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
+site.del(nojsPrefix + '/auctions/:auctionId', ensureAuthenticated, router.auction.deleteAuction);
 site.post(nojsPrefix + '/bids/edit', ensureAuthenticated, router.bid.updateBid);
+site.del(nojsPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.deleteBid);
 site.post(nojsPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
 // normal private web routes
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
@@ -93,8 +95,10 @@ site.post(apiPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, apiRou
 site.post(apiPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, apiRouter.disableAuction);
 site.post(apiPrefix + '/auctions/edit', ensureAuthenticated, apiRouter.updateAuction);
 site.post(apiPrefix + '/auctions', ensureAuthenticated, apiRouter.newAuction);
+site.del(apiPrefix + '/auctions/:auctionId', ensureAuthenticated, apiRouter.deleteAuction);
 site.post(apiPrefix + '/bids/edit', ensureAuthenticated, apiRouter.updateBid);
 site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
+site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {

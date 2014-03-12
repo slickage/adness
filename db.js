@@ -51,6 +51,21 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  deleteAuction: function(auctionId, cb) {
+    // ensure that the auction exists first
+    couch.get(auctionId, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting an auction
+        if (body.type !== 'auction') {
+          return cb({ message: 'Id is not for an auction.'}, undefined );
+        }
+        
+        // delete associated bids?
+        couch.destroy(auctionId, body._rev, cb);
+      }
+      else { cb(err, undefined); }
+    });
+  },
   allAuctions: function(cb) {
     var currentTime = new Date().getTime();
     couch.view('adness', 'auctions', function(err, body) {
@@ -252,6 +267,23 @@ var db = {
           }
           else { cb(err, undefined); }
         });
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  deleteBid: function(bidId, cb) {
+    // ensure that the auction exists first
+    couch.get(bidId, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting a bid
+        if (body.type !== 'bid') {
+          return cb({ message: 'Id is not for an bid.'}, undefined );
+        }
+
+        // this should be an admin function so we don't need to 
+        // check that the user is the same
+        
+        couch.destroy(bidId, body._rev, cb);
       }
       else { cb(err, undefined); }
     });

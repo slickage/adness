@@ -104,6 +104,13 @@ module.exports = {
       }
     });
   },
+  deleteAuction: function(req, res) {
+    console.log(req.params.auctionId);
+    db.deleteAuction(req.params.auctionId, function(err, body) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json(body); }
+    });
+  },
   newBid: function(req, res) {
     var bid = req.body;
     bid.user = req.user; // add current user
@@ -141,6 +148,12 @@ module.exports = {
           else { res.json(body); }
         });
       }
+    });
+  },
+  deleteBid: function(req, res) {
+    db.deleteBid(req.params.bidId, function(err, body) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json(body); }
     });
   }
 };
