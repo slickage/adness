@@ -3,7 +3,7 @@ module.exports = function(req, res) {
   req.model.end(function(err, models) {
     if (err) console.log('error: ' + JSON.stringify(err));
     res.render('history', {
-      auctions: models.auctionsTimeRelative.closed,
+      auctions: models.auctionsTimeRelative.past,
       browsePrefix: req.browsePrefix,
       user: req.user
     });

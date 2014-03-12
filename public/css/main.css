@@ -75,6 +75,13 @@ body { padding: 0; }
 .auction_add_button { text-align: center; padding-top: 30px; }
 
 
+/* Auction Edit Page */
+
+.editControls {
+  margin-top: 30px;
+}
+
+
 /* Registration Page */
 
 .reg_qr { padding: 15px; background-color: #ECECEC; text-align: center; }

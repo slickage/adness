@@ -1,5 +1,5 @@
 <% layout('sblayout') %>
-<div class="content-page col-sm-offset-1 col-sm-10">
+<div class="content-page col-sm-12">
 
   <h3>Admin Tools</h3>
 
@@ -9,7 +9,7 @@
     </div>
     <div class="panel-body slot_text">
       
-      <form role="form" method="post" action="/auction">
+      <form role="form" method="post" action="/auctions">
         <div class="col-sm-3">
           Start Date/Time: 
           <input name="startDate" id="startDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
@@ -22,7 +22,7 @@
         </div>
         <div class="col-sm-3">
           Number of slots:<br>
-          <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1" max="8">
+          <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1">
         </div>
       </form>
       <div class="col-sm-3 auction_add_button">
@@ -41,7 +41,7 @@
     <div class="panel-body">
       <% for (var i = 0; i < auctionsOpen.length; i++) { %>
         <div class="row auction_listing">
-
+  
           <div class="col-sm-12">
             <span class="auction_header">Auction: </span>
             <%= auctionsOpen[i]._id %>
@@ -56,15 +56,31 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/sb/auction/disable/<%=auctionsOpen[i]._id%>">
-              <button class="btn btn-primary btn-block" type="submit">
-                Close Auction
+
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary">Options</button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
               </button>
-            </form>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="/admin/auctions/edit/<%= auctionsOpen[i]._id %>">
+                    Edit
+                  </a>
+                </li>
+                <li>
+                  <a href="#" onclick="auctionDisable(event, '<%=auctionsOpen[i]._id%>');">
+                    Disable
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
 
           <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auction/<%= auctionsOpen[i]._id %>" class="btn btn-primary btn-block">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i]._id %>" class="btn btn-primary btn-block">
               Details
             </a>
           </div>
@@ -96,15 +112,29 @@
           </div>
           
           <div class="col-sm-3">
-            <form role="form" method="post" action="/sb/auction/enable/<%=auctionsClosed[i]._id%>">
-              <button class="btn btn-primary btn-block" type="submit">
-                Open Auction
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary">Options</button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
               </button>
-            </form>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="/admin/auctions/edit/<%= auctionsClosed[i]._id %>">
+                    Edit
+                  </a>
+                </li>
+                <li>
+                  <a href="#" onclick="auctionEnable(event, '<%=auctionsClosed[i]._id%>');">
+                    Enable
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auction/<%= auctionsClosed[i]._id %>" class="btn btn-primary btn-block">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsClosed[i]._id %>" class="btn btn-primary btn-block">
               Details
             </a>
           </div>
@@ -136,7 +166,7 @@
           </div>
 
           <div class="col-sm-offset-3 col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auction/<%= auctionsFuture[i]._id %>" class="btn btn-primary btn-block">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsFuture[i]._id %>" class="btn btn-primary btn-block">
               Details
             </a>
           </div>
@@ -168,7 +198,7 @@
           </div>
 
           <div class="col-sm-offset-3 col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auction/<%= auctionsPast[i]._id %>" class="btn btn-primary btn-block">
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsPast[i]._id %>" class="btn btn-primary btn-block">
               Details
             </a>
           </div>
@@ -198,3 +228,18 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<script type="text/javascript">
+  function auctionEnable(ev, auctionId) {
+    ev.preventDefault();
+    $.post("<%= browsePrefix %>/auctions/enable/" + auctionId, 
+      function(data) { location.reload(); });
+  }
+
+  function auctionDisable(ev, auctionId) {
+    ev.preventDefault();
+    $.post("<%= browsePrefix %>/auctions/disable/" + auctionId, 
+      function(data) { location.reload(); });
+  }
+</script>

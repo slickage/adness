@@ -265,7 +265,6 @@
       // initialize the pickadate ui
       $(document).ready(function() {
         $startDate = $("#startDate").pickadate({
-          min: new Date(),
           format: 'yyyy-m-d',
           editable: true
         });
@@ -274,7 +273,6 @@
           editable: true
         });
         $endDate = $("#endDate").pickadate({
-          min: new Date(),
           format: 'yyyy-m-d',
           editable: true
         });
@@ -283,101 +281,29 @@
           editable: true
         });
 
-        // default date in input
-        var defaultStart = new Date();
-        defaultStart.setDate(defaultStart.getDate()+1);
-        defaultStart.setHours(0);
-        defaultStart.setMinutes(0);
-        defaultStart.setSeconds(0);
-        defaultStart.setMilliseconds(0);
-        var startDatePicker = $startDate.pickadate('picker');
-        var startTimePicker = $startTime.pickatime('picker');
-        startDatePicker.set('select', defaultStart);
-        startTimePicker.set('select', defaultStart);
-
-        var defaultEnd = new Date();
-        defaultEnd.setDate(defaultEnd.getDate() +3);
-        defaultEnd.setHours(0);
-        defaultEnd.setMinutes(0);
-        defaultEnd.setSeconds(0);
-        defaultEnd.setMilliseconds(0);
-        var endDatePicker = $endDate.pickadate('picker');
-        var endTimePicker = $endTime.pickatime('picker');
-        endDatePicker.set('select', defaultEnd);
-        endTimePicker.set('select', defaultEnd);
+        if (document.URL.indexOf("/admin/auctions/edit") >= 0) {
+          var start = $('#startDateTime').val();
+          var end = $('#endDateTime').val();
+          setDateTime(start, end);
+        }
+        else if (document.URL.indexOf("/admin") >= 0) {
+          setDateTime();
+        }
       });
 
       function submitAuction(event) {
-        // Initial input validation
-        var datePicker = $startDate.pickadate('picker');
-        var startDateInput = datePicker.get();
-        if (!startDateInput || startDateInput.length === 0) {
-          alert("The Start Date is not filled out.");
-          return;
-        }
-
-        var timePicker = $startTime.pickatime('picker');
-        var startTimeInput = timePicker.get();
-        if (!startTimeInput || startTimeInput.length === 0) {
-          alert("The Start Time is not filled out.");
-          return;
-        }
-
-        var datePicker = $endDate.pickadate('picker');
-        var endDateInput = datePicker.get();
-        if (!endDateInput || endDateInput.length === 0) {
-          alert("The End Date is not filled out.");
-          return;
-        }
-
-        var timePicker = $endTime.pickatime('picker');
-        var endTimeInput = timePicker.get();
-        if (!endTimeInput || endTimeInput.length === 0) {
-          alert("The End Time is not filled out.");
-          return;
-        }
-
-        var start = buildDateTime(startDateInput, startTimeInput);
-        var end = buildDateTime(endDateInput, endTimeInput);
-        var slots = $('#slots').val();
-
-        // validate startDate, endDate and slots
-        var startValid = !isNaN(parseFloat(start)) && isFinite(start);
-        if (startValid === false) {
-          alert("The Start date/time is not valid.");
-          return;
-        }
-
-        var endValid = !isNaN(parseFloat(end)) && isFinite(end);
-        if (endValid === false) {
-          alert("The End date/time is not valid.");
-          return;
-        }
-
-        if (end < start) {
-          alert("The End date/time is before Start date/time.");
-          return;
-        }
-
-        var slotsValid = !isNaN(parseFloat(slots)) && isFinite(slots);
-        if (slotsValid === false) {
-          alert("The number of slots is not valid.");
-          return;
-        }
-
-        if (slotsValid < 0) {
-          alert("Slots Cannot be negative.");
-          return;
-        }
+        // input validation
+        var valid = auctionValidation();
+        if(!valid) { return; }
 
         // ajax post call to server to create auction
         $.ajax({ 
           type: "POST", 
-          url: '/sb/auction', 
+          url: '<%= browsePrefix %>/auctions', 
           data: {
-            start: start, 
-            end: end,
-            slots: slots
+            start: valid.start, 
+            end: valid.end,
+            slots: valid.slots
           }, 
           success: function() {
             location.reload();
@@ -386,6 +312,75 @@
             alert("There was an error creating the auction.");
           }          
         });
+      }
+
+      function updateAuction(id, enabled) {
+        // input validation
+        var valid = auctionValidation();
+        if(!valid) { return; }
+
+        var id = $('#auctionId').val();
+        var enabled = $("#auctionEnabled").prop("checked");
+
+        // ajax post call to server to create auction
+        $.ajax({ 
+          type: "POST", 
+          url: '<%= browsePrefix %>/auctions/edit', 
+          data: {
+            auctionId: id,
+            start: valid.start, 
+            end: valid.end,
+            slots: valid.slots,
+            enabled: enabled
+          }, 
+          success: function() {
+            console.log(window.location);
+            window.location.replace("http://" + window.location.host + "/admin");
+          },
+          error: function() {
+            alert("There was an error updating the auction.");
+          }          
+        });
+      }
+
+      function setDateTime(start, end) {
+        if (start && end) {
+          var newStart = new Date(Number(start));
+          var startDatePicker = $startDate.pickadate('picker');
+          var startTimePicker = $startTime.pickatime('picker');
+          startDatePicker.set('select', newStart);
+          startTimePicker.set('select', newStart);
+
+          var newEnd = new Date(Number(end));
+          var endDatePicker = $endDate.pickadate('picker');
+          var endTimePicker = $endTime.pickatime('picker');
+          endDatePicker.set('select', newEnd);
+          endTimePicker.set('select', newEnd);
+        }
+        else {
+          // default date in input
+          var defaultStart = new Date();
+          defaultStart.setDate(defaultStart.getDate()+1);
+          defaultStart.setHours(0);
+          defaultStart.setMinutes(0);
+          defaultStart.setSeconds(0);
+          defaultStart.setMilliseconds(0);
+          var startDatePicker = $startDate.pickadate('picker');
+          var startTimePicker = $startTime.pickatime('picker');
+          startDatePicker.set('select', defaultStart);
+          startTimePicker.set('select', defaultStart);
+
+          var defaultEnd = new Date();
+          defaultEnd.setDate(defaultEnd.getDate() +3);
+          defaultEnd.setHours(0);
+          defaultEnd.setMinutes(0);
+          defaultEnd.setSeconds(0);
+          defaultEnd.setMilliseconds(0);
+          var endDatePicker = $endDate.pickadate('picker');
+          var endTimePicker = $endTime.pickatime('picker');
+          endDatePicker.set('select', defaultEnd);
+          endTimePicker.set('select', defaultEnd);
+        }
       }
 
       function buildDateTime(date, time) {
@@ -420,6 +415,76 @@
         datetime.setMonth(Number(month) -1, Number(day));
         datetime.setHours(Number(hours), Number(mins));
         return datetime.getTime();
+      }
+
+      function auctionValidation() {
+        // Initial input validation
+        var datePicker = $startDate.pickadate('picker');
+        var startDateInput = datePicker.get();
+        if (!startDateInput || startDateInput.length === 0) {
+          alert("The Start Date is not filled out.");
+          return false;
+        }
+
+        var timePicker = $startTime.pickatime('picker');
+        var startTimeInput = timePicker.get();
+        if (!startTimeInput || startTimeInput.length === 0) {
+          alert("The Start Time is not filled out.");
+          return false;
+        }
+
+        var datePicker = $endDate.pickadate('picker');
+        var endDateInput = datePicker.get();
+        if (!endDateInput || endDateInput.length === 0) {
+          alert("The End Date is not filled out.");
+          return false;
+        }
+
+        var timePicker = $endTime.pickatime('picker');
+        var endTimeInput = timePicker.get();
+        if (!endTimeInput || endTimeInput.length === 0) {
+          alert("The End Time is not filled out.");
+          return false;
+        }
+
+        var start = buildDateTime(startDateInput, startTimeInput);
+        var end = buildDateTime(endDateInput, endTimeInput);
+        var slots = $('#slots').val();
+
+        // validate startDate, endDate and slots
+        var startValid = !isNaN(parseFloat(start)) && isFinite(start);
+        if (startValid === false) {
+          alert("The Start date/time is not valid.");
+          return false;
+        }
+
+        var endValid = !isNaN(parseFloat(end)) && isFinite(end);
+        if (endValid === false) {
+          alert("The End date/time is not valid.");
+          return false;
+        }
+
+        if (end < start) {
+          alert("The End date/time is before Start date/time.");
+          return false;
+        }
+
+        var slotsValid = !isNaN(parseFloat(slots)) && isFinite(slots);
+        if (slotsValid === false) {
+          alert("The number of slots is not valid.");
+          return false;
+        }
+
+        if (slots < 0) {
+          alert("Slots Cannot be negative.");
+          return false;
+        }
+
+        return {
+          start: start,
+          end: end,
+          slots: slots
+        };
       }
     </script>
     <!-- endbower -->

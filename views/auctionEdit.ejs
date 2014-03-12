@@ -1,0 +1,60 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-offset-1 col-sm-10">
+
+  <h3>
+    <% if(auction.open) { %>
+      <span class="label label-success">Open</span>
+    <% } else { %>
+      <% if (auction.start > new Date().getTime()) { %>
+        <span class="label label-primary">Upcoming</span>
+      <% } else if (auction.end < new Date().getTime()) { %>
+        <span class="label label-default">Past</span>
+      <% } else { %>
+        <span class="label label-danger">Closed</span>
+      <% } %>
+    <% } %>
+    <%= auction._id %>
+  </h3>
+
+  <div class="panel panel-default editControls"> 
+    <div class="panel-heading">
+      <b>Edit Auction</b>
+    </div>
+    <div class="panel-body slot_text">
+      
+      <form role="form" method="post" action="/auctions">
+        <input id="auctionId" type="hidden" value="<%= auction._id %>">
+        <input id="startDateTime" type="hidden" value="<%= auction.start %>">
+        <input id="endDateTime" type="hidden" value="<%= auction.end %>">
+
+        <div class="col-sm-3">
+          Start Date/Time: 
+          <input name="startDate" id="startDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
+          <input name="startTime" id="startTime" type="time" placeholder="HH:MM AM/PM" class="form-control">
+        </div>
+        <div class="col-sm-3">
+          End Date/Time: 
+          <input name="endDate" id="endDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
+          <input name="endTime" id="endTime" type="hour" placeholder="HH:MM AM/PM" class="form-control">
+        </div>
+        <div class="col-sm-3">
+          Number of slots:<br>
+          <input id="slots" name="slots" type="number" class="form-control" value="<%= auction.slots %>" step="1" min="1">
+          <div class="checkbox">
+            <label>
+              <input id="auctionEnabled" type="checkbox" <% if (auction.enabled) { %>checked<% } %> >Enabled?
+            </label>
+          </div>
+
+        </div>
+      </form>
+      <div class="col-sm-3 auction_add_button">
+        <button class="btn btn-primary btn-block" onclick="updateAuction();">
+          Update Auction
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
