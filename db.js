@@ -8,7 +8,7 @@ var db = {
   newAuction: function(body, cb) {
     // validate input
     if (!validate.createAuction(body.start, body.end, body.slots)) {
-      return cb({ message: 'Auction parameters were not valid.'}, undefined );
+      return cb({ message: 'Auction parameters were not valid.' }, undefined);
     }
 
     var auction = {
@@ -39,10 +39,10 @@ var db = {
         if (auction.end) body.end = Number(auction.end);
         if (auction.slots) body.slots = Number(auction.slots);
         // handle both boolean and String true/false
-        if (String(auction.enabled).toLowerCase()  == "true") {
+        if (String(auction.enabled).toLowerCase()  === "true") {
           body.enabled = true;
         }
-        else if (String(auction.enabled).toLowerCase() == "false") {
+        else if (String(auction.enabled).toLowerCase() === "false") {
           body.enabled = false;
         }
         // update auction
@@ -79,9 +79,7 @@ var db = {
         });
         cb(null, auctions);
       }
-      else {
-        cb(err, undefined);
-      }
+      else { cb(err, undefined); }
     });
   },
   auctionsTimeRelative: function(cb) {
@@ -123,8 +121,7 @@ var db = {
     couch.get(auctionId, null, function(err, body) {
       if (!err) {
         if (body.type !== 'auction') {
-          cb({ message: 'Id is not for an auction.'}, undefined );
-          return;
+          return cb({ message: 'Id is not for an auction.'}, undefined );
         }
         var currentTime = new Date().getTime();
         var open = (currentTime >= body.start &&
@@ -146,9 +143,7 @@ var db = {
         });
         cb(null, bids);
       }
-      else {
-        cb(err, undefined);
-      }
+      else { cb(err, undefined); }
     });
   },
   appendBidsToAuction: function(auction, cb) {
@@ -182,8 +177,7 @@ var db = {
     couch.get(bidId, null, function(err, body) {
       if (!err) {
         if (body.type !== "bid") {
-          cb({ message: "Id is not for a Bid." }, undefined);
-          return;
+          return cb({ message: "Id is not for a bid." }, undefined);
         }
         cb(null, body);
       }
@@ -202,7 +196,7 @@ var db = {
 
           // validate input
           if (!validate.createBid(body.price, body.slots)) {
-            return cb({ message: 'Bid parameters were not valid.'}, undefined );
+            return cb({ message: 'Bid parameters were not valid.' }, undefined);
           }
 
           // auction is open so make the bid
@@ -277,7 +271,7 @@ var db = {
       if (!err) {
         // make sure we're getting a bid
         if (body.type !== 'bid') {
-          return cb({ message: 'Id is not for an bid.'}, undefined );
+          return cb({ message: 'Id is not for a bid.'}, undefined );
         }
 
         // this should be an admin function so we don't need to 
@@ -288,6 +282,108 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  newAd: function(body, cb) {
+    // validate input
+    if (!validate.createAd(body.html)) {
+      return cb({ message: 'Ad HTML was not valid.' }, undefined);
+    }
+
+    // validate submitted
+    var submitted = false;
+    if (String(body.submitted).toLowerCase()  === "true") {
+      submitted = true;
+    }
+    else if (String(body.submitted).toLowerCase() === "false") {
+      submitted = false;
+    }
+
+    var ad = {
+      html: body.html,
+      username: body.user.username,
+      created_at: new Date().getTime(),
+      modified_at: new Date().getTime(),
+      type: 'ad',
+      approved: false,
+      submitted: submitted
+    };
+    couch.insert(ad, cb);
+  },
+  getAd: function(adId, cb) {
+    couch.get(adId, null, function(err, body) {
+      if (!err) {
+        if (body.type !== 'ad') {
+          return cb({ message: 'Id is not for an ad.'}, undefined );
+        }
+        cb(null, body);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  updateAd: function(ad, cb) {
+    // ensure that the ad exists first
+    console.log(ad._id);
+    couch.get(ad._id, null, function(err, body) {
+      console.log(body);
+      if (!err) {
+        // make sure we're getting an ad
+        if (body.type !== 'ad') {
+          console.log(body.type);
+          return cb({ message: 'Id is not for an ad.'}, undefined );
+        }
+
+        // validate input
+        if (!validate.updateAd(ad.html)) {
+          return cb({ message: 'Ad HTML was not valid.'}, undefined );
+        }
+        
+        // validate user (TODO: remove for admin)
+        if (body.username !== ad.user.username) {
+          return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+        }
+
+        // copy over on the allowed values into the retrieved ad
+        if (ad.html) body.html = ad.html;
+        body.modified_at = new Date().getTime();
+        // handle both boolean and String true/false
+        // TODO: admin validation!!!!
+        if (String(ad.approved).toLowerCase()  === "true") {
+          body.approved = true;
+        }
+        else if (String(ad.approved).toLowerCase() === "false") {
+          body.approved = false;
+        }
+        // handle both boolean and String true/false
+        if (String(ad.submitted).toLowerCase()  === "true") {
+          body.submitted = true;
+        }
+        else if (String(ad.submitted).toLowerCase() === "false") {
+          body.submitted = false;
+        }
+        // update ad
+        couch.insert(body, cb);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  deleteAd: function(ad, cb) {
+    // ensure that the ad exists first
+    couch.get(ad._id, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting a bid
+        if (body.type !== 'ad') {
+          return cb({ message: 'Id is not for an ad.'}, undefined );
+        }
+
+        // validate user (TODO: remove for admin)
+        if (body.username !== ad.user.username) {
+          return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+        }
+        
+        couch.destroy(body._id, body._rev, cb);
+      }
+      else { cb(err, undefined); }
+    });
+  }
 };
 
 

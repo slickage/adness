@@ -155,6 +155,52 @@ module.exports = {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
     });
+  },
+  newAd: function(req, res) {
+    var ad = req.body;
+    ad.user = req.user;
+    db.newAd(ad, function(err, body, header) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json(body); }
+    });
+  },
+  getAd: function(req, res) {
+    req.model.load('ad', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json({ ad: models.ad }); }
+    });
+  },
+  updateAd: function(req, res) {
+    req.model.load('ad', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else {
+        var ad = models.ad;
+        ad.user = req.user; // add current user
+        if (req.body.html) ad.html = req.body.html;
+        if (req.body.approved) ad.approved = req.body.approved;
+        if (req.body.submitted) ad.submitted = req.body.submitted;
+        db.updateAd(ad, function(err, body) {
+          if (err) { console.log(err); res.json(err); }
+          else { res.json(body); }
+        });
+      }
+    });
+  },
+  deleteAd: function(req, res) {
+    req.model.load('ad', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else {
+        var ad = models.ad;
+        ad.user = req.user; // add current user
+        db.deleteAd(ad, function(err, body) {
+          if (err) { console.log(err); res.json(err); }
+          else { res.json(body); }
+        });
+      }
+    });
   }
 };
 

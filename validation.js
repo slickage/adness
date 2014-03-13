@@ -66,5 +66,13 @@ module.exports = {
     if (slots && slots < 0) { return false; }
 
     return true;
+  },
+  createAd: function(html, submitted) {
+    // cara from google should go here
+    return true;
+  },
+  updateAd: function(html, submitted) {
+    // cara from google should go here
+    return true;
   }
 };

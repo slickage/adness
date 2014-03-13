@@ -62,7 +62,7 @@ site.get(nojsPrefix + '/payment', router.payment);
 site.get(nojsPrefix + '/qr/:qrString', router.qr);
 // StarBurst private web routes
 site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
-site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
+// site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
 site.get(nojsPrefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
 // StarBurst api calls (modified callback)
 site.post(nojsPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
@@ -73,6 +73,11 @@ site.del(nojsPrefix + '/auctions/:auctionId', ensureAuthenticated, router.auctio
 site.post(nojsPrefix + '/bids/edit', ensureAuthenticated, router.bid.updateBid);
 site.del(nojsPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.deleteBid);
 site.post(nojsPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
+site.get(nojsPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ads.updateAd);
+site.get(nojsPrefix + '/ads/:adId', router.ads.getAd);
+site.post(nojsPrefix + '/ads/:adId/', ensureAuthenticated, router.ads.editAd);
+site.post(nojsPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
+site.del(nojsPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
 // normal private web routes
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.get('/admin', ensureAuthenticated, router.admin);
@@ -99,6 +104,10 @@ site.del(apiPrefix + '/auctions/:auctionId', ensureAuthenticated, apiRouter.dele
 site.post(apiPrefix + '/bids/edit', ensureAuthenticated, apiRouter.updateBid);
 site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
 site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
+site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
+site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
+site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);
+site.del(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.deleteAd);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
