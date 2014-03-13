@@ -3,10 +3,15 @@ var db = require(__dirname + '/../db');
 module.exports = {
   showAuction: function(req, res) {
     req.model.load('auction', req);
+    req.model.load('bids', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
+
+      // remove first item because it's the auction
+      models.bids.splice(0, 1);
       res.render('auction', {
         auction: models.auction,
+        bids: models.bids,
         browsePrefix: req.browsePrefix,
         user: req.user
       });

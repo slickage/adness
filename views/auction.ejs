@@ -53,5 +53,37 @@
       No Slots filled
     </div>
   <% } %>
+
+
+  <% if (bids.length > 0) { %>
+    <br>
+    <b>Bid History:</b>
+    <br>
+  <% } %>  
+
+  <% for (var i=0; i < bids.length; i++) { %>
+    <div class="slot">
+      <div class="row">
+        <div class="col-sm-12">
+          ID: <%= bids[i]._id %><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          User: <%= bids[i].user.username %><br>
+        </div>
+        <div class="col-sm-3">
+          Price: <%= bids[i].price %><br>
+        </div>
+        <div class="col-sm-3">
+          Slots: <%= bids[i].slots %><br>
+        </div>
+        <div class="col-sm-3">
+          <%= new Date(bids[i].created_at) %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
   
 </div>
