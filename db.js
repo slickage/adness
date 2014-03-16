@@ -319,11 +319,22 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  getUserAds: function(username, cb) {
+    var key = username;
+    couch.view('adness', 'userAds', {startkey: [key, 0], endkey: [key, {}]}, function(err, body) {
+      if (!err) {
+        var ads = [];
+        body.rows.forEach(function(ad) {
+          ads.push(ad.value);
+        });
+        cb(null, ads);
+      }
+      else { cb(err, undefined); }
+    });
+  },
   updateAd: function(ad, cb) {
     // ensure that the ad exists first
-    console.log(ad._id);
     couch.get(ad._id, null, function(err, body) {
-      console.log(body);
       if (!err) {
         // make sure we're getting an ad
         if (body.type !== 'ad') {
@@ -337,7 +348,7 @@ var db = {
         }
         
         // validate user (TODO: remove for admin)
-        if (body.username !== ad.user.username) {
+        if (body.username !== ad.username) {
           return cb({ message: "Editing another user's ad is not allowed."}, undefined);
         }
 

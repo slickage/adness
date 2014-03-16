@@ -4,12 +4,6 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Ad Upload</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="/css/bootstrap/css/bootstrap.css" />
@@ -26,8 +20,11 @@
     <![endif]-->
 
     <!-- Main Content -->
-    <div class="upload-header">
+    <div class="upload-header text-center">
       <h1>Bitcoin Talk Ad Uploader</h1>
+      <% if (ad) { %>
+        Editing Ad: <%= ad._id %>
+      <% } %>
     </div>
 
     <div class="container-fluid bootstrap-fluid-fix">
@@ -36,40 +33,27 @@
             <div style="padding-bottom: 20px;">
               Add your Ad HTML/CSS below:
             </div>
-            <textarea name="upload-code" id="upload-code" rows="3"></textarea>
-            <div style="padding-top: 20px;">
-              <button class="btn btn-primary"onclick="convert();">Preview</button>
-            </div>
+            <textarea name="upload-code" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
         </div>
       </div>
 
-      <div id="preview-text" class="row review-section" style="display: none;">
+      <div id="preview-text" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6">
           This is what your add will look like on the page:</br>
         </div>
       </div>
 
-      <div id="preview-container" class="row review-section" style="display: none;">
+      <div id="preview-container" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6 well">
           <div id="preview"></div>
           <div style="padding-top: 20px;">
-            <button class="btn btn-primary pull-right"onclick="submitForReview();">Submit for Review</button>
+            <button class="btn btn-primary pull-right" onclick="submitForReview(true);">Submit for Review</button>
+            <button class="btn btn-primary pull-right" onclick="submitForReview(false);">Save for Later</button>
           </div>
         </div>
       </div>
     </div>
 
-
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -84,7 +68,6 @@
     <script src="/scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script src="/scripts/codemirror/mode/xml/xml.js"></script>
     <script src="/scripts/codemirror/mode/javascript/javascript.js"></script>
-    <script src="/scripts/caja/html-sanitizer-minified.js"></script>
     <script src="/scripts/caja/html-sanitizer-minified.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
@@ -105,10 +88,6 @@
       )
 
       function convert() {
-        // show the preview text
-        document.getElementById('preview-text').style.display = "block";
-        document.getElementById('preview-container').style.display = "block";
-
         // scrub the raw html for any security leaks
         var raw_html = myCodeMirror.getValue();
         function urlX(url) { if(/^https?:\/\//.test(url)) { return url }}
@@ -120,9 +99,24 @@
         preview.innerHTML = parsedHtml;
       }
 
-      function submitForReview() {
-        // submit parsed HTML to backend
-        alert('submitted');
+      function submitForReview(submit) {
+        var html = $("#preview").html();
+
+        var data = {
+          submitted: submit,
+          html: html
+        }
+
+        var url = "<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>";
+
+        $.ajax({
+          type: "POST", 
+          url: url, 
+          data: data,
+          success: function(data) {
+            window.location="<%=browsePrefix%>/users/<%= user.username %>";
+          } 
+        });
       }
     </script>
   </body>

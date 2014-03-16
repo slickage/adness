@@ -53,29 +53,32 @@ function browsePrefix(req, res, next) {
 }
 
 
-// VIEWS - StarBurst routes
+// VIEWS - StarBurst general routes
 site.get(nojsPrefix, router.sbindex);
 site.get(nojsPrefix + '/history', router.history);
 site.get(nojsPrefix + '/registration', router.registration);
-site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
 site.get(nojsPrefix + '/payment', router.payment);
 site.get(nojsPrefix + '/qr/:qrString', router.qr);
-// StarBurst private web routes
-site.get(nojsPrefix + '/profile', ensureAuthenticated, router.profile);
-// site.get(nojsPrefix + '/ads', ensureAuthenticated, router.ads);
-site.get(nojsPrefix + '/ad/upload', ensureAuthenticated, router.ad_upload);
-// StarBurst api calls (modified callback)
+// AUCTIONS
+site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
 site.post(nojsPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
 site.post(nojsPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
 site.post(nojsPrefix + '/auctions/edit', ensureAuthenticated, router.auction.updateAuction);
 site.post(nojsPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
 site.del(nojsPrefix + '/auctions/:auctionId', ensureAuthenticated, router.auction.deleteAuction);
+// BIDS
 site.post(nojsPrefix + '/bids/edit', ensureAuthenticated, router.bid.updateBid);
 site.del(nojsPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.deleteBid);
 site.post(nojsPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
-site.get(nojsPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ads.updateAd);
+// ADS
+site.get(nojsPrefix + '/users/:userId', ensureAuthenticated, router.profile);
+site.get(nojsPrefix + '/ads/upload', ensureAuthenticated, router.ad_upload);
+site.get(nojsPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ad_upload);
 site.get(nojsPrefix + '/ads/:adId', router.ads.getAd);
-site.post(nojsPrefix + '/ads/:adId/', ensureAuthenticated, router.ads.editAd);
+site.post(nojsPrefix + '/ads/:adId/approve', ensureAuthenticated, router.ads.approveAd);
+site.post(nojsPrefix + '/ads/:adId/reject', ensureAuthenticated, router.ads.rejectAd);
+site.post(nojsPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads.postDeleteAd);
+site.post(nojsPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
 site.post(nojsPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
 site.del(nojsPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
 // normal private web routes
@@ -87,23 +90,26 @@ site.get('/', router.index);
 
 // api routes
 var apiPrefix = '/api';
+// AUCTIONS
 site.get(apiPrefix + '/auctions/time', apiRouter.auctionsTime);
 site.get(apiPrefix + '/auctions/open', apiRouter.auctionsOpen);
 site.get(apiPrefix + '/auctions/closed', apiRouter.auctionsClosed);
 site.get(apiPrefix + '/auctions/future', apiRouter.auctionsFuture);
 site.get(apiPrefix + '/auctions/past', apiRouter.auctionsPast);
-site.get(apiPrefix + '/auctions', apiRouter.auctions);
 site.get(apiPrefix + '/auctions/:auctionId/bids', apiRouter.bids);
 site.get(apiPrefix + '/auctions/:auctionId', apiRouter.auction);
-site.get(apiPrefix + '/bids/:bidId', apiRouter.bid);
+site.get(apiPrefix + '/auctions', apiRouter.auctions);
 site.post(apiPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, apiRouter.enableAuction);
 site.post(apiPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, apiRouter.disableAuction);
 site.post(apiPrefix + '/auctions/edit', ensureAuthenticated, apiRouter.updateAuction);
 site.post(apiPrefix + '/auctions', ensureAuthenticated, apiRouter.newAuction);
 site.del(apiPrefix + '/auctions/:auctionId', ensureAuthenticated, apiRouter.deleteAuction);
+// BIDS
+site.get(apiPrefix + '/bids/:bidId', apiRouter.bid);
 site.post(apiPrefix + '/bids/edit', ensureAuthenticated, apiRouter.updateBid);
 site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
 site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
+// ADS
 site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
 site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);

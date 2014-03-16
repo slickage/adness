@@ -37,30 +37,28 @@
         </div>
 
         <!-- Links to other pages -->
-        <a href="/admin">
-          <div class="sidebar-button">
-            <span class="glyphicon glyphicon-tasks icon-large"></span><br>
-            Admin
-          </div>
-        </a> 
+        <% if (user && user.username) { %>
+          <a href="/admin">
+            <div class="sidebar-button">
+              <span class="glyphicon glyphicon-tasks icon-large"></span><br>
+              Admin
+            </div>
+          </a>
+        <% } %>
         <a href="<%= browsePrefix %>">
           <div class="sidebar-button">
             <span class="glyphicon glyphicon-home icon-large"></span><br>
             Home
           </div>
         </a> 
-        <a href="<%= browsePrefix %>/profile">
-          <div class="sidebar-button">
-            <span class="glyphicon glyphicon-user icon-large"></span><br>
-            Profile
-          </div>
-        </a> 
-        <a href="<%= browsePrefix %>/ads">
-          <div class="sidebar-button">
-            <span class="glyphicon glyphicon-list icon-large"></span><br>
-            My Ads
-          </div>
-        </a> 
+        <% if (user && user.username) { %>
+          <a href="<%= browsePrefix %>/users/<%= user.username %>">
+            <div class="sidebar-button">
+              <span class="glyphicon glyphicon-user icon-large"></span><br>
+              Profile
+            </div>
+          </a> 
+        <% } %>
         <a href="<%= browsePrefix %>/history">
           <div class="sidebar-button">
             <span class="glyphicon glyphicon-list-alt icon-large"></span><br>

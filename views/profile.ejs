@@ -1,4 +1,135 @@
 <% layout('sblayout') %>
+<div class="content-page col-sm-offset-1 col-sm-10">
 
-Nothing to see here. Move Along.<br>
-This should link to the SMF profile page. 
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <%= user.username %>
+        </a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="<%= browsePrefix %>/ads/upload">New Ad</a>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="panel panel-success"> 
+    <div class="panel-heading">
+      <b>Approved Ads</b>
+    </div>
+    <div class="panel-body">
+      <% for (var i=0; i < approved.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-12">
+            Ad ID: 
+            <a href="<%= browsePrefix %>/ads/<%= approved[i]._id %>">
+              <%= approved[i]._id %>
+            </a>
+            <br>
+            <%- approved[i].html %>
+
+            <br>
+
+            <div class="well">
+              Ad HTML: <br>
+              <%= approved[i].html %>
+            </div>
+            <div class="pull-right">
+              <form action="<%= browsePrefix%>/ads/<%= approved[i]._id %>/delete" method="post">
+                <button class="btn btn-danger">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="panel panel-warning"> 
+    <div class="panel-heading">
+      <b>Submitted Ads</b>
+    </div>
+    <div class="panel-body">
+      <% for (var i=0; i < submitted.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-12">
+            Ad ID: 
+            <a href="<%= browsePrefix %>/ads/<%= submitted[i]._id %>">
+              <%= submitted[i]._id %>
+            </a>
+            <br>
+            <%- submitted[i].html %>
+
+            <br>
+
+            <div class="well">
+              Ad HTML: <br>
+              <%= submitted[i].html %>
+            </div>
+            <div class="pull-right">
+              <form action="<%= browsePrefix%>/ads/<%= submitted[i]._id %>/delete" method="post">
+                <button class="btn btn-danger">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="panel panel-default"> 
+    <div class="panel-heading">
+      <b>Saved Ads</b>
+    </div>
+    <div class="panel-body">
+      <% for (var i=0; i < saved.length; i++) { %>
+        <div class="row">
+          <div class="col-sm-12">
+            Ad ID: 
+            <a href="<%= browsePrefix %>/ads/<%= saved[i]._id %>">
+              <%= saved[i]._id %>
+            </a>
+            <br>
+            <%- saved[i].html %>
+
+            <br>
+
+            <div class="well">
+              Ad HTML: <br>
+              <%= saved[i].html %>
+            </div>
+            <div class="pull-right">
+              <form action="<%= browsePrefix%>/ads/<%= saved[i]._id %>/delete" method="post" class="pull-right">
+                <a href="<%= browsePrefix %>/ads/<%= saved[i]._id %>/edit" class="btn btn-primary">
+                  Edit
+                </a>
+                <button class="btn btn-danger">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+</div>
