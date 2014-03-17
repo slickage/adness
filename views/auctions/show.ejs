@@ -1,0 +1,57 @@
+<div class="panel panel-default">
+  <div class="panel-body" style="margin: 0 15px;">
+    <div class="row">
+      <span style="font-size: 24px;">
+      <% if(auction.open) { %>
+        <span class="label label-success">Open</span>
+      <% } else { %>
+        <% if (auction.start > new Date().getTime()) { %>
+          <span class="label label-primary">Upcoming</span>
+        <% } else if (auction.end < new Date().getTime()) { %>
+          <span class="label label-default">Past</span>
+        <% } else { %>
+          <span class="label label-danger">Closed</span>
+        <% } %>
+      <% } %>
+      </span>
+      <span style="font-size: 20px;">
+        Auction:
+        <a href="<%= browsePrefix %>/auctions/<%=auction._id%>">
+          <%= auction._id %>
+        </a>
+      </span>
+    </div>
+    <div class="row">
+      <br/>
+      <strong>Auction Start Date/Time:</strong>
+      <%= new Date(auction.start) %>
+      <br/>
+      <strong>Auction End Date/Time:</strong>
+      <%= new Date(auction.end) %>
+      <br/>
+      <strong>Slots with Bids/Total Slots:</strong>
+      <%= auction.bidPerSlot.length %>/<%= auction.slots %>
+    </div>
+    <div class="row">
+      <br>
+      <b>Ad Slot Results</b>
+      <br>
+
+      <% for(var i=0; i < auction.bidPerSlot.length; i++) { %>
+        <div class="slot slot_text">
+          <div class="row">
+            <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
+            <div class="col-sm-6"><%= auction.bidPerSlot[i].user.username %></div>
+            <div class="col-sm-3"><%= auction.bidPerSlot[i].price %> BTC</div>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (auction.bidPerSlot.length === 0) { %>
+        <div class="slot slot_text">
+          No Slots filled
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

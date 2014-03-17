@@ -3,65 +3,9 @@
 <% if (auctionsOpen.length > 0) { %>
 
 <div class="content-page col-sm-offset-1 col-sm-10">
-
-  <div class="row">
-    <h3>
-      <span class="label label-success">Open</span>
-      Auction: 
-      <a href="<%= browsePrefix %>/auctions/<%=latestAuction._id%>">
-        <%= latestAuction._id %>
-      </a>
-    </h3>
-  </div>
-
-  <% if (user) { %>
-    <div class="row bidding">
-      <form role="form" method="post" action="/sb/bids">
-
-        <input type="hidden" name="auctionId" value="<%= latestAuction._id %>">
-
-        <div class="col-sm-4 slot_text">
-          Advertising Slot(s):<br>
-          <input type="number" name="slots" class="form-control" value="1" min="1">
-        </div>
-
-        <div class="col-sm-4 slot_text">
-          Bid Per Slot:<br>
-          <input type="number" name="price" class="form-control" value="<%= latestPrice.toFixed(2) %>" step="0.05">
-        </div>
-
-        <div class="col-sm-4 slot_text bid_button">
-          <button type="submit" class="btn btn-primary btn-block">Bid</button>
-        </div>
-
-      </form>
-    </div>
-  <% } %>
-
-  <div class="row slot_listing">
-    <b>Advertising slots (1 in 10 chance)</b><br>
-    Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-    <br>
-    <small>
-      <em>
-        Advertised sites are not endorsed by the Bitcoin Forum. 
-        They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-      </em>
-    </small>
-
-    <% for (var i = 0; i < latestAuctionBids.length; i++ ) { %>
-      <div class="slot slot_text">
-        <div class="row">
-          <div class="col-sm-3">Ad Slot #<%= i + 1 %></div>
-          <div class="col-sm-6">Winner: <%= latestAuctionBids[i].user.username %></div>
-          <div class="col-sm-3"><%= latestAuctionBids[i].price %> BTC</div>
-        </div>
-      </div>
-    <% } %>
-  </div>
-
-</div>
-
+  <% auctionsOpen.forEach(function(auction) { %>
+    <% include auctions/show %>
+  <% }) %>
 <% } else { %>
 
 <div class="content-page col-sm-offset-1 col-sm-10">
@@ -71,4 +15,3 @@
 </div>
 
 <% } %>
-

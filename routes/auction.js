@@ -5,14 +5,23 @@ module.exports = {
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.end(function(err, models) {
+      var auction = models.auction;
+      var bids = models.bids;
       if (err) console.log(err);
-
+        var latestPrice;
+        if (auction.winningBids.length > 0) {
+          latestPrice = auction.winningBids[0].price + 0.05;
+        }
+        else {
+          latestPrice = 0.50;
+        }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
       res.render('auction', {
-        auction: models.auction,
-        bids: models.bids,
+        auction: auction,
+        bids: bids,
         browsePrefix: req.browsePrefix,
+        latestPrice: latestPrice,
         user: req.user
       });
     });
@@ -89,4 +98,3 @@ module.exports = {
     });
   }
 };
-

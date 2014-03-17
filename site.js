@@ -8,13 +8,15 @@ var express = require('express'),
     expressJwt = require('express-jwt'),
     router = require('./router'),
     apiRouter = require('./apiRouter'),
-    config = require('./config');
+    config = require('./config'),
+    ensureAuthenticated = require('./middleware/ensure-auth'),
+    browsePrefix = require('./middleware/browse-prefix');
 
 // Express config on all environments
 site.engine('ejs', engine);
 site.set('views', path.join(__dirname, 'views'));
 site.set('view engine', 'ejs');
-site.use(require('./middleware/model_loader'));
+site.use(require('./middleware/model-loader'));
 site.use(require('connect-assets')());
 site.use(express.favicon());
 site.use(express.logger('dev'));
@@ -45,43 +47,35 @@ if ('development' == site.get('env')) {
   site.use(express.errorHandler());
 }
 
-// StarBurst middleware - TODO change to module
-var nojsPrefix = '/sb';
-function browsePrefix(req, res, next) {
-  req.browsePrefix = nojsPrefix;
-  return next();
-}
-
-
 // VIEWS - StarBurst general routes
-site.get(nojsPrefix, router.sbindex);
-site.get(nojsPrefix + '/rules', router.rules);
-site.get(nojsPrefix + '/history', router.history);
-site.get(nojsPrefix + '/registration', router.registration);
-site.get(nojsPrefix + '/payment', router.payment);
-site.get(nojsPrefix + '/qr/:qrString', router.qr);
+site.get(config.sbPrefix, router.sbindex);
+site.get(config.sbPrefix + '/rules', router.rules);
+site.get(config.sbPrefix + '/history', router.history);
+site.get(config.sbPrefix + '/registration', router.registration);
+site.get(config.sbPrefix + '/payment', router.payment);
+site.get(config.sbPrefix + '/qr/:qrString', router.qr);
 // AUCTIONS
-site.get(nojsPrefix + '/auctions/:auctionId', router.auction.showAuction);
-site.post(nojsPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
-site.post(nojsPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
-site.post(nojsPrefix + '/auctions/edit', ensureAuthenticated, router.auction.updateAuction);
-site.post(nojsPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
-site.del(nojsPrefix + '/auctions/:auctionId', ensureAuthenticated, router.auction.deleteAuction);
+site.get(config.sbPrefix + '/auctions/:auctionId', router.auction.showAuction);
+site.post(config.sbPrefix + '/auctions/enable/:auctionId', ensureAuthenticated, router.auction.enableAuction);
+site.post(config.sbPrefix + '/auctions/disable/:auctionId', ensureAuthenticated, router.auction.disableAuction);
+site.post(config.sbPrefix + '/auctions/edit', ensureAuthenticated, router.auction.updateAuction);
+site.post(config.sbPrefix + '/auctions', ensureAuthenticated, router.auction.newAuction);
+site.del(config.sbPrefix + '/auctions/:auctionId', ensureAuthenticated, router.auction.deleteAuction);
 // BIDS
-site.post(nojsPrefix + '/bids/edit', ensureAuthenticated, router.bid.updateBid);
-site.del(nojsPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.deleteBid);
-site.post(nojsPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
+site.post(config.sbPrefix + '/bids/edit', ensureAuthenticated, router.bid.updateBid);
+site.del(config.sbPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.deleteBid);
+site.post(config.sbPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
 // ADS
-site.get(nojsPrefix + '/users/:userId', ensureAuthenticated, router.profile);
-site.get(nojsPrefix + '/ads/upload', ensureAuthenticated, router.ad_upload);
-site.get(nojsPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ad_upload);
-site.get(nojsPrefix + '/ads/:adId', router.ads.getAd);
-site.post(nojsPrefix + '/ads/:adId/approve', ensureAuthenticated, router.ads.approveAd);
-site.post(nojsPrefix + '/ads/:adId/reject', ensureAuthenticated, router.ads.rejectAd);
-site.post(nojsPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads.postDeleteAd);
-site.post(nojsPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
-site.post(nojsPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
-site.del(nojsPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
+site.get(config.sbPrefix + '/users/:userId', ensureAuthenticated, router.profile);
+site.get(config.sbPrefix + '/ads/upload', ensureAuthenticated, router.ad_upload);
+site.get(config.sbPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ad_upload);
+site.get(config.sbPrefix + '/ads/:adId', router.ads.getAd);
+site.post(config.sbPrefix + '/ads/:adId/approve', ensureAuthenticated, router.ads.approveAd);
+site.post(config.sbPrefix + '/ads/:adId/reject', ensureAuthenticated, router.ads.rejectAd);
+site.post(config.sbPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads.postDeleteAd);
+site.post(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
+site.post(config.sbPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
+site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
 // normal private web routes
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.get('/admin', ensureAuthenticated, router.admin);
@@ -118,22 +112,13 @@ site.del(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.deleteAd);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {
-    res.redirect(nojsPrefix + '/');
+    res.redirect(config.sbPrefix + '/');
   }
 );
 site.get('/logout', function(req, res){
   req.logout();
-  res.redirect(nojsPrefix + '/');
+  res.redirect(config.sbPrefix + '/');
 });
 
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect(nojsPrefix + '/');
-}
 
 module.exports = site;

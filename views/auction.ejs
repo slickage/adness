@@ -1,65 +1,50 @@
 <% layout('sblayout') %>
+
 <div class="content-page col-sm-offset-1 col-sm-10">
+<% if (user) { %>
+  <div style="margin: 0px 5px">
+    <b>Advertising slots (1 in 10 chance)</b><br>
+    Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
+    <br>
+    <small>
+      <em>
+        Advertised sites are not endorsed by the Bitcoin Forum.
+        They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+      </em>
+    </small>
+  </div>
+  <div class="row bidding">
+    <form role="form" method="post" action="/sb/bids">
 
-  <h3>
-    <% if(auction.open) { %>
-      <span class="label label-success">Open</span>
-    <% } else { %>
-      <% if (auction.start > new Date().getTime()) { %>
-        <span class="label label-primary">Upcoming</span>
-      <% } else if (auction.end < new Date().getTime()) { %>
-        <span class="label label-default">Past</span>
-      <% } else { %>
-        <span class="label label-danger">Closed</span>
-      <% } %>
-    <% } %>
-    <%= auction._id %>
-  </h3>
+      <input type="hidden" name="auctionId" value="<%= auction._id %>">
 
-  <div class="row">
+      <div class="col-sm-4 slot_text">
+        Advertising Slot(s):<br>
+        <input type="number" name="slots" class="form-control" value="1" min="1">
+      </div>
 
-    <div class="col-sm-6 slot_text">
-      Auction Start Time: 
-      <br>
-      <%= new Date(auction.start) %>
-    </div>
+      <div class="col-sm-4 slot_text">
+        Bid Per Slot:<br>
+        <input type="number" name="price" class="form-control" value="<%= latestPrice.toFixed(2) %>" step="0.05">
+      </div>
 
-    <div class="col-sm-6 slot_text">
-      Auction End Date: 
-      <br>
-      <%= new Date(auction.end) %>
-    </div>
+      <div class="col-sm-4 slot_text bid_button">
+        <button type="submit" class="btn btn-primary btn-block">Bid</button>
+      </div>
+
+    </form>
 
   </div>
 
-  <br>
-  <b>Ad Slot Results</b>
-  <br>
+<% } %>
 
-  <% for(var i=0; i < auction.bidPerSlot.length; i++) { %>
-
-    <div class="slot slot_text">
-      <div class="row">
-        <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
-        <div class="col-sm-6"><%= auction.bidPerSlot[i].user.username %></div>
-        <div class="col-sm-3"><%= auction.bidPerSlot[i].price %> BTC</div>
-      </div>
-    </div>
-
-  <% } %>
-
-  <% if (auction.bidPerSlot.length === 0) { %>
-    <div class="slot slot_text">
-      No Slots filled
-    </div>
-  <% } %>
-
+  <% include auctions/show %>
 
   <% if (bids.length > 0) { %>
     <br>
     <b>Bid History:</b>
     <br>
-  <% } %>  
+  <% } %>
 
   <% for (var i=0; i < bids.length; i++) { %>
     <div class="slot">
@@ -85,5 +70,5 @@
     </div>
   <% } %>
 
-  
+
 </div>
