@@ -1,3 +1,5 @@
+var sanitize = require('google-caja').sanitize;
+
 module.exports = {
   isNumber: function(datetime) {
     // return true if this is a number
@@ -67,12 +69,7 @@ module.exports = {
 
     return true;
   },
-  createAd: function(html, submitted) {
-    // cara from google should go here
-    return true;
-  },
-  updateAd: function(html, submitted) {
-    // cara from google should go here
-    return true;
+  html: function(html) {
+    return sanitize(html);
   }
 };

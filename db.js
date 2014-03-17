@@ -33,7 +33,7 @@ var db = {
         if (!validate.updateAuction(auction.start, auction.end, auction.slots)) {
           return cb({ message: 'Auction parameters were not valid.'}, undefined );
         }
-        
+
         // copy over on the allowed values into the retrieved auction
         if (auction.start) body.start = Number(auction.start);
         if (auction.end) body.end = Number(auction.end);
@@ -59,7 +59,7 @@ var db = {
         if (body.type !== 'auction') {
           return cb({ message: 'Id is not for an auction.'}, undefined );
         }
-        
+
         // delete associated bids?
         couch.destroy(auctionId, body._rev, cb);
       }
@@ -96,7 +96,7 @@ var db = {
           var value = doc.value;
           var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
           value.open = open;
-          
+
           if ((currentTime >= value.start && currentTime < value.end) && value.enabled) {
             auctions.open.push(value);
           }
@@ -274,9 +274,9 @@ var db = {
           return cb({ message: 'Id is not for a bid.'}, undefined );
         }
 
-        // this should be an admin function so we don't need to 
+        // this should be an admin function so we don't need to
         // check that the user is the same
-        
+
         couch.destroy(bidId, body._rev, cb);
       }
       else { cb(err, undefined); }
@@ -288,6 +288,9 @@ var db = {
       return cb({ message: 'Ad HTML was not valid.' }, undefined);
     }
 
+    // validate html
+    var html = validation.html(body.html);
+
     // validate submitted
     var submitted = false;
     if (String(body.submitted).toLowerCase()  === "true") {
@@ -298,7 +301,7 @@ var db = {
     }
 
     var ad = {
-      html: body.html,
+      html: html,
       username: body.user.username,
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
@@ -342,18 +345,13 @@ var db = {
           return cb({ message: 'Id is not for an ad.'}, undefined );
         }
 
-        // validate input
-        if (!validate.updateAd(ad.html)) {
-          return cb({ message: 'Ad HTML was not valid.'}, undefined );
-        }
-        
         // validate user (TODO: remove for admin)
         if (body.username !== ad.username) {
           return cb({ message: "Editing another user's ad is not allowed."}, undefined);
         }
 
         // copy over on the allowed values into the retrieved ad
-        if (ad.html) body.html = ad.html;
+        if (ad.html) body.html = validation.html(ad.html);
         body.modified_at = new Date().getTime();
         // handle both boolean and String true/false
         // TODO: admin validation!!!!
@@ -389,7 +387,7 @@ var db = {
         if (body.username !== ad.user.username) {
           return cb({ message: "Editing another user's ad is not allowed."}, undefined);
         }
-        
+
         couch.destroy(body._id, body._rev, cb);
       }
       else { cb(err, undefined); }
