@@ -55,6 +55,7 @@ function browsePrefix(req, res, next) {
 
 // VIEWS - StarBurst general routes
 site.get(nojsPrefix, router.sbindex);
+site.get(nojsPrefix + '/rules', router.rules);
 site.get(nojsPrefix + '/history', router.history);
 site.get(nojsPrefix + '/registration', router.registration);
 site.get(nojsPrefix + '/payment', router.payment);

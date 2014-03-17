@@ -7,7 +7,10 @@ body { padding: 0; }
 .header {
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: #ECECEC; }
+  border-bottom: 2px solid #eee;
+  vertical-align: middle;
+  height: 54px;
+}
 
 .sidebar {
   background-color: #F7F7F7;
@@ -30,7 +33,7 @@ body { padding: 0; }
 .logo {
   height: 54px; 
   text-align: center;
-  background-color: #E2E2E2;
+  background-color: #F7F7F7;
   padding-top: 18px;
   margin: 0; }
 

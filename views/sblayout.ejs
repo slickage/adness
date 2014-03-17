@@ -50,14 +50,20 @@
             <span class="glyphicon glyphicon-home icon-large"></span><br>
             Home
           </div>
-        </a> 
+        </a>
+        <a href="<%= browsePrefix %>/rules">
+          <div class="sidebar-button">
+            <span class="glyphicon glyphicon-list-alt icon-large"></span><br>
+            Rules
+          </div>
+        </a>
         <% if (user && user.username) { %>
           <a href="<%= browsePrefix %>/users/<%= user.username %>">
             <div class="sidebar-button">
               <span class="glyphicon glyphicon-user icon-large"></span><br>
               Profile
             </div>
-          </a> 
+          </a>
         <% } %>
         <a href="<%= browsePrefix %>/history">
           <div class="sidebar-button">
@@ -65,6 +71,7 @@
             History
           </div>
         </a>
+
       </div>
 
       <div class="main-container">
@@ -73,15 +80,10 @@
           <div class="col-sm-12 header">
             <div class="container-fluid bootstrap-fluid-fix">
               <div class="row">
-                <!-- Forum Rules Button -->
-                <div class="col-sm-1">
-                  <button data-toggle="modal" data-target="#forumRulesModal" class="btn btn-primary">Rules</button>
-                </div>
-
                 <!-- Login module -->
                 <div class="col-sm-11">
                   <% if (user) { %>
-                  <div>
+                  <div style="padding-top: 7px">
                     Logged In: <%= user.username %>
                     <a href="/logout">Logout</a>
                   </div>
@@ -105,133 +107,13 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Main Content -->
-        <div class="row">          
+        <div class="row">
           <%- body %>
         </div>
       </div>
     </div>
-
-    <!-- Ad Auction Rules Modal -->
-    <div id="forumRulesModal" class="modal fade">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Ad Auction Rules</h4>
-          </div>
-
-          <div class="modal-body">
-            <p>
-              The forum sells ad space in the area beneath the first post of every topic page. About 25% of ad income goes to the forum moderators as thanks for all of their work. (There are many moderators, so each moderator gets only a small amount -- moderators should be seen as volunteers, not employees.) The rest is stored in the forum's treasury (verifiably), where it sits until the forum needs it.
-            </p>
-
-            <p>
-              Ads are allowed to contain any non-annoying HTML/CSS style. No images, JavaScript, or animation (no marquee or blinking). Ads must appear 3 or fewer lines tall in my browser (Firefox, 700px wide). Ad text may not contain lies, misrepresentation, or inappropriate language. Ads may not link directly to any NSFW page. Ads may be rejected for other reasons.
-            </p>
-
-            <p>
-              There are 10 total ad slots which are randomly rotated. So one ad slot has a one in ten chance of appearing. Eight of the slots are for sale here. Ads appear only on topic pages with more than one post, and only for people using the default theme.
-            </p>
-
-            <p>
-              The ad lasts at least 7 days starting from when I put it up. (However, if you look at the ad history you'll see that ads frequently get 1-2 extra days, but this is random and definitely not guaranteed.)
-            </p>
-
-            <br>
-            <p><b>Stats</b></p>
-
-            <p>
-              Exact historical impression counts per slot:
-              <a href="https://bitcointalk.org/adrotate.php?adstats">
-                https://bitcointalk.org/adrotate.php?adstats
-              </a>
-            </p>
-
-            <p>
-              Info about the current ad slots:
-              <a href="https://bitcointalk.org/adrotate.php?adinfo">
-                https://bitcointalk.org/adrotate.php?adinfo
-              </a>
-            </p>
-
-            <br>
-            <p><b>Ad blocking</b></p>
-
-            <p>
-              Hero members, Donators, VIPs, and moderators have the ability to disable ads. I don't expect many people to use this option. These people don't increase the impression counts for your ads.
-            </p>
-
-            <p>
-              I try to bypass Adblock Plus filters as much as possible, though this is not guaranteed. It is difficult or impossible for ABP filters to block the ad space itself without blocking posts. However, filters can match against the URLs in your links, your CSS classes and style attributes, and the HTML structure of your ads.
-            </p>
-
-            <p>
-              To prevent matches against URLs: I have some JavaScript which fixes links blocked by ABP. You must tell me if you want this for your ads. When someone with ABP and JavaScript enabled views your ads, your links are changed to a special randomized bitcointalk.org URL which redirects to your site when visited. People without ABP are unaffected, even if they don't have JavaScript enabled. The downsides are:
-              <ul>
-                <li>
-                  ABP users will see the redirection link when they hover over the link, even if they disable ABP for the forum.
-                </li>
-                <li>
-                  Getting referral stats might become even more difficult.
-                </li>
-                <li>
-                  Some users might get a warning when redirecting from https to http.
-                </li>
-              </ul>
-            </p>
-
-            <p>
-              To prevent matching on CSS classes/styles: Don't use inline CSS. I can give your ad a CSS class that is randomized on each pageload, but you must request this.
-            </p>
-
-            <p>
-              To prevent matching against your HTML structure: Use only one <code>&lt;a&gt;</code> and no other tags if possible. If your ads get blocked because of matching done on something inside of your ad, you are responsible for noticing this and giving me new ad HTML.
-            </p>
-
-            <br>
-            <p><b>Auction rules</b></p>
-
-            <p>
-              Post your bids in this thread. Prices must be stated in BTC per slot. You must make a bid for each slot you want. When the auction ends, the highest bidders will have their slots filled until all eight slots are filled.
-            </p>
-
-            <p>
-              I reserve the right to reject bids, even days after the bid is made. In particular, bids from people with less than 15 activity points are likely to be rejected. I recommend not getting into a bidding war with someone who has less than 15 activity points, as their bids might not be accepted, but your latest bids will still stand. If you need to know right away whether someone's bids will be accepted, PM me.
-            </p>
-
-            <ul>
-              <li>
-                All bid prices must be evenly divisible by 0.05.
-              </li>
-              <li>
-                The bidding starts at 0.50.
-              </li>
-              <li>
-                I will end the auction at an arbitrary time on the day the auction is slated to end. (I will probably end the auction 1-3 days before the ads are scheduled to go up.)
-              </li>
-            </ul>
-
-            <p>
-              If these rules are confusing, look at some of the past forum ad auctions to see how it's done.
-            </p>
-
-            <p>
-              You must pay for your slots within 24 hours of receiving the payment address. Otherwise your slots may be sold to someone else.
-            </p>
-          </div>
-          
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">
-              Close
-            </button>
-          </div>
-
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
@@ -267,7 +149,7 @@
           editable: true
         });
         $startTime = $("#startTime").pickatime({
-          interval: 5, 
+          interval: 5,
           editable: true
         });
         $endDate = $("#endDate").pickadate({
@@ -275,7 +157,7 @@
           editable: true
         });
         $endTime = $("#endTime").pickatime({
-          interval: 5, 
+          interval: 5,
           editable: true
         });
 
@@ -295,20 +177,20 @@
         if(!valid) { return; }
 
         // ajax post call to server to create auction
-        $.ajax({ 
-          type: "POST", 
-          url: '<%= browsePrefix %>/auctions', 
+        $.ajax({
+          type: "POST",
+          url: '<%= browsePrefix %>/auctions',
           data: {
-            start: valid.start, 
+            start: valid.start,
             end: valid.end,
             slots: valid.slots
-          }, 
+          },
           success: function() {
             location.reload();
           },
           error: function() {
             alert("There was an error creating the auction.");
-          }          
+          }
         });
       }
 
@@ -321,23 +203,23 @@
         var enabled = $("#auctionEnabled").prop("checked");
 
         // ajax post call to server to create auction
-        $.ajax({ 
-          type: "POST", 
-          url: '<%= browsePrefix %>/auctions/edit', 
+        $.ajax({
+          type: "POST",
+          url: '<%= browsePrefix %>/auctions/edit',
           data: {
             auctionId: id,
-            start: valid.start, 
+            start: valid.start,
             end: valid.end,
             slots: valid.slots,
             enabled: enabled
-          }, 
+          },
           success: function() {
             console.log(window.location);
             window.location.replace("http://" + window.location.host + "/admin");
           },
           error: function() {
             alert("There was an error updating the auction.");
-          }          
+          }
         });
       }
 
@@ -396,7 +278,7 @@
           var period = timeSplit.split(" ")[1]; // period 12:00 [AM]
           if (period && period.toUpperCase() === "PM") {
             hours = hours + 12;
-            if (hours === 24) { hours = 12; } 
+            if (hours === 24) { hours = 12; }
           }
           else if (period && period.toUpperCase() === "AM") {
             // if no period, assume first 12 hours
