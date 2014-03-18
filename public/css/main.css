@@ -44,6 +44,16 @@ body { padding: 0; }
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }
 
+/* Card Layouts */
+.cardBody { margin: 0 15px; }
+.cardHeader { font-size: 20px; }
+.cardSpacing {margin: 10px 0; }
+.cardTitle { margin: 0; }
+
+.auctionCardLabel { font-size: 24px; }
+
+
+
 
 /* Auction Page */
 

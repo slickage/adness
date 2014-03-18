@@ -11,6 +11,8 @@ module.exports = {
     });
   },
   updateBid: function(req, res) {
+    // updating bids are a admin only function for now
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.params.bidId = req.body.bidId;
     req.model.load('bid', req);
     req.model.end(function(err, models) {
@@ -28,6 +30,8 @@ module.exports = {
     });
   },
   deleteBid: function(req, res) {
+    // deleting bids is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteBid(req.params.bidId, function(err, body) {
       if (err) { console.log(err); }
       res.redirect('/admin');

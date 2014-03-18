@@ -44,7 +44,9 @@
   
           <div class="col-sm-12">
             <span class="auction_header">Auction: </span>
-            <%= auctionsOpen[i]._id %>
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i]._id %>">
+              <%= auctionsOpen[i]._id %>
+            </a>
           </div>
 
           <div class="col-sm-6">
@@ -55,8 +57,7 @@
             <%= new Date(auctionsOpen[i].end) %>
           </div>
           
-          <div class="col-sm-3">
-
+          <div class="col-sm-offset-3 col-sm-3 text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Options</button>
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -81,13 +82,6 @@
                 </li>
               </ul>
             </div>
-
-          </div>
-
-          <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auctions/<%= auctionsOpen[i]._id %>" class="btn btn-primary btn-block">
-              Details
-            </a>
           </div>
 
         </div>
@@ -105,7 +99,9 @@
 
           <div class="col-sm-12">
             <span class="auction_header">Auction: </span>
-            <%= auctionsClosed[i]._id %>
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsClosed[i]._id %>">
+              <%= auctionsClosed[i]._id %>
+            </a>
           </div>
 
           <div class="col-sm-6">
@@ -116,7 +112,7 @@
             <%= new Date(auctionsClosed[i].end) %>
           </div>
           
-          <div class="col-sm-3">
+          <div class="col-sm-offset-3 col-sm-3 text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Options</button>
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -143,12 +139,6 @@
             </div>
           </div>
 
-          <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auctions/<%= auctionsClosed[i]._id %>" class="btn btn-primary btn-block">
-              Details
-            </a>
-          </div>
-
         </div>
       <% } %>
     </div>
@@ -164,7 +154,9 @@
 
           <div class="col-sm-12">
             <span class="auction_header">Auction: </span>
-            <%= auctionsFuture[i]._id %>
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsFuture[i]._id %>">
+              <%= auctionsFuture[i]._id %>
+            </a>
           </div>
 
           <div class="col-sm-6">
@@ -175,7 +167,7 @@
             <%= new Date(auctionsFuture[i].end) %>
           </div>
 
-          <div class="col-sm-3">
+          <div class="col-sm-offset-3 col-sm-3 text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Options</button>
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -197,12 +189,6 @@
             </div>
           </div>
 
-          <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auctions/<%= auctionsFuture[i]._id %>" class="btn btn-primary btn-block">
-              Details
-            </a>
-          </div>
-
         </div>
       <% } %>
     </div>
@@ -218,7 +204,9 @@
 
           <div class="col-sm-12">
             <span class="auction_header">Auction: </span>
-            <%= auctionsPast[i]._id %>
+            <a href="<%= browsePrefix %>/auctions/<%= auctionsPast[i]._id %>">
+              <%= auctionsPast[i]._id %>
+            </a>
           </div>
 
           <div class="col-sm-6">
@@ -229,7 +217,7 @@
             <%= new Date(auctionsPast[i].end) %>
           </div>
 
-          <div class="col-sm-3">
+          <div class="col-sm-offset-3 col-sm-3 text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-primary">Options</button>
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -250,13 +238,6 @@
               </ul>
             </div>
           </div>
-
-          <div class="col-sm-3 text-center">
-            <a href="<%= browsePrefix %>/auctions/<%= auctionsPast[i]._id %>" class="btn btn-primary btn-block">
-              Details
-            </a>
-          </div>
-
         </div>
       <% } %>
     </div>

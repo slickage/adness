@@ -2,41 +2,45 @@
 
 <div class="content-page col-sm-offset-1 col-sm-10">
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <b>ID: <%= ad._id %></b>
-    </div>
-    <div class="panel-body">
-      <div class="col-sm-12">
-        <div class="row">
-          <%- ad.html %>
-        </div>
+  <% include ads/show %>
 
-        <br>
-
-        <div class="row well">
-          <%= ad.html %>
-        </div>
-
-        
-        <% if(user) { %>
-          <br>
-          <div class="pull-right">
-            <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
-              <button class="btn btn-danger">
-                Reject
-              </button>
-            </form>
-
-            <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
-              <button class="btn btn-success">
-                Approve
-              </button>
-            </form>
-          </div>
+  <% if (user && user.username === ad.username) { %>
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+      <form action="<%= browsePrefix%>/ads/<%= ad._id %>/delete" method="post">
+        <% if (ad.approved !== true) { %>
+          <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
+            Edit
+          </a>
         <% } %>
-      </div>
+        <button class="btn btn-danger">
+          Delete
+        </button>
+      </form>
     </div>
-  </div>
+  <% } %>
+
+  <% if( user && user.admin === true) { %>
+    <div class="col-sm-12">
+
+      <div class="col-sm-6">
+        <strong>Admin Controls: </strong>
+      </div>
+
+      <div class="col-sm-6">
+        <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
+          <button class="btn btn-danger">
+            Reject
+          </button>
+        </form>
+
+        <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
+          <button class="btn btn-success">
+            Approve
+          </button>
+        </form>
+      </div>
+
+    </div>
+  <% } %>
 
 </div>  

@@ -283,13 +283,8 @@ var db = {
     });
   },
   newAd: function(body, cb) {
-    // validate input
-    if (!validate.createAd(body.html)) {
-      return cb({ message: 'Ad HTML was not valid.' }, undefined);
-    }
-
     // validate html
-    var html = validation.html(body.html);
+    var html = validate.html(body.html);
 
     // validate submitted
     var submitted = false;
@@ -345,21 +340,36 @@ var db = {
           return cb({ message: 'Id is not for an ad.'}, undefined );
         }
 
-        // validate user (TODO: remove for admin)
-        if (body.username !== ad.username) {
-          return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+        // validate admin or user
+        if (ad.user.admin !== true) {
+          if (body.username !== ad.username) {
+            return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+          }
         }
 
-        // copy over on the allowed values into the retrieved ad
-        if (ad.html) body.html = validation.html(ad.html);
-        body.modified_at = new Date().getTime();
-        // handle both boolean and String true/false
-        // TODO: admin validation!!!!
-        if (String(ad.approved).toLowerCase()  === "true") {
-          body.approved = true;
+        // update html if not approved
+        if (!body.approved) {
+          if (ad.html) body.html = validate.html(ad.html);
         }
-        else if (String(ad.approved).toLowerCase() === "false") {
-          body.approved = false;
+
+        // update modified_at
+        body.modified_at = new Date().getTime();
+
+        // handle both boolean and String true/false
+        if (ad.user.admin === true) {
+          // admin only booleans
+          if (String(ad.approved).toLowerCase()  === "true") {
+            body.approved = true;
+          }
+          else if (String(ad.approved).toLowerCase() === "false") {
+            body.approved = false;
+          }
+          if (String(ad.rejected).toLowerCase()  === "true") {
+            body.rejected = true;
+          }
+          else if (String(ad.rejected).toLowerCase() === "false") {
+            body.rejected = false;
+          }
         }
         // handle both boolean and String true/false
         if (String(ad.submitted).toLowerCase()  === "true") {
@@ -383,9 +393,11 @@ var db = {
           return cb({ message: 'Id is not for an ad.'}, undefined );
         }
 
-        // validate user (TODO: remove for admin)
-        if (body.username !== ad.user.username) {
-          return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+        // validate user
+        if (ad.user.admin !== true) {
+          if (body.username !== ad.user.username) {
+            return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+          }
         }
 
         couch.destroy(body._id, body._rev, cb);

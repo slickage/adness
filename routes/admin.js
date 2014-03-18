@@ -1,4 +1,6 @@
 exports = module.exports = function(req, res) {
+  // admin check
+  if (!req.user.admin) { return res.redirect(req.browsePrefix); }
   req.model.load('auctionsTimeRelative', req);
   req.model.end(function(err, models) {
     if (err) { console.log(err); }

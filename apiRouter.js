@@ -2,6 +2,8 @@ var db = require(__dirname + '/db');
 
 module.exports = {
   newAuction: function(req, res) {
+    // creating auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.newAuction(req.body, function(err, body, header) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
@@ -57,6 +59,8 @@ module.exports = {
     });
   },
   enableAuction: function(req, res) {
+    // enabling auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
@@ -72,6 +76,8 @@ module.exports = {
     });
   },
   disableAuction: function(req, res) {
+    // disabling auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
@@ -87,6 +93,8 @@ module.exports = {
     });
   },
   updateAuction: function(req, res) {
+    // updating auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.params.auctionId = req.body.auctionId;
     req.model.load('auction', req);
     req.model.end(function(err, models) {
@@ -105,7 +113,8 @@ module.exports = {
     });
   },
   deleteAuction: function(req, res) {
-    console.log(req.params.auctionId);
+    // deleteing auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteAuction(req.params.auctionId, function(err, body) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
@@ -134,6 +143,8 @@ module.exports = {
     });
   },
   updateBid: function(req, res) {
+    // updating bids is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.params.bidId = req.body.bidId;
     req.model.load('bid', req);
     req.model.end(function(err, models) {
@@ -151,6 +162,8 @@ module.exports = {
     });
   },
   deleteBid: function(req, res) {
+    // deleting bids is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteBid(req.params.bidId, function(err, body) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }

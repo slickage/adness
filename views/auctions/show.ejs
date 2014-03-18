@@ -1,7 +1,7 @@
 <div class="panel panel-default">
-  <div class="panel-body" style="margin: 0 15px;">
+  <div class="panel-body cardBody">
     <div class="row">
-      <span style="font-size: 24px;">
+      <span class="auctionCardLabel">
       <% if(auction.open) { %>
         <span class="label label-success">Open</span>
       <% } else { %>
@@ -14,7 +14,7 @@
         <% } %>
       <% } %>
       </span>
-      <span style="font-size: 20px;">
+      <span class="cardHeader">
         Auction:
         <a href="<%= browsePrefix %>/auctions/<%=auction._id%>">
           <%= auction._id %>
@@ -41,7 +41,9 @@
         <div class="slot slot_text">
           <div class="row">
             <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
-            <div class="col-sm-6"><%= auction.bidPerSlot[i].user.username %></div>
+            <div class="col-sm-6">
+              Winner: <%= auction.bidPerSlot[i].user.username %>
+            </div>
             <div class="col-sm-3"><%= auction.bidPerSlot[i].price %> BTC</div>
           </div>
         </div>

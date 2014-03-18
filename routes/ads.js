@@ -24,6 +24,7 @@ exports = module.exports = {
       if (err) { console.log(err); res.redirect(req.browsePrefix); }
       else {
         var ad = models.ad;
+        ad.user = req.user;
         if (req.body.html) ad.html = req.body.html;
         if (req.body.approved) ad.approved = req.body.approved;
         if (req.body.submitted) ad.submitted = req.body.submitted;
@@ -63,6 +64,8 @@ exports = module.exports = {
     });
   },
   approveAd: function(req, res) {
+    // approving ads is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('ad', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect(req.browsePrefix); }
@@ -70,6 +73,7 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
         ad.approved = true;
+        ad.rejected = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix);
@@ -78,6 +82,8 @@ exports = module.exports = {
     });
   },
   rejectAd: function(req, res) {
+    // rejecting ads is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('ad', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect(req.browsePrefix); }
@@ -85,6 +91,8 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
         ad.approved = false;
+        ad.rejected = true;
+        ad.submitted = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix);

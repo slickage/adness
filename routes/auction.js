@@ -27,6 +27,8 @@ module.exports = {
     });
   },
   editAuction: function(req, res) {
+    // editing auctions is an admin open function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) console.log(err);
@@ -38,6 +40,8 @@ module.exports = {
     });
   },
   enableAuction: function(req, res) {
+    // enabling auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
@@ -53,6 +57,8 @@ module.exports = {
     });
   },
   disableAuction: function(req, res) {
+    // diabling auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
@@ -68,12 +74,16 @@ module.exports = {
     });
   },
   newAuction: function(req, res) {
+    // adding auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.newAuction(req.body, function(err, body, header) {
       if (err) { console.log(err); }
       res.redirect('/admin');
     });
   },
   updateAuction: function(req, res) {
+    // updating auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.params.auctionId = req.body.auctionId;
     req.model.load('auction', req);
     req.model.end(function(err, models) {
@@ -92,6 +102,8 @@ module.exports = {
     });
   },
   deleteAuction: function(req, res) {
+    // deleting auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteAuction(req.params.auctionId, function(err, body) {
       if (err) { console.log(err); }
       res.end();

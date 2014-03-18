@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+  <div class="panel-body cardBody">
+    
+    <div class="row cardTitle">
+      <span class="cardHeader">
+        Ad:
+        <a href="<%= browsePrefix %>/ads/<%= ad._id %>">
+          <%= ad._id %>
+        </a>
+      </span>
+    </div>
+    
+    <div class="row cardSpacing">
+      <strong>Ad HTML: </strong><br>
+      <%= ad.html %>
+    </div>
+
+    <hr>
+
+    <div class="row cardSpacing">
+      <strong>Ad Preview: </strong><br>
+      <%- ad.html %>
+    </div>
+    
+  </div>
+</div>

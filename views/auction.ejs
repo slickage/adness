@@ -1,74 +1,73 @@
 <% layout('sblayout') %>
 
 <div class="content-page col-sm-offset-1 col-sm-10">
-<% if (user) { %>
-  <div style="margin: 0px 5px">
-    <b>Advertising slots (1 in 10 chance)</b><br>
-    Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-    <br>
-    <small>
-      <em>
-        Advertised sites are not endorsed by the Bitcoin Forum.
-        They may be unsafe, untrustworthy, or illegal in your jurisdiction.
-      </em>
-    </small>
-  </div>
-  <div class="row bidding">
-    <form role="form" method="post" action="/sb/bids">
 
-      <input type="hidden" name="auctionId" value="<%= auction._id %>">
+  <% if (user && auction.open) { %>
+    <div style="margin: 0px 5px">
+      <b>Advertising slots (1 in 10 chance)</b><br>
+      Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
+      <br>
+      <small>
+        <em>
+          Advertised sites are not endorsed by the Bitcoin Forum.
+          They may be unsafe, untrustworthy, or illegal in your jurisdiction.
+        </em>
+      </small>
+    </div>
+    <div class="row bidding">
+      <form role="form" method="post" action="/sb/bids">
 
-      <div class="col-sm-4 slot_text">
-        Advertising Slot(s):<br>
-        <input type="number" name="slots" class="form-control" value="1" min="1">
-      </div>
+        <input type="hidden" name="auctionId" value="<%= auction._id %>">
 
-      <div class="col-sm-4 slot_text">
-        Bid Per Slot:<br>
-        <input type="number" name="price" class="form-control" value="<%= latestPrice.toFixed(2) %>" step="0.05">
-      </div>
+        <div class="col-sm-4 slot_text">
+          Advertising Slot(s):<br>
+          <input type="number" name="slots" class="form-control" value="1" min="1">
+        </div>
 
-      <div class="col-sm-4 slot_text bid_button">
-        <button type="submit" class="btn btn-primary btn-block">Bid</button>
-      </div>
+        <div class="col-sm-4 slot_text">
+          Bid Per Slot:<br>
+          <input type="number" name="price" class="form-control" value="<%= latestPrice.toFixed(2) %>" step="0.05">
+        </div>
 
-    </form>
+        <div class="col-sm-4 slot_text bid_button">
+          <button type="submit" class="btn btn-primary btn-block">Bid</button>
+        </div>
 
-  </div>
-
-<% } %>
+      </form>
+    </div>
+  <% } %>
 
   <% include auctions/show %>
 
   <% if (bids.length > 0) { %>
-    <br>
-    <b>Bid History:</b>
-    <br>
-  <% } %>
-
-  <% for (var i=0; i < bids.length; i++) { %>
-    <div class="slot">
-      <div class="row">
-        <div class="col-sm-12">
-          ID: <%= bids[i]._id %><br>
-        </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <b>Bid History:</b>
       </div>
-      <div class="row">
-        <div class="col-sm-3">
-          User: <%= bids[i].user.username %><br>
-        </div>
-        <div class="col-sm-3">
-          Price: <%= bids[i].price %><br>
-        </div>
-        <div class="col-sm-3">
-          Slots: <%= bids[i].slots %><br>
-        </div>
-        <div class="col-sm-3">
-          <%= new Date(bids[i].created_at) %>
-        </div>
+
+      <div class="panel-body">
+        <% for (var i=0; i < bids.length; i++) { %>
+          <div class="slot">
+            <div class="row">
+              <div class="col-sm-12">
+                ID: <strong><%= bids[i]._id %></strong><br>
+                Date/Time: <%= new Date(bids[i].created_at) %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                User: <%= bids[i].user.username %><br>
+              </div>
+              <div class="col-sm-4">
+                Price: <%= bids[i].price %><br>
+              </div>
+              <div class="col-sm-4">
+                Slots: <%= bids[i].slots %><br>
+              </div>
+            </div>
+          </div>
+        <% } %>
       </div>
-    </div>
-  <% } %>
-
-
+    <% } %>
+  </div>
 </div>

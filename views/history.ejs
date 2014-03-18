@@ -8,27 +8,28 @@
   <b>Final Auction Results</b>
   <br>
 
-  <% for(var i=0; i < auctions.length; i++) { %>
-
+  <% auctions.forEach(function(auction) { %>
     <div class="slot">
       <div class="row">
         <div class="col-sm-12">
-          Auction: <%= auctions[i]._id %>
+          Auction: 
+          <a href="<%= browsePrefix %>/auctions/<%= auction._id %>">
+            <%= auction._id %>
+          </a>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-9">
           <span class="auction_header">Start: </span>
-          <%= new Date(auctions[i].start) %>
+          <%= new Date(auction.start) %>
           <br>
           <span class="auction_header">End: </span>
-          <%= new Date(auctions[i].end) %>
+          <%= new Date(auction.end) %>
         </div>
-        <div class="col-sm-offset-3 col-sm-3">
-          <a href="<%= browsePrefix %>/auctions/<%= auctions[i]._id %>" class="btn btn-primary btn-block">Details</a>
+        <div class="col-sm-3">
+          Total Slots: <%= auction.slots %><br>
+
         </div>
       </div>
-    </div>
+    </div>    
+  <% }) %>
 
-  <% } %>
-  
-  
 </div>

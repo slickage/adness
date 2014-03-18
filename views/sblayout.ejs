@@ -37,10 +37,10 @@
         </div>
 
         <!-- Links to other pages -->
-        <% if (user && user.username) { %>
+        <% if (user && user.admin && user.admin === true) { %>
           <a href="/admin">
             <div class="sidebar-button">
-              <span class="glyphicon glyphicon-tasks icon-large"></span><br>
+              <span class="glyphicon glyphicon-wrench icon-large"></span><br>
               Admin
             </div>
           </a>
@@ -67,7 +67,7 @@
         <% } %>
         <a href="<%= browsePrefix %>/history">
           <div class="sidebar-button">
-            <span class="glyphicon glyphicon-list-alt icon-large"></span><br>
+            <span class="glyphicon glyphicon-bookmark icon-large"></span><br>
             History
           </div>
         </a>
@@ -81,11 +81,11 @@
             <div class="container-fluid bootstrap-fluid-fix">
               <div class="row">
                 <!-- Login module -->
-                <div class="col-sm-11">
+                <div class="col-sm-12">
                   <% if (user) { %>
+                  <a href="/logout" class="btn btn-primary pull-right">Logout</a>
                   <div style="padding-top: 7px">
                     Logged In: <%= user.username %>
-                    <a href="/logout">Logout</a>
                   </div>
                   <% } else { %>
                   <form class="form-inline pull-right" role="form" method="post" action="/login">
