@@ -7,7 +7,7 @@ module.exports = {
     bid.user = req.user; // add current user
     db.newBid(bid, function(err, body, header) {
       if (err) { console.log(err); }
-      res.redirect(req.browsePrefix);
+      res.redirect(req.browsePrefix + '/auctions/' + bid.auctionId);
     });
   },
   updateBid: function(req, res) {

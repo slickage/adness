@@ -3,7 +3,6 @@ var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couch = nano.use('adness');
 
-
 var start = new Date();
 var end = new Date(start);
 end.setHours(end.getHours() + 4);
@@ -62,5 +61,26 @@ couch.insert(openAuction);
 couch.insert(closedAuction);
 couch.insert(comingAuction);
 couch.insert(pastAuction);
+
+
+// recurring auctions
+var times = 0;
+var start = new Date();
+var end = new Date(start.getTime() + (1000 * 60 * 60 * 24));
+while (times < 50) {
+  start.setTime(start.getTime() + (1000 * 60 * 5));
+  end.setTime(end.getTime() + (1000 * 60 * 5));
+
+  var recurringAuction = {
+    type: 'auction',
+    start: start.getTime(),
+    end: end.getTime(),
+    slots: 8,
+    enabled: true
+  };
+  couch.insert(recurringAuction);
+  times++;
+}
+
 
 console.log('Seeding data to: ' + config.couchdb.url);
