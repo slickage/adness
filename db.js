@@ -347,8 +347,8 @@ var db = {
           }
         }
 
-        // update html if not approved
-        if (!body.approved) {
+        // update html if not approved or submitted
+        if (body.approved !== true && body.submitted !== true) {
           if (ad.html) body.html = validate.html(ad.html);
         }
 

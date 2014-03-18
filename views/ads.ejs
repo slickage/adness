@@ -5,9 +5,10 @@
   <% include ads/show %>
 
   <% if (user && user.username === ad.username) { %>
+
     <div class="col-sm-12" style="margin-bottom: 10px;">
       <form action="<%= browsePrefix%>/ads/<%= ad._id %>/delete" method="post">
-        <% if (ad.approved !== true) { %>
+        <% if (ad.approved !== true && ad.submitted !== true) { %>
           <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
             Edit
           </a>
@@ -17,6 +18,7 @@
         </button>
       </form>
     </div>
+
   <% } %>
 
   <% if( user && user.admin === true) { %>
