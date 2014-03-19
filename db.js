@@ -11,9 +11,16 @@ var db = {
       return cb({ message: 'Auction parameters were not valid.' }, undefined);
     }
 
+    // random true ending time of auction within 30 minutes of end
+    var end = Number(body.end);
+    var timeDifference = (1000 * 60 * 30);
+    var trueEnd = Math.floor(Math.random() * (timeDifference+1));
+    trueEnd = new Date(end).getTime() + trueEnd;
+
     var auction = {
       start: Number(body.start),
-      end: Number(body.end),
+      end: end,
+      trueEnd: trueEnd,
       slots: Number(body.slots),
       type: 'auction',
       enabled: true
@@ -32,6 +39,14 @@ var db = {
         // validate input
         if (!validate.updateAuction(auction.start, auction.end, auction.slots)) {
           return cb({ message: 'Auction parameters were not valid.'}, undefined );
+        }
+
+        // random true ending time of auction within 30 minutes of end
+        if (auction.end) {
+          var end = Number(auction.end);
+          var timeDifference = (1000 * 60 * 30);
+          var trueEnd = Math.floor(Math.random() * (timeDifference+1));
+          body.trueEnd = new Date(end).getTime() + trueEnd;
         }
 
         // copy over on the allowed values into the retrieved auction
@@ -72,9 +87,13 @@ var db = {
       if (!err) {
         var auctions = [];
         body.rows.forEach(function(doc) {
+          // check if auction is open
           var value = doc.value;
-          var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
+          var open = (currentTime >= value.start && currentTime < value.trueEnd) && value.enabled;
           value.open = open;
+
+          // remove trueEnd from outside view
+          delete value.trueEnd;
           auctions.push(value);
         });
         cb(null, auctions);
@@ -94,19 +113,28 @@ var db = {
       if (!err) {
         body.rows.forEach(function(doc) {
           var value = doc.value;
-          var open = (currentTime >= value.start && currentTime < value.end) && value.enabled;
+          // check if auction is open
+          var open = (currentTime >= value.start && currentTime < value.trueEnd) && value.enabled;
           value.open = open;
 
-          if ((currentTime >= value.start && currentTime < value.end) && value.enabled) {
+          if (value.open) {
+            // remove trueEnd from view
+            delete value.trueEnd;
             auctions.open.push(value);
           }
           else if ((currentTime >= value.start && currentTime < value.end) && !value.enabled) {
+            // remove trueEnd from view
+            delete value.trueEnd;
             auctions.closed.push(value);
           }
           else if (value.start > currentTime) {
+            // remove trueEnd from view
+            delete value.trueEnd;
             auctions.future.push(value);
           }
           else if (value.end < currentTime) {
+            // remove trueEnd from view
+            delete value.trueEnd;
             auctions.past.push(value);
           }
         });
@@ -120,14 +148,20 @@ var db = {
   getAuction: function(auctionId, cb) {
     couch.get(auctionId, null, function(err, body) {
       if (!err) {
+        // check that this is an auction
         if (body.type !== 'auction') {
           return cb({ message: 'Id is not for an auction.'}, undefined );
         }
+        
+        // figure out if it's open
         var currentTime = new Date().getTime();
         var open = (currentTime >= body.start &&
-            currentTime < body.end) &&
+            currentTime < body.trueEnd) &&
             body.enabled;
         body.open = open;
+
+        // remove true end time from view
+        delete body.trueEnd;
         cb(null, body);
       }
       else { cb(err, undefined); }
@@ -139,6 +173,17 @@ var db = {
       if (!err) {
         var bids = [];
         body.rows.forEach(function(bid) {
+          if (bid.value.type === 'auction') {
+            // figure out if it's open
+            var currentTime = new Date().getTime();
+            var open = (currentTime >= bid.value.start &&
+                currentTime < bid.value.trueEnd) &&
+                bid.value.enabled;
+            bid.value.open = open;
+
+            // remove true end time from view
+            delete bid.value.trueEnd;
+          }
           bids.push(bid.value);
         });
         cb(null, bids);

@@ -4,14 +4,18 @@
 
   <% if (user && auction.open) { %>
     <div style="margin: 0px 5px">
-      <b>Advertising slots (1 in 10 chance)</b><br>
-      Eight are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
+      <b>Advertising slots (1 in <%= auction.slots + 2%> chance)</b><br>
+      <%= auction.slots %> are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
       <br>
       <small>
         <em>
           Advertised sites are not endorsed by the Bitcoin Forum.
           They may be unsafe, untrustworthy, or illegal in your jurisdiction.
         </em>
+        <br>
+        <em>
+          To prevent sniping, the auction time listed below is not exact. The auction will actually end at a random time within 30 minutes of the listed time.
+          </em>
       </small>
     </div>
     <div class="row bidding">
@@ -54,7 +58,7 @@
                 Date/Time: <%= new Date(bids[i].created_at) %>
               </div>
             </div>
-            <div class="row">
+            <div class="row text-center">
               <div class="col-sm-4">
                 User: <%= bids[i].user.username %><br>
               </div>
