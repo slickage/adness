@@ -214,6 +214,13 @@ module.exports = {
         });
       }
     });
+  },
+  submittedAds: function(req, res) {
+    req.model.load('submittedAds', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json({ ad: models.submittedAds }); }
+    });
   }
 };
 

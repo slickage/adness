@@ -99,5 +99,17 @@ exports = module.exports = {
         });
       }
     });
+  },
+  submittedAds: function(req, res) {
+    // rejecting ads is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+    req.model.load("submittedAds", req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); }
+      res.render('submittedAds', {
+        ads: models.submittedAds,
+        browsePrefix: req.browsePrefix,
+        user: req.user});
+    });
   }
 };

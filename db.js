@@ -375,6 +375,18 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  getSubmittedAds: function(cb) {
+    couch.view('adness', 'submittedAds', function(err, body) {
+      if (!err) {
+        var ads = [];
+        body.rows.forEach(function(ad) {
+          ads.push(ad.value);
+        });
+        cb(null, ads);
+      }
+      else { cb(err, undefined); }
+    });
+  },
   updateAd: function(ad, cb) {
     // ensure that the ad exists first
     couch.get(ad._id, null, function(err, body) {

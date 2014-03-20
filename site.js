@@ -76,7 +76,8 @@ site.post(config.sbPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads
 site.post(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
 site.post(config.sbPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
 site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
-// normal private web routes
+// admin web routes
+site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.get('/admin', ensureAuthenticated, router.admin);
 // normal public web routes
@@ -105,6 +106,7 @@ site.post(apiPrefix + '/bids/edit', ensureAuthenticated, apiRouter.updateBid);
 site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
 site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
 // ADS
+site.get(apiPrefix + '/ads/submitted', ensureAuthenticated, apiRouter.submittedAds);
 site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
 site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);

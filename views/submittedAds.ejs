@@ -1,0 +1,17 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-offset-1 col-sm-10">
+
+  <% if (ads.length > 0) { %>
+    <div class="panel panel-warning"> 
+      <div class="panel-heading">
+        <b>Submitted Ads</b>
+      </div>
+      <div class="panel-body">
+        <% ads.forEach(function(ad) { %>
+          <% include ads/show %>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+
+</div>
