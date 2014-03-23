@@ -25,6 +25,24 @@
       <% if (ad) { %>
         Editing Ad: <%= ad._id %>
       <% } %>
+      <noscript>
+        We've noticed you're not using JavaScript.<br>
+        This page may not work at its best without JavaScript.<br>
+
+        <strong>Things you're missing out on: </strong><br>
+        <ul style="width: 300px; margin: auto;">
+          <li>
+            Saving your ads before submitting.
+          </li>
+          <li>
+            Preview your ad before submitting.
+          </li>
+          <li>
+            Syntax Highlighting in the text area.
+          </li>
+        </ul>
+        But you can still submit ads so you got that going for you I guess. 
+      </noscript>
     </div>
 
     <div class="container-fluid bootstrap-fluid-fix">
@@ -33,9 +51,27 @@
             <div style="padding-bottom: 20px;">
               Add your Ad HTML/CSS below:
             </div>
-            <textarea name="upload-code" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+            <form action="<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>" method="post">
+              <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+
+              <noscript>
+                <input type="hidden" name="submitted" id="submitted" value="true">
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </noscript>
+            </form>
         </div>
       </div>
+
+      <noscript>
+        <div class="row text-center">
+          <strong>
+          Since you're not using JS, 
+          ignore eveything under this line
+        </strong>
+        </div>
+        <hr>
+      </noscript>
 
       <div id="preview-text" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6">
@@ -82,10 +118,8 @@
         lineNumbers: true
       });
       myCodeMirror.setSize(null, 150);
-      // on change event that maxes the number of lines to three
-      myCodeMirror.on(
-        "change", function(cm, change) { convert(); }
-      )
+      // on change event: update preview and clean html
+      myCodeMirror.on("change", function(cm, change) { convert(); });
 
       function convert() {
         // scrub the raw html for any security leaks
