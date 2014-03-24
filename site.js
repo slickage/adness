@@ -10,7 +10,10 @@ var express = require('express'),
     apiRouter = require('./apiRouter'),
     config = require('./config'),
     ensureAuthenticated = require('./middleware/ensure-auth'),
-    browsePrefix = require('./middleware/browse-prefix');
+    browsePrefix = require('./middleware/browse-prefix'),
+    NR = require('node-resque'),
+    connectionDetails = require('./resque/redis-store'),
+    jobs = require('./resque/jobs');
 
 // Express config on all environments
 site.engine('ejs', engine);
@@ -121,6 +124,39 @@ site.get('/logout', function(req, res){
   req.logout();
   res.redirect(config.sbPrefix + '/');
 });
+
+
+// Node resque setup
+var worker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){
+  worker.workerCleanup(); // optional: cleanup any previous improperly shutdown workers
+  worker.start();
+});
+
+var scheduler = new NR.scheduler({connection: connectionDetails}, function(){
+  scheduler.start();
+});
+
+worker.on('start',           function(){ console.log("worker started"); });
+worker.on('end',             function(){ console.log("worker ended"); });
+worker.on('cleaning_worker', function(worker, pid){ console.log("cleaning old worker " + worker); });
+worker.on('poll',            function(queue){ console.log("worker polling " + queue); });
+worker.on('job',             function(queue, job){ console.log("working job " + queue + " " + JSON.stringify(job)); });
+worker.on('reEnqueue',       function(queue, job, plugin){ console.log("reEnqueue job (" + plugin + ") " + queue + " " + JSON.stringify(job)); });
+worker.on('success',         function(queue, job, result){ console.log("job success " + queue + " " + JSON.stringify(job) + " >> " + result); });
+worker.on('error',           function(queue, job, error){ console.log("job failed " + queue + " " + JSON.stringify(job) + " >> " + error); });
+worker.on('pause',           function(){ console.log("worker paused"); });
+
+scheduler.on('start', function(){ console.log("scheduler started"); });
+scheduler.on('end', function(){ console.log("scheduler ended"); });
+scheduler.on('poll', function(){ console.log("scheduler polling"); });
+scheduler.on('working_timestamp', function(timestamp){ console.log("scheduler working timestamp " + timestamp); });
+scheduler.on('transferred_job',    function(timestamp, job){ console.log("scheduler enquing job " + timestamp + " >> " + JSON.stringify(job)); });
+
+var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
+  queue.enqueue('auction', 'cull-auctions',  []);
+});
+
+
 
 
 module.exports = site;

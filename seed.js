@@ -79,7 +79,7 @@ couch.insert(pastAuction);
 // recurring auctions
 var times = 0;
 var start = new Date();
-var end = new Date(start.getTime() + (1000 * 60 * 60 * 24));
+var end = new Date(start.getTime() + (1000 * 60 * 5));
 while (times < 50) {
   start.setTime(start.getTime() + (1000 * 60 * 5));
   end.setTime(end.getTime() + (1000 * 60 * 5));

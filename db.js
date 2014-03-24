@@ -81,6 +81,23 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  fullAuctions: function(cb) {
+    var currentTime = new Date().getTime();
+    couch.view('adness', 'auctions', function(err, body) {
+      if (!err) {
+        var auctions = [];
+        body.rows.forEach(function(doc) {
+          // check if auction is open
+          var value = doc.value;
+          var open = (currentTime >= value.start && currentTime < value.trueEnd) && value.enabled;
+          value.open = open;
+          auctions.push(value);
+        });
+        cb(null, auctions);
+      }
+      else { cb(err, undefined); }
+    });
+  },
   allAuctions: function(cb) {
     var currentTime = new Date().getTime();
     couch.view('adness', 'auctions', function(err, body) {

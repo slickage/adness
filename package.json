@@ -34,7 +34,8 @@
     "bitcoin": "~2.0.1",
     "qr-image": "^1.0.0",
     "async": "~0.2.10",
-    "google-caja": "0.0.2"
+    "google-caja": "0.0.2",
+    "node-resque": "~0.5.1"
   },
   "devDependencies": {
     "tap": "~0.4.8"
