@@ -128,12 +128,8 @@ site.get('/logout', function(req, res){
 
 // Node resque setup
 var worker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){
-  worker.workerCleanup(); // optional: cleanup any previous improperly shutdown workers
+  worker.workerCleanup(); // optional: cleanup old improperly shutdown workers
   worker.start();
-});
-
-var scheduler = new NR.scheduler({connection: connectionDetails}, function(){
-  scheduler.start();
 });
 
 worker.on('start',           function(){ console.log("worker started"); });
@@ -146,17 +142,9 @@ worker.on('success',         function(queue, job, result){ console.log("job succ
 worker.on('error',           function(queue, job, error){ console.log("job failed " + queue + " " + JSON.stringify(job) + " >> " + error); });
 worker.on('pause',           function(){ console.log("worker paused"); });
 
-scheduler.on('start', function(){ console.log("scheduler started"); });
-scheduler.on('end', function(){ console.log("scheduler ended"); });
-scheduler.on('poll', function(){ console.log("scheduler polling"); });
-scheduler.on('working_timestamp', function(timestamp){ console.log("scheduler working timestamp " + timestamp); });
-scheduler.on('transferred_job',    function(timestamp, job){ console.log("scheduler enquing job " + timestamp + " >> " + JSON.stringify(job)); });
-
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
   queue.enqueue('auction', 'cull-auctions',  []);
 });
-
-
 
 
 module.exports = site;
