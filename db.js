@@ -410,7 +410,6 @@ var db = {
       if (!err) {
         // make sure we're getting an ad
         if (body.type !== 'ad') {
-          console.log(body.type);
           return cb({ message: 'Id is not for an ad.'}, undefined );
         }
 
@@ -478,7 +477,51 @@ var db = {
       }
       else { cb(err, undefined); }
     });
-  }
+  },
+  newBPReceipt: function(newReceipt, cb) {
+    var receipt = {
+      auctionId: newReceipt.auctionId,
+      username: newReceipt.username,
+      invoiceId: newReceipt.invoiceId || "",
+      created_at: new Date().getTime(),
+      modified_at: new Date().getTime(),
+      type: 'bp_receipt'
+    };
+    couch.insert(receipt, cb);
+  },
+  getBPReceipt: function(receiptId, cb) {
+    couch.get(receiptId, null, function(err, body) {
+      if (!err) {
+        if (body.type !== 'bp_receipt') {
+          return cb({ message: 'Id is not for an BPReceipt.'}, undefined );
+        }
+        cb(null, body);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  updateBPReceipt: function(newReceipt, cb) {
+    // ensure that the receipt exists first
+    couch.get(newReceipt._id, null, function(err, oldReceipt) {
+      if (!err) {
+        // make sure we're getting an receipt
+        if (oldReceipt.type !== 'bp_receipt') {
+          return cb({ message: 'Id is not for an ad.'}, undefined );
+        }
+
+        // update modified_at
+        oldReceipt.modified_at = new Date().getTime();
+        // update the rest of the values
+        oldReceipt.auctionId = newReceipt.auctionId;
+        oldReceipt.username = newReceipt.username;
+        oldReceipt.invoiceId = newReceipt.invoiceId;
+
+        // update receipt
+        couch.insert(oldReceipt, cb);
+      }
+      else { cb(err, undefined); }
+    });
+  },
 };
 
 
