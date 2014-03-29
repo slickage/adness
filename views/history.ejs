@@ -19,10 +19,10 @@
         </div>
         <div class="col-sm-9">
           <span class="auction_header">Start: </span>
-          <%= new Date(auction.start) %>
+          <span class="date"><%= new Date(auction.start).toUTCString() %></span>
           <br>
           <span class="auction_header">End: </span>
-          <%= new Date(auction.end) %>
+          <span class="date"><%= new Date(auction.end).toUTCString() %></span>
         </div>
         <div class="col-sm-3">
           Total Slots: <%= auction.slots %><br>

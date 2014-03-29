@@ -506,7 +506,7 @@ var db = {
       if (!err) {
         // make sure we're getting an receipt
         if (oldReceipt.type !== 'bp_receipt') {
-          return cb({ message: 'Id is not for an ad.'}, undefined );
+          return cb({ message: 'Id is not for an BPReceipt.'}, undefined );
         }
 
         // update modified_at

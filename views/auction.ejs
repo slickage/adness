@@ -55,7 +55,7 @@
             <div class="row">
               <div class="col-sm-12">
                 ID: <strong><%= bids[i]._id %></strong><br>
-                Date/Time: <%= new Date(bids[i].created_at) %>
+                Date/Time: <span class="date"><%= new Date(bids[i].created_at).toUTCString() %></span>
               </div>
             </div>
             <div class="row text-center">

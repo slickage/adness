@@ -1,6 +1,12 @@
 var db = require(__dirname + '/../db');
 var request = require('request');
 var config = require('../config');
+var ejs = require('ejs');
+var fs = require('fs');
+var heckler = require('heckler');
+var winnerTemplate = __dirname + '/../email-templates/notify-winners.ejs';
+var bidderTemplate = __dirname + '/../email-templates/notify-bidders.ejs';
+
 
 module.exports = function(callback) {
   // get all auctions in full (with trueEnd property)
@@ -51,16 +57,6 @@ function setDaysTimeout(callback, timeTill, parameters) {
 }
 
 function auctionNotification(auction) {
-  // get the winning bids and bids per slot from the db
-  db.appendBidsToAuction(auction, function(err, auctionBids) {
-    // calculate the winners and how much each owes
-    var winners = generateWinners(auctionBids.bidPerSlot);
-    for(var winner in winners) {
-      // notify winners with a link to payment
-      notifyWinner(winners[winner], auction._id);
-    }
-  });
-
   // get all the bids for this auction
   db.getBidsPerAuction(auction._id, function(err, bids) {
     // remove first bid since it's an auction
@@ -71,6 +67,16 @@ function auctionNotification(auction) {
     for(var bidder in bidders) {
       // notify bidders that the auction is closed
       notifyBidder(bidders[bidder], auction._id);
+    }
+  });
+
+  // get the winning bids and bids per slot from the db
+  db.appendBidsToAuction(auction, function(err, auctionBids) {
+    // calculate the winners and how much each owes
+    var winners = generateWinners(auctionBids.bidPerSlot);
+    for(var winner in winners) {
+      // notify winners with a link to payment
+      notifyWinner(winners[winner], auction._id);
     }
   });
 }
@@ -110,44 +116,67 @@ function generateBidders(bids) {
 }
 
 function notifyWinner(user, auctionId) {
+  console.log("Notifying " + user.username + " that they've won.");
+
   // generate basicpay receipt with auctionId and username
   var bpReceipt = {auctionId: auctionId, username: user.username};
 
   // insert basicpay receipt into db
   db.newBPReceipt(bpReceipt, function(err, body) {
     if (err) { return console.log(err); }
+
     // use basicpay receipt id as webhook token
+    bpReceipt._id = body.id;
     var token = body.id;
+    console.log("Created a BP Receipt with ID: " + token);
     
     // generate invoice
     var invoice = createInvoice(user.payment, user.slots, token);
-    console.log(invoice);
 
     // send invoice to basicpay and get invoice id
     request.post(
       {
-        uri: 'http://localhost:3000/invoices',
+        uri: config.basicpay.url + '/invoices',
         method: "POST",
         form: invoice
       },
       function(err, response, body) {
         if (err) { return console.log(err); }
-        console.log(body);
+        
+        // parse body into json (invoice)
+        var invoice = JSON.parse(body);
 
-        if (body[0]) {
+        // check for valid invoice data
+        if (invoice[0]) {
           // get the invoiceId
-          var invoice = body[0];
-          var invoiceId = invoice._id;
-          console.log(invoiceId);
+          var invoiceId = invoice[0]._id;
+
+          console.log("Invoice " + invoiceId + " created for " + user.username);
 
           // update basicpay receipt with invoiceId
           bpReceipt.invoiceId = invoiceId;
           db.updateBPReceipt(bpReceipt, function(err, body) {
             if (err) { return console.log(err); }
+            console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
+          });
 
-            // build email template
-            
-            // heckle the winners
+          // build email template
+          var data = {
+            auctionId: auctionId,
+            user: user,
+            invoiceId: invoiceId,
+            invoiceUrl: config.basicpay.url
+          };
+          var str = fs.readFileSync(winnerTemplate, 'utf8');
+          var html = ejs.render(str, data);
+          
+          // heckle the winners
+          console.log("Emailing " + user.username + " with winner's template");
+          heckler.email({
+            from: "Test <taesup63@gmail.com>",
+            to: "taesup63@gmail.com",
+            subject: "You're the winning bidder for an auction.",
+            html: html
           });
         }
         else { console.log("ERROR: BasicPay could not generate an invoice!"); }
@@ -157,19 +186,32 @@ function notifyWinner(user, auctionId) {
 }
 
 function notifyBidder(user, auctionId) {
-  console.log("Bidder");
-  console.log(user);
-  // notify bidder that auction is closed
+  console.log("Notifying " + user.username + " that the auction is closed.");
+  
+  // find the next open auction 
+  db.auctionsTimeRelative(function(err, auctions) {
+    if (err) { console.log(err); }
+    else {
+      // find next auction if available
+      var auction = null;
+      var futureAuctions = auctions.future;
+      if (futureAuctions[0]) { auction = futureAuctions[0]; }
 
-  // TODO: find the next open auction 
-
-  // build the email template
-
-  // heckle the bidders
-}
-
-function heckleUser(emailTemplate, email) {
-
+      // build email template
+      var data = { auctionId: auctionId, nextAuction: auction };
+      var str = fs.readFileSync(bidderTemplate, 'utf8');
+      var html = ejs.render(str, data);
+      
+      // heckle the winners
+      console.log("Emailing " + user.username + " with bidder's template");
+      heckler.email({
+        from: "Test <taesup63@gmail.com>",
+        to: "taesup63@gmail.com",
+        subject: "Auction " + auctionId + " has ended.",
+        html: html
+      });
+    }
+  });
 }
 
 function createInvoice(payment, slots, token) {

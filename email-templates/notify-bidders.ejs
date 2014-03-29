@@ -1,0 +1,12 @@
+<div style="width: 90%; margin: auto;">
+  Thank you for participating in this auction. If you've won an ad slot in the auction, a separate email will be sent to you with instructions on how to make your payment. 
+  <br><br>
+  <% if (nextAuction) { %>
+    The next available auction will take place at <%= new Date(nextAuction.start).toUTCString() %>.
+  <% } else { %>
+    There are no auctions currently planned for the immediate future.
+  <% } %>
+</div>
+
+<br><br>
+<em>This is a automated email. Please do not reply to this email.</em>

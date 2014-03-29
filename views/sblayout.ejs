@@ -366,6 +366,15 @@
           slots: slots
         };
       }
+
+      // format all date strings in admin page
+      $(document).ready(function() {
+        $(".date").each(function(index, value) {
+          var dateString = $(value).text();
+          var date = new Date(dateString).toLocaleString();
+          $(value).text(date);
+        })
+      });
     </script>
     <!-- endbower -->
     <!-- endbuild -->

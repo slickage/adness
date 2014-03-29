@@ -24,10 +24,10 @@
     <div class="row">
       <br/>
       <strong>Auction Start Date/Time:</strong>
-      <%= new Date(auction.start) %>
+      <span class="date"><%= new Date(auction.start).toUTCString() %></span>
       <br/>
       <strong>Auction End Date/Time:</strong>
-      <%= new Date(auction.end) %>
+      <span class="date"><%= new Date(auction.end).toUTCString() %></span>
       <br/>
       <strong>Slots with Bids/Total Slots:</strong>
       <%= auction.bidPerSlot.length %>/<%= auction.slots %>
