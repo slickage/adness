@@ -54,7 +54,6 @@ if ('development' == site.get('env')) {
 site.get(config.sbPrefix, router.sbindex);
 site.get(config.sbPrefix + '/rules', router.rules);
 site.get(config.sbPrefix + '/history', router.history);
-site.get(config.sbPrefix + '/registration', router.registration);
 site.get(config.sbPrefix + '/payment', router.payment);
 site.get(config.sbPrefix + '/qr/:qrString', router.qr);
 // AUCTIONS
@@ -79,6 +78,10 @@ site.post(config.sbPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads
 site.post(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
 site.post(config.sbPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
 site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
+
+// registration routes
+site.get(config.sbPrefix + '/auction/registration/:auctionId', router.registration);
+
 // admin web routes
 site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);

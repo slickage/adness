@@ -17,6 +17,7 @@ var openAuction = {
   end: end.getTime(),
   trueEnd: trueEnd,
   slots: 10,
+  users: [],
   enabled: true
 };
 
@@ -27,6 +28,7 @@ var closedAuction = {
   end: end.getTime(),
   trueEnd: trueEnd,
   slots: 10,
+  users: [],
   enabled: false
 };
 
@@ -47,6 +49,7 @@ var comingAuction = {
   end: comingEnd.getTime(),
   trueEnd: comingTrueEnd,
   slots: 10,
+  users: [],
   enabled: true
 };
 
@@ -67,6 +70,7 @@ var pastAuction = {
   end: pastEnd.getTime(),
   trueEnd: pastTrueEnd,
   slots: 10,
+  users: [],
   enabled: true
 };
 
@@ -90,6 +94,7 @@ while (times < 50) {
     end: end.getTime(),
     trueEnd: end.getTime(),
     slots: 8,
+    users: [],
     enabled: true
   };
   couch.insert(recurringAuction);

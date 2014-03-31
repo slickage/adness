@@ -1,4 +1,5 @@
 var db = require(__dirname + '/../db');
+var _ = require('underscore');
 
 module.exports = {
   showAuction: function(req, res) {
@@ -7,6 +8,7 @@ module.exports = {
     req.model.end(function(err, models) {
       var auction = models.auction;
       var bids = models.bids;
+      var reguser;
       if (err) console.log(err);
         var latestPrice;
         if (auction.winningBids.length > 0) {
@@ -17,12 +19,19 @@ module.exports = {
         }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
+      // check if user is registered to this auction
+      if (auction.users && req.user ){
+        reguser = _.findWhere(auction.users, {username: req.user.username});
+        console.log(reguser);
+      }
+      // render view
       res.render('auction', {
         auction: auction,
         bids: bids,
         browsePrefix: req.browsePrefix,
         latestPrice: latestPrice,
-        user: req.user
+        user: req.user,
+        reguser: reguser
       });
     });
   },

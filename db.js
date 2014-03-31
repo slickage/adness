@@ -22,6 +22,7 @@ var db = {
       end: end,
       trueEnd: trueEnd,
       slots: Number(body.slots),
+      users: [],
       type: 'auction',
       enabled: true
     };
@@ -53,6 +54,7 @@ var db = {
         if (auction.start) body.start = Number(auction.start);
         if (auction.end) body.end = Number(auction.end);
         if (auction.slots) body.slots = Number(auction.slots);
+        if (auction.users) body.users = auction.users;
         // handle both boolean and String true/false
         if (String(auction.enabled).toLowerCase()  === "true") {
           body.enabled = true;
