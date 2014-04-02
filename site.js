@@ -78,10 +78,6 @@ site.post(config.sbPrefix + '/ads/:adId/delete', ensureAuthenticated, router.ads
 site.post(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.updateAd);
 site.post(config.sbPrefix + '/ads', ensureAuthenticated, router.ads.newAd);
 site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteAd);
-
-// registration routes
-site.get(config.sbPrefix + '/auction/registration/:auctionId', router.registration);
-
 // admin web routes
 site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
@@ -117,6 +113,7 @@ site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
 site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);
 site.del(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.deleteAd);
+site.post('/registration', router.registration);
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/'}),
   function(req, res) {

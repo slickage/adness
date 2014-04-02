@@ -121,11 +121,15 @@ module.exports = {
     });
   },
   newBid: function(req, res) {
-    var bid = req.body;
-    bid.user = req.user; // add current user
-    db.newBid(bid, function(err, body, header) {
-      if (err) { console.log(err); res.json(err); }
-      else { res.json(body); }
+    req.model.load('registeredUser', req);
+    req.model.end(function(err, models) {
+      var bid = req.body;
+      bid.user = req.user; // add current user
+      bid.regUser = models.registeredUser;
+      db.newBid(bid, function(err, body, header) {
+        if (err) { console.log(err); res.json(err); }
+        else { res.json(body); }
+      });
     });
   },
   bids: function(req, res) {

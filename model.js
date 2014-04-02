@@ -7,3 +7,4 @@ MC.model('bid', require('./model/bid'));
 MC.model('ad', require('./model/ad'));
 MC.model('userAds', require('./model/userAds'));
 MC.model('submittedAds', require('./model/submittedAds'));
+MC.model('registeredUser', require('./model/registeredUser'));

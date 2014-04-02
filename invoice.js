@@ -3,18 +3,22 @@ var config = require('./config');
 var request = require('request');
 
 module.exports = {
-  registration: function(auction, user, webhook, cb) {
-    generateBPReceipt(auction, user, function(err, bpReceipt) {
+  registration: function(user, webhook, cb) {
+    // create basicpay receipt with username
+    var bpReceipt = { username: user.username };
+    generateBPReceipt(bpReceipt, function(err, bpReceipt) {
       if (err) { return cb(err, undefined); }
 
       // generate an invoice for the registration fee
-      var invoice = createRegistrationInvoice(auction, webhook, bpReceipt);
+      var invoice = createRegistrationInvoice(user, webhook, bpReceipt);
 
       generateInvoice(invoice, bpReceipt, cb);
     });
   },
   auction: function(auction, user, webhook, cb) {
-    generateBPReceipt(auction, user, function(err, bpReceipt) {
+    // create basicpay receipt with username and auctionId
+    var bpReceipt = {auctionId: auction._id, username: user.username };
+    generateBPReceipt(bpReceipt, function(err, bpReceipt) {
       if (err) { return cb(err, undefined); }
 
       // generate an invoice for auction winners
@@ -43,12 +47,12 @@ function createAuctionInvoice(payment, slots, webhook, bpReceipt) {
   return invoice;
 }
 
-function createRegistrationInvoice(auction, webhook, bpReceipt) {
+function createRegistrationInvoice(user, webhook, bpReceipt) {
   var invoice = {};
   invoice.currency = "BTC";
   invoice.min_confirmations = 6; // TODO: confirm block chain confirmations
   invoice.line_items = [{
-    description: "Auction " + auction._id + " Registration Fee",
+    description: user.username + " Auction Registration Fee",
     quantity: 1,
     amount: 0.25,
   }];
@@ -58,10 +62,7 @@ function createRegistrationInvoice(auction, webhook, bpReceipt) {
   return invoice;
 }
 
-function generateBPReceipt(auction, user, cb) {
-  // generate basicpay receipt with auctionId and username
-  var bpReceipt = {auctionId: auction._id, username: user.username};
-
+function generateBPReceipt(bpReceipt, cb) {
   // insert basicpay receipt into db
   db.newBPReceipt(bpReceipt, function(err, body) {
     if (err) { return cb(err, undefined); }
@@ -87,26 +88,18 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
       
       // parse body into json (invoice)
       var invoice = JSON.parse(body);
+      // get the invoiceId
+      var invoiceId = invoice.id;
 
-      // check for valid invoice data
-      if (invoice[0]) {
-        // get the invoiceId
-        var invoiceId = invoice[0]._id;
+      console.log("Invoice " + invoiceId + " created for BPReceipt: " + bpReceipt._id);
 
-        console.log("Invoice " + invoiceId + " created for BPReceipt: " + bpReceipt._id);
-
-        // update basicpay receipt with invoiceId
-        bpReceipt.invoiceId = invoiceId;
-        db.updateBPReceipt(bpReceipt, function(err, body) {
-          if (err) { return cb(err, undefined); }
-          console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
-          cb(null, invoiceId);
-        });
-      }
-      else {
-        var error = { message: 'BasicPay could not generate an invoice!' };
-        return cb(error, undefined);
-      }
+      // update basicpay receipt with invoiceId
+      bpReceipt.invoiceId = invoiceId;
+      db.updateBPReceipt(bpReceipt, function(err, body) {
+        if (err) { return cb(err, undefined); }
+        console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
+        cb(null, invoiceId);
+      });
     }
   );
 }

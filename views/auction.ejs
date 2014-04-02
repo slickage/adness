@@ -55,7 +55,11 @@
     <% } else { %>
 
       <div class="text-center" style="margin-bottom: 15px;">
-        <a class="btn btn-success" href="<%= browsePrefix %>/auction/registration/<%= auction._id %>">Register for this auction</a>
+        <form action="/registration" method="POST">
+          <button class="btn btn-success">
+            Register for this auction
+          </button>
+        </form>
       </div>
 
     <% } %>

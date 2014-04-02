@@ -22,7 +22,6 @@ var db = {
       end: end,
       trueEnd: trueEnd,
       slots: Number(body.slots),
-      users: [],
       type: 'auction',
       enabled: true
     };
@@ -54,7 +53,6 @@ var db = {
         if (auction.start) body.start = Number(auction.start);
         if (auction.end) body.end = Number(auction.end);
         if (auction.slots) body.slots = Number(auction.slots);
-        if (auction.users) body.users = auction.users;
         // handle both boolean and String true/false
         if (String(auction.enabled).toLowerCase()  === "true") {
           body.enabled = true;
@@ -249,6 +247,13 @@ var db = {
     });
   },
   newBid: function(body, cb) {
+    // check that user is registered
+    var regUser = body.regUser;
+    if (regUser.registered !== true) {
+      var message = "User is not registered.";
+      return cb({ message: message }, undefined);
+    }
+
     // get auction first to see if it's open
     couch.get(body.auctionId, null, function(err, auction) {
       if (!err) {
@@ -522,6 +527,32 @@ var db = {
         couch.insert(oldReceipt, cb);
       }
       else { cb(err, undefined); }
+    });
+  },
+  insertRegisteredUser: function(user, cb) {
+    var registeredUser = {
+      userId: user.userId,
+      registrationStatus: user.registrationStatus,
+      registered: user.registered,
+      email: user.email,
+      username: user.username,
+      type: 'registeredUser'
+    };
+    couch.insert(registeredUser, cb);
+  },
+  getRegisteredUser: function(userId, cb) {
+    couch.view('adness', 'registeredUser', { startkey: userId, endkey: {}, limit: 1 }, function(err, body) {
+
+      if (err) { return cb(null, undefined); }
+      
+      var user;
+      body.rows.forEach(function(row) {
+        // check that this is an registered user
+        if (row.value.type !== 'registeredUser') { return; }
+        else { user = row.value;}
+      });
+
+      cb(null, user);
     });
   },
 };

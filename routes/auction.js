@@ -5,25 +5,23 @@ module.exports = {
   showAuction: function(req, res) {
     req.model.load('auction', req);
     req.model.load('bids', req);
+    req.model.load('registeredUser', req);
     req.model.end(function(err, models) {
+      if (err) {
+        console.log(err);
+        return res.redirect(req.browsePrefix);
+      }
       var auction = models.auction;
       var bids = models.bids;
-      var reguser;
-      if (err) console.log(err);
-        var latestPrice;
-        if (auction.winningBids.length > 0) {
-          latestPrice = auction.winningBids[0].price + 0.05;
-        }
-        else {
-          latestPrice = 0.50;
-        }
+      var regUser = models.registeredUser;
+      // find latest price for this auction
+      var latestPrice;
+      if (auction.winningBids.length > 0) {
+        latestPrice = auction.winningBids[0].price + 0.05;
+      }
+      else { latestPrice = 0.50; }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
-      // check if user is registered to this auction
-      if (auction.users && req.user ){
-        reguser = _.findWhere(auction.users, {username: req.user.username});
-        console.log(reguser);
-      }
       // render view
       res.render('auction', {
         auction: auction,
@@ -31,7 +29,7 @@ module.exports = {
         browsePrefix: req.browsePrefix,
         latestPrice: latestPrice,
         user: req.user,
-        reguser: reguser
+        reguser: regUser
       });
     });
   },
