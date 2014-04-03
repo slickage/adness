@@ -33,5 +33,11 @@ module.exports = {
   },
   basicpay: {
     url: 'http://localhost:3000'
+  },
+  admin: {
+    email: process.env.ADMIN_EMAIL || 'ed@slickage.com'
+  },
+  site: {
+    url: process.env.SITE_URL || 'http://localhost:8080'
   }
 };

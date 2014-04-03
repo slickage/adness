@@ -1,0 +1,20 @@
+<h1>Auction Invoice for <%= username %> has been paid</h1>
+
+<hr>
+
+<div style="width: 90%; margin: auto;">
+  <%= username %> has paid the invoice sent to him for winning slot(s) in auction <%= auctionId %>. A link to the original invoice is include. Please double check that the payment was made. The invoice also includes the address the payment was sent to. 
+  <br><br>
+  <a href="<%= invoiceUrl %>/invoices/<%= invoiceId %>">
+    Click here to view the invoice.
+  </a>
+  <br><br>
+  A link to the <%= username %>'s ads can be found below:<br>
+  <a href="<%= site %><%= browsePrefix %>/users/<%= username %>">
+    <%= username %>'s Ads
+  </a>
+</div>
+
+<br><br>
+
+<em>This is a automated email. Please do not reply to this email.</em>

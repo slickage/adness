@@ -11,7 +11,7 @@ module.exports = function(user, cb) {
   if (!user) { return cb({message: 'no user found.'}, undefined); }
 
   // build an invoice for the registration fee
-  var webhook = "http://localhost:8080/webhooks/registration/";
+  var webhook = config.site.url + "/hooks/registration";
   invoice.registration(user, webhook, function(err, invoiceId) {
     if (err) { return cb(err, undefined); }
 

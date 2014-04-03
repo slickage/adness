@@ -13,7 +13,8 @@ var express = require('express'),
     browsePrefix = require('./middleware/browse-prefix'),
     NR = require('node-resque'),
     connectionDetails = require('./resque/redis-store'),
-    jobs = require('./resque/jobs');
+    jobs = require('./resque/jobs'),
+    webhook = require('./webhook');
 
 // Express config on all environments
 site.engine('ejs', engine);
@@ -125,6 +126,9 @@ site.get('/logout', function(req, res){
   res.redirect(config.sbPrefix + '/');
 });
 
+// WEB HOOKS
+site.post('/hooks/registration', webhook.registration);
+site.post('/hooks/auctions/:auctionId', webhook.winner);
 
 // Node resque setup
 var worker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){

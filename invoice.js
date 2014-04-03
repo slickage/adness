@@ -5,7 +5,7 @@ var request = require('request');
 module.exports = {
   registration: function(user, webhook, cb) {
     // create basicpay receipt with username
-    var bpReceipt = { username: user.username };
+    var bpReceipt = { userId: user.userId, username: user.username };
     generateBPReceipt(bpReceipt, function(err, bpReceipt) {
       if (err) { return cb(err, undefined); }
 
@@ -17,7 +17,11 @@ module.exports = {
   },
   auction: function(auction, user, webhook, cb) {
     // create basicpay receipt with username and auctionId
-    var bpReceipt = {auctionId: auction._id, username: user.username };
+    var bpReceipt = {
+      auctionId: auction._id,
+      userId: user.userId,
+      username: user.username
+    };
     generateBPReceipt(bpReceipt, function(err, bpReceipt) {
       if (err) { return cb(err, undefined); }
 

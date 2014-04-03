@@ -488,6 +488,7 @@ var db = {
   newBPReceipt: function(newReceipt, cb) {
     var receipt = {
       auctionId: newReceipt.auctionId,
+      userId: newReceipt.userId,
       username: newReceipt.username,
       invoiceId: newReceipt.invoiceId || "",
       created_at: new Date().getTime(),
@@ -520,6 +521,7 @@ var db = {
         oldReceipt.modified_at = new Date().getTime();
         // update the rest of the values
         oldReceipt.auctionId = newReceipt.auctionId;
+        oldReceipt.userId = newReceipt.userId;
         oldReceipt.username = newReceipt.username;
         oldReceipt.invoiceId = newReceipt.invoiceId;
 
@@ -536,8 +538,13 @@ var db = {
       registered: user.registered,
       email: user.email,
       username: user.username,
+      modified_at: new Date().getTime(),
       type: 'registeredUser'
     };
+    if (user._id) registeredUser._id = user._id;
+    if (user._rev) registeredUser._rev = user._rev;
+    if (!user.created_at) registeredUser.created_at = new Date().getTime();
+
     couch.insert(registeredUser, cb);
   },
   getRegisteredUser: function(userId, cb) {

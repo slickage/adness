@@ -131,7 +131,7 @@ function notifyWinner(user, auctionId) {
     console.log("Created a BP Receipt with ID: " + token);
     
     // generate invoice
-    var invoice = createInvoice(user.payment, user.slots, token);
+    var invoice = createInvoice(auctionId, user.payment, user.slots, token);
 
     // send invoice to basicpay and get invoice id
     request.post(
@@ -145,41 +145,38 @@ function notifyWinner(user, auctionId) {
         
         // parse body into json (invoice)
         var invoice = JSON.parse(body);
+        console.log(invoice);
 
-        // check for valid invoice data
-        if (invoice[0]) {
-          // get the invoiceId
-          var invoiceId = invoice[0]._id;
+        // get the invoiceId
+        var invoiceId = invoice.id;
 
-          console.log("Invoice " + invoiceId + " created for " + user.username);
+        console.log("Invoice " + invoiceId + " created for " + user.username);
 
-          // update basicpay receipt with invoiceId
-          bpReceipt.invoiceId = invoiceId;
-          db.updateBPReceipt(bpReceipt, function(err, body) {
-            if (err) { return console.log(err); }
-            console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
-          });
+        // update basicpay receipt with invoiceId
+        bpReceipt.invoiceId = invoiceId;
+        db.updateBPReceipt(bpReceipt, function(err, body) {
+          if (err) { return console.log(err); }
+          console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
+        });
 
-          // build email template
-          var data = {
-            auctionId: auctionId,
-            user: user,
-            invoiceId: invoiceId,
-            invoiceUrl: config.basicpay.url
-          };
-          var str = fs.readFileSync(winnerTemplate, 'utf8');
-          var html = ejs.render(str, data);
-          
-          // heckle the winners
-          console.log("Emailing " + user.username + " with winner's template");
-          heckler.email({
-            from: "Test <taesup63@gmail.com>",
-            to: "taesup63@gmail.com",
-            subject: "You're the winning bidder for an auction.",
-            html: html
-          });
-        }
-        else { console.log("ERROR: BasicPay could not generate an invoice!"); }
+        // build email template
+        var data = {
+          auctionId: auctionId,
+          user: user,
+          invoiceId: invoiceId,
+          invoiceUrl: config.basicpay.url
+        };
+        var str = fs.readFileSync(winnerTemplate, 'utf8');
+        var html = ejs.render(str, data);
+        
+        // heckle the winners
+        console.log("Emailing " + user.username + " with winner's template");
+        heckler.email({
+          from: "Test <taesup63@gmail.com>",
+          to: "taesup63@gmail.com",
+          subject: "You're the winning bidder for an auction.",
+          html: html
+        });
       }
     );
   });
@@ -228,6 +225,6 @@ function createInvoice(payment, slots, token) {
   }
   invoice.balance_due = payment;
   invoice.webhooks = {};
-  invoice.webhooks.paid = {url: config.basicpay.url, token: token};
+  invoice.webhooks.paid = {url: config.site.url + '/auctions/' + auctionId, token: token};
   return invoice;
 }

@@ -1,0 +1,17 @@
+<h1>Registration Fee Paid for <%= username %></h1>
+
+<hr>
+
+<div style="width: 90%; margin: auto;">
+  The auction system has been notified that the registration fee for <%= username %> has been paid through Basic Pay. Here is the URL to the original invoice:
+  <br><br>
+  <a href="<%= invoiceUrl %>/invoices/<%= invoiceId %>">
+    Click here to view the invoice.
+  </a>
+  <br><br>
+  <%= username %> is now allowed to bid on auctions. 
+</div>
+
+<br><br>
+
+<em>This is a automated email. Please do not reply to this email.</em>
