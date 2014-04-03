@@ -12,7 +12,7 @@ var express = require('express'),
     ensureAuthenticated = require('./middleware/ensure-auth'),
     browsePrefix = require('./middleware/browse-prefix'),
     NR = require('node-resque'),
-    connectionDetails = require('./resque/redis-store'),
+    connectionDetails = config.redis,
     jobs = require('./resque/jobs'),
     webhook = require('./webhook');
 
