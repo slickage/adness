@@ -147,7 +147,7 @@ worker.on('error',           function(queue, job, error){ console.log("job faile
 worker.on('pause',           function(){ console.log("worker paused"); });
 
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
-  queue.enqueue('auction', 'cull-auctions',  []);
+  queue.enqueue('auction', 'auction-closing',  []);
 });
 
 

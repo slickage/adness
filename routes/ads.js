@@ -24,7 +24,7 @@ exports = module.exports = {
       if (err) { console.log(err); res.redirect(req.browsePrefix); }
       else {
         var ad = models.ad;
-        ad.user = req.user;
+        ad.user = req.user; // add current user
         if (req.body.html) ad.html = req.body.html;
         if (req.body.approved) ad.approved = req.body.approved;
         if (req.body.submitted) ad.submitted = req.body.submitted;

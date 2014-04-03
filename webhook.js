@@ -44,7 +44,7 @@ module.exports = {
         // heckle the user for registration fee
         console.log("Emailing Admin: Registration Cleared for " + regUser.username);
         heckler.email({
-          from: "Test <info@bitcointalk.org>",
+          from: config.admin.senderEmail,
           to: config.admin.email,
           subject: "Registration Fee Paid for " + regUser.username,
           html: html
@@ -74,6 +74,7 @@ module.exports = {
         // build registration email template
         var data = {
           username: bpReceipt.username,
+          userId: bpReceipt.userId,
           auctionId: auctionId,
           invoiceId: bpReceipt.invoiceId,
           invoiceUrl: config.basicpay.url,
@@ -86,7 +87,7 @@ module.exports = {
         // heckle the user for registration fee
         console.log("Emailing Admin: Payment Cleared for " + bpReceipt.username + " For Auction: " + auctionId);
         heckler.email({
-          from: "Test <info@bitcointalk.org>",
+          from: config.admin.senderEmail,
           to: config.admin.email,
           subject: "Payment on Auction: " + auctionId + " by user: " + bpReceipt.username,
           html: html

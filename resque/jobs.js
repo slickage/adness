@@ -1,3 +1,3 @@
 module.exports = {
-  "cull-auctions": { perform: require('./cull-auctions') }
+  "auction-closing": { perform: require('./auction-closing') }
 };

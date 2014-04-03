@@ -1,6 +1,7 @@
 var db = require(__dirname + '/../db');
 var request = require('request');
 var config = require('../config');
+var invoice = require('../invoice');
 var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
@@ -118,67 +119,28 @@ function generateBidders(bids) {
 function notifyWinner(user, auctionId) {
   console.log("Notifying " + user.username + " that they've won.");
 
-  // generate basicpay receipt with auctionId and username
-  var bpReceipt = {auctionId: auctionId, username: user.username};
-
-  // insert basicpay receipt into db
-  db.newBPReceipt(bpReceipt, function(err, body) {
+  var webhook = config.site.url + '/auctions/' + auctionId;
+  invoice.auction(auctionId, user, webhook, function(err, invoiceId) {
     if (err) { return console.log(err); }
 
-    // use basicpay receipt id as webhook token
-    bpReceipt._id = body.id;
-    var token = body.id;
-    console.log("Created a BP Receipt with ID: " + token);
+    // build email template
+    var data = {
+      auctionId: auctionId,
+      user: user,
+      invoiceId: invoiceId,
+      invoiceUrl: config.basicpay.url
+    };
+    var str = fs.readFileSync(winnerTemplate, 'utf8');
+    var html = ejs.render(str, data);
     
-    // generate invoice
-    var invoice = createInvoice(auctionId, user.payment, user.slots, token);
-
-    // send invoice to basicpay and get invoice id
-    request.post(
-      {
-        uri: config.basicpay.url + '/invoices',
-        method: "POST",
-        form: invoice
-      },
-      function(err, response, body) {
-        if (err) { return console.log(err); }
-        
-        // parse body into json (invoice)
-        var invoice = JSON.parse(body);
-        console.log(invoice);
-
-        // get the invoiceId
-        var invoiceId = invoice.id;
-
-        console.log("Invoice " + invoiceId + " created for " + user.username);
-
-        // update basicpay receipt with invoiceId
-        bpReceipt.invoiceId = invoiceId;
-        db.updateBPReceipt(bpReceipt, function(err, body) {
-          if (err) { return console.log(err); }
-          console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
-        });
-
-        // build email template
-        var data = {
-          auctionId: auctionId,
-          user: user,
-          invoiceId: invoiceId,
-          invoiceUrl: config.basicpay.url
-        };
-        var str = fs.readFileSync(winnerTemplate, 'utf8');
-        var html = ejs.render(str, data);
-        
-        // heckle the winners
-        console.log("Emailing " + user.username + " with winner's template");
-        heckler.email({
-          from: "Test <taesup63@gmail.com>",
-          to: "taesup63@gmail.com",
-          subject: "You're the winning bidder for an auction.",
-          html: html
-        });
-      }
-    );
+    // heckle the winners
+    console.log("Emailing " + user.username + " with winner's template");
+    heckler.email({
+      from: config.admin.senderEmail,
+      to: user.email,
+      subject: "You're the winning bidder for an auction.",
+      html: html
+    });
   });
 }
 
@@ -187,44 +149,25 @@ function notifyBidder(user, auctionId) {
   
   // find the next open auction 
   db.auctionsTimeRelative(function(err, auctions) {
-    if (err) { console.log(err); }
-    else {
-      // find next auction if available
-      var auction = null;
-      var futureAuctions = auctions.future;
-      if (futureAuctions[0]) { auction = futureAuctions[0]; }
+    if (err) { return console.log(err); }
+    
+    // find next auction if available
+    var auction = null;
+    var futureAuctions = auctions.future;
+    if (futureAuctions[0]) { auction = futureAuctions[0]; }
 
-      // build email template
-      var data = { auctionId: auctionId, nextAuction: auction };
-      var str = fs.readFileSync(bidderTemplate, 'utf8');
-      var html = ejs.render(str, data);
-      
-      // heckle the winners
-      console.log("Emailing " + user.username + " with bidder's template");
-      heckler.email({
-        from: "Test <taesup63@gmail.com>",
-        to: "taesup63@gmail.com",
-        subject: "Auction " + auctionId + " has ended.",
-        html: html
-      });
-    }
+    // build email template
+    var data = { auctionId: auctionId, nextAuction: auction };
+    var str = fs.readFileSync(bidderTemplate, 'utf8');
+    var html = ejs.render(str, data);
+    
+    // heckle the winners
+    console.log("Emailing " + user.username + " with bidder's template");
+    heckler.email({
+      from: config.admin.senderEmail,
+      to: user.email,
+      subject: "Auction " + auctionId + " has ended.",
+      html: html
+    });
   });
-}
-
-function createInvoice(payment, slots, token) {
-  var invoice = {};
-  invoice.currency = "BTC";
-  invoice.min_confirmations = 6; // TODO: confirm block chain confirmations
-  invoice.line_items = [];
-  for (var i = 0; i < slots; i++) {
-    var lineItem = {};
-    lineItem.description = "Auction Ad Slot";
-    lineItem.quantity = 1;
-    lineItem.amount = Number(payment) / Number(slots);
-    invoice.line_items.push(lineItem);
-  }
-  invoice.balance_due = payment;
-  invoice.webhooks = {};
-  invoice.webhooks.paid = {url: config.site.url + '/auctions/' + auctionId, token: token};
-  return invoice;
 }

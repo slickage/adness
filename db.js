@@ -268,13 +268,19 @@ var db = {
             return cb({ message: 'Bid parameters were not valid.' }, undefined);
           }
 
+          var bidUser = {
+            username: body.user.username,
+            userId: body.user.userId,
+            email: body.user.email
+          };
+
           // auction is open so make the bid
           var bid = {
             created_at: new Date().getTime(),
             type: 'bid',
             price: Number(body.price),
             slots: Number(body.slots),
-            user: body.user,
+            user: bidUser,
             auctionId: body.auctionId
           };
           couch.insert(bid, cb);
@@ -367,6 +373,7 @@ var db = {
     var ad = {
       html: html,
       username: body.user.username,
+      userId: body.user.userId,
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
       type: 'ad',
@@ -386,8 +393,8 @@ var db = {
       else { cb(err, undefined); }
     });
   },
-  getUserAds: function(username, cb) {
-    var key = username;
+  getUserAds: function(userId, cb) {
+    var key = Number(userId); // userId must be a number
     couch.view('adness', 'userAds', {startkey: [key, 0], endkey: [key, {}]}, function(err, body) {
       if (!err) {
         var ads = [];
@@ -422,7 +429,7 @@ var db = {
 
         // validate admin or user
         if (ad.user.admin !== true) {
-          if (body.username !== ad.username) {
+          if (body.userId !== ad.user.userId) {
             return cb({ message: "Editing another user's ad is not allowed."}, undefined);
           }
         }
@@ -475,8 +482,8 @@ var db = {
 
         // validate user
         if (ad.user.admin !== true) {
-          if (body.username !== ad.user.username) {
-            return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+          if (body.userId !== ad.user.userId) {
+            return cb({ message: "Deleting another user's ad is not allowed."}, undefined);
           }
         }
 
@@ -533,11 +540,11 @@ var db = {
   },
   insertRegisteredUser: function(user, cb) {
     var registeredUser = {
+      username: user.username,
       userId: user.userId,
+      email: user.email,
       registrationStatus: user.registrationStatus,
       registered: user.registered,
-      email: user.email,
-      username: user.username,
       modified_at: new Date().getTime(),
       type: 'registeredUser'
     };

@@ -35,7 +35,8 @@ module.exports = {
     url: 'http://localhost:3000'
   },
   admin: {
-    email: process.env.ADMIN_EMAIL || 'ed@slickage.com'
+    email: process.env.ADMIN_EMAIL || 'admin@bitcointalk.org',
+    senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org'
   },
   site: {
     url: process.env.SITE_URL || 'http://localhost:8080'
