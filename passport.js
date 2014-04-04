@@ -21,20 +21,18 @@ passport.deserializeUser(function(id, done) {
 passport.use(new LocalStrategy(
   function(username, password, done) {
     process.nextTick(function () {
-      users[username] = {username:username, userId:111111, email:'taesup63@gmail.com', admin:true};
-      return done(null, users[username]);
-      // smfAuth.authenticate(username, password, function(err, user) {
-      //   if (err) {
-      //     return done(err);
-      //   }
-      //   if (!user) {
-      //     return done(null, false);
-      //   }
-      //   else {
-      //     users[user.username] = user;
-      //     return done(null, user);
-      //   }
-      // });
+      smfAuth.authenticate(username, password, function(err, user) {
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          return done(null, false);
+        }
+        else {
+          users[user.username] = user;
+          return done(null, user);
+        }
+      });
     });
   }
 ));

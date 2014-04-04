@@ -4,6 +4,7 @@ var couch = nano.use('adness');
 var biddingAlg = require('./bidding');
 var validate = require('./validation');
 
+
 var db = {
   newAuction: function(body, cb) {
     // validate input
@@ -25,7 +26,12 @@ var db = {
       type: 'auction',
       enabled: true
     };
-    couch.insert(auction, cb);
+    couch.insert(auction, function(err, body, header) {
+      if (err) { return cb(err, body, header); }
+      auction._id = body.id;
+      timer.addAuction(auction);
+      return cb(err, body, header);
+    });
   },
   updateAuction: function(auction, cb) {
     // ensure that the auction exists first
@@ -61,7 +67,11 @@ var db = {
           body.enabled = false;
         }
         // update auction
-        couch.insert(body, cb);
+        couch.insert(body, function(err, data, header) {
+          if (err) { return cb(err, data, header); }
+          timer.updateAuction(body);
+          return cb(err, data, header);
+        });
       }
       else { cb(err, undefined); }
     });
@@ -76,7 +86,11 @@ var db = {
         }
 
         // delete associated bids?
-        couch.destroy(auctionId, body._rev, cb);
+        couch.destroy(auctionId, body._rev, function(err, body, header) {
+          if(err) { return cb(err, body, header); }
+          timer.deleteAuction({ _id: auctionId });
+          return cb(err, body, header);
+        });
       }
       else { cb(err, undefined); }
     });
@@ -571,5 +585,7 @@ var db = {
   },
 };
 
-
 module.exports = db;
+
+var timer = require('./events/event-timer');
+
