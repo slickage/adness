@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+node seed.js
+couchapp push couchapp.js http://localhost:5984/adness
