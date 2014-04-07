@@ -29,7 +29,7 @@ module.exports = {
         // 15:59:28 web.1  |     protocol41: true,
         // 15:59:28 web.1  |     changedRows: 0 } ]
         connection.query(
-          'CALL pass_ok(?, ?)',
+          'CALL pass_ok_all(?, ?)',
           [username, password],
           function(err, rows) {
             connection.release();
