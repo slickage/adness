@@ -30,16 +30,10 @@ ddoc.views.auctions = {
   }
 };
 
-ddoc.views['recent-items'] = {
+ddoc.views.registeredUser = {
   map: function(doc) {
-    if (doc.created_at) {
-      var p = doc.profile || {};
-      emit(doc.created_at, {
-        message:doc.message,
-        gravatar_url : p.gravatar_url,
-        nickname : p.nickname,
-        name : doc.name
-      });
+    if(doc.type == "registeredUser") {
+      emit(doc.userId, doc);
     }
   }
 };
@@ -55,7 +49,15 @@ ddoc.views.submittedAds = {
 ddoc.views.userAds = {
   map: function(doc) {
     if(doc.type == "ad") {
-      emit([doc.username, doc.created_at], doc);
+      emit([doc.userId, doc.created_at], doc);
+    }
+  }
+};
+
+ddoc.views.adsInRotation = {
+  map: function(doc) {
+    if(doc.type == 'adsInRotation') {
+      emit(doc._id, doc);
     }
   }
 };

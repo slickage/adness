@@ -1,4 +1,5 @@
 var db = require(__dirname + '/../db');
+var _ = require('underscore');
 var config = require('../config');
 var invoice = require('../invoice');
 var ejs = require('ejs');
@@ -35,6 +36,9 @@ function auctionNotification(auction) {
       // notify winners with a link to payment
       notifyWinner(winners[winner], auction._id);
     }
+
+    // cull all the approved auctions from the winners
+    updateAds(winners, auction);
   });
 }
 
@@ -124,6 +128,24 @@ function notifyBidder(user, auctionId) {
       to: user.email,
       subject: "Auction " + auctionId + " has ended.",
       html: html
+    });
+  });
+}
+
+function updateAds(winnersObject, auction) {
+  var winners = _.values(winnersObject);
+  updateAdsInRotation(auction, winners);
+}
+
+function updateAdsInRotation(auction, winners) {
+  db.getAdsInRotation(function(err, air) {
+    if (err) { air = {}; }
+    air.auctionId = auction._id;
+    air.winners = winners;
+    
+    // insert the ads
+    db.insertAdsInRotation(air, function(err, body) {
+      if (err) { console.log(err); }
     });
   });
 }

@@ -375,6 +375,9 @@ var db = {
     // validate html
     var html = validate.html(body.html);
 
+    // validate blacklisted countries
+    var blacklist = validate.blacklistedCN(body.blacklistedCN);
+
     // validate submitted
     var submitted = false;
     if (String(body.submitted).toLowerCase()  === "true") {
@@ -388,11 +391,13 @@ var db = {
       html: html,
       username: body.user.username,
       userId: body.user.userId,
+      blacklistedCN: blacklist,
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
       type: 'ad',
       approved: false,
-      submitted: submitted
+      submitted: submitted,
+      inRotation: false
     };
     couch.insert(ad, cb);
   },
@@ -453,6 +458,12 @@ var db = {
           if (ad.html) body.html = validate.html(ad.html);
         }
 
+        // update blacklisted Countries
+        if (ad.blacklistedCN) {
+          // validate blacklisted countries
+          body.blacklistedCN = validate.blacklistedCN(ad.blacklistedCN);
+        }
+
         // update modified_at
         body.modified_at = new Date().getTime();
 
@@ -479,6 +490,13 @@ var db = {
         else if (String(ad.submitted).toLowerCase() === "false") {
           body.submitted = false;
         }
+        if (String(ad.inRotation).toLowerCase()  === "true") {
+          body.inRotation = true;
+        }
+        else if (String(ad.inRotation).toLowerCase() === "false") {
+          body.inRotation = false;
+        }
+
         // update ad
         couch.insert(body, cb);
       }
@@ -583,6 +601,36 @@ var db = {
       cb(null, user);
     });
   },
+  getAdsInRotation: function(cb) {
+    couch.view('adness', 'adsInRotation', function(err, ads) {
+      if (err) { return cb(err, undefined); }
+
+      // limit 1
+      var ad;
+      if (ads.rows.length > 0) {
+        ad = ads.rows[0].value;
+      }
+      else {
+        err = { message: "No Ads In Rotation found." };
+        ad = undefined;
+      }
+
+      return cb(err, ad);
+    });
+  },
+  insertAdsInRotation: function(air, cb) {
+    var adsInRotation = {
+      auctionId: air.auctionId,
+      winners: air.winners,
+      modified_at: new Date().getTime(),
+      type: "adsInRotation"
+    };
+    if (air._id) adsInRotation._id = air._id;
+    if (air._rev) adsInRotation._rev = air._rev;
+    if (!air.created_at) adsInRotation.created_at = new Date().getTime();
+
+    couch.insert(adsInRotation, cb);
+  }
 };
 
 module.exports = db;

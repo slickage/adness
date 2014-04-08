@@ -4,10 +4,25 @@
 
   <% include ads/show %>
 
-  <% if (user && user.username === ad.username) { %>
+  <% if (user && user.userId === ad.userId) { %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">User Controls</h3>
+      </div>
+      <div class="panel-body">
+        <% if (ad.approved === true) { %>
+          <% if (ad.inRotation === true) { %>
+            <form action="<%= browsePrefix %>/ads/<%= ad._id %>/outRotation" method="post" class="pull-left">
+              <button class="btn btn-primary">Remove from rotation</button>
+            </form>
+          <% } else { %>
+            <form action="<%= browsePrefix %>/ads/<%= ad._id %>/inRotation" method="post" class="pull-left">
+              <button class="btn btn-primary">Add to rotation</button>
+            </form>            
+          <% } %>
+        <% } %>
 
-    <div class="col-sm-12" style="margin-bottom: 10px;">
-      <form action="<%= browsePrefix%>/ads/<%= ad._id %>/delete" method="post">
+        <form action="<%= browsePrefix %>/ads/<%= ad._id %>/delete" method="post">
         <% if (ad.approved !== true && ad.submitted !== true) { %>
           <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
             Edit
@@ -17,31 +32,41 @@
           Delete
         </button>
       </form>
+      </div>
     </div>
-
   <% } %>
 
-  <% if( user && user.admin === true) { %>
-    <div class="col-sm-12">
-
-      <div class="col-sm-6">
-        <strong>Admin Controls: </strong>
+  <% if( user && user.admin === true && ad.submitted === true || ad.approved === true || ad.rejected === true) { %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Admin Controls</h3>
       </div>
-
-      <div class="col-sm-6">
-        <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
-          <button class="btn btn-danger">
-            Reject
-          </button>
-        </form>
-
-        <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
-          <button class="btn btn-success">
-            Approve
-          </button>
-        </form>
+      <div class="panel-body">
+        <% if (ad.approved === true) { %>
+          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
+            <button class="btn btn-danger">
+              Reject
+            </button>
+          </form>
+        <% } else if (ad.rejected === true ) { %>
+          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
+            <button class="btn btn-success">
+              Approve
+            </button>
+          </form>
+        <% } else { %>
+          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
+            <button class="btn btn-success">
+              Approve
+            </button>
+          </form>
+          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
+            <button class="btn btn-danger">
+              Reject
+            </button>
+          </form>
+        <% } %>
       </div>
-
     </div>
   <% } %>
 

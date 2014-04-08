@@ -5,12 +5,14 @@ module.exports = function(req, res) {
     if (err) console.log('error: ' + JSON.stringify(err));
 
     // sort ads
+    var inRotation = [];
     var approved = [];
     var submitted = [];
     var saved = [];
     var rejected = [];
     models.userAds.forEach(function(ad) {
-      if (ad.approved === true) { approved.push(ad); }
+      if (ad.inRotation === true) { inRotation.push(ad); }
+      else if (ad.approved === true) { approved.push(ad); }
       else if (ad.rejected === true) { rejected.push(ad); }
       else if (ad.submitted === true) { submitted.push(ad); }
       else { saved.push(ad); }
@@ -18,6 +20,7 @@ module.exports = function(req, res) {
 
     // render page
     res.render('profile', {
+      inRotation: inRotation,
       approved: approved,
       rejected: rejected,
       submitted: submitted,

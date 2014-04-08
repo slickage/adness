@@ -27,6 +27,23 @@
     </div><!-- /.container-fluid -->
   </nav>
 
+  <% if (inRotation.length > 0) { %>
+    <div class="panel panel-primary"> 
+      <div class="panel-heading">
+        <b>Ads In Rotation</b>
+        <small>
+          If you've won an auction, these are the ads that will be
+          displayed on the forum. 
+        </small>
+      </div>
+      <div class="panel-body">
+        <% inRotation.forEach(function(ad) { %>
+          <% include ads/show %>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+
   <% if (approved.length > 0) { %>
     <div class="panel panel-success"> 
       <div class="panel-heading">

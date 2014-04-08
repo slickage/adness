@@ -26,6 +26,7 @@
         Editing Ad: <%= ad._id %>
       <% } %>
       <noscript>
+        <br>
         We've noticed you're not using JavaScript.<br>
         This page may not work at its best without JavaScript.<br>
 
@@ -41,7 +42,7 @@
             Syntax Highlighting in the text area.
           </li>
         </ul>
-        But you can still submit ads so you got that going for you I guess. 
+        But you can still submit ads. 
       </noscript>
     </div>
 
@@ -53,6 +54,20 @@
             </div>
             <form action="<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>" method="post">
               <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+
+              <br>
+              
+              Some ads may not be legal in certain countries. Please choose the countries you do not want your ad to display in. 
+              <div class="checkbox">
+                <label>
+                  <input id="blacklistUS" name="blacklistUS" type="checkbox" <% if (ad && ad.blacklistedCN.indexOf("US") > -1) { %>checked<% } %> >Do Not Show in US
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input id="blacklistCN" name="blacklistCN" type="checkbox" <% if (ad && ad.blacklistedCN.indexOf("CN") > -1) { %>checked<% } %> >Do Not Show in China
+                </label>
+              </div>
 
               <noscript>
                 <input type="hidden" name="submitted" id="submitted" value="true">
@@ -136,9 +151,19 @@
       function submitForReview(submit) {
         var html = $("#preview").html();
 
+        // get blacklist values
+        var blacklist = [];
+        if ($("#blacklistUS").prop("checked")) {
+          blacklist.push("US");
+        }
+        if ($("#blacklistCN").prop("checked")) {
+          blacklist.push("CN");
+        }
+
         var data = {
           submitted: submit,
-          html: html
+          html: html,
+          blacklistedCN: blacklist
         }
 
         var url = "<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>";

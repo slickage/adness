@@ -1,4 +1,5 @@
 var sanitize = require('google-caja').sanitize;
+var _ = require('underscore');
 
 module.exports = {
   isNumber: function(datetime) {
@@ -71,5 +72,17 @@ module.exports = {
   },
   html: function(html) {
     return sanitize(html);
+  },
+  blacklistedCN: function(blacklist) {
+    // check that the list is an array
+    if (!_.isArray(blacklist)) { return ['US', 'CN']; }
+
+    // check that each item in the list is a string
+    var newList = [];
+    blacklist.forEach(function(item) {
+      if (_.isString(item)) { newList.push(item); }
+    });
+
+    return newList;
   }
 };
