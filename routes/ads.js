@@ -176,6 +176,11 @@ exports = module.exports = {
     // get the AdsInRotation object that has the winners of the last auction
     // this function will get all approved/in rotation ads for all winners
     getWinnerAds(function(err, ads) {
+      if (err) {
+        console.log(err);
+        return res.json([]);
+      }
+
       // remove all ads not for this region 
       var filteredAds = _.reject(ads, function(ad) {
         return _.contains(ad.blacklistedCN, country);
@@ -199,12 +204,12 @@ function getWinnerAds(callback) {
   db.getAdsInRotation(function(err, air) {
     var error;
     if (err) {
-      error = { message: "There are no ads to display." };
+      error = new Error("There are no ads to display.");
       return callback(error, undefined);
     }
 
     if (!air.winners || air.winners.length === 0) {
-      error = { message: "There are no ads to display." };
+      error = new Error("There are no ads to display.");
       return callback(error, undefined);
     }
 
