@@ -23,7 +23,8 @@ module.exports = {
     database: process.env.MYSQL_DATABASE || 'smf'
   },
   couchdb: {
-    url: 'http://localhost:5984'
+    url: 'http://localhost:5984',
+    name: 'adness'
   },
   bitcoind:  {
     host: process.env.BITCOIND_HOST || 'localhost',
