@@ -1,5 +1,7 @@
 var db = require(__dirname + '/../db');
+var _ = require('underscore');
 var async = require('async');
+var geoip = require('geoip-lite');
 
 exports = module.exports = {
   newAd: function(req, res) {
@@ -161,48 +163,63 @@ exports = module.exports = {
     });
   },
   random: function(req, res) {
-    // TODO: var ip
-    // TODO: var numberOfAds
+    // ip
+    var ip = req.query.ip;
+    var geo = geoip.lookup(ip);
+    var country = "";
+    if (geo) { country = geo.country; }
 
-    // get the auction winners
-    db.getAdsInRotation(function(err, ads) {
-      if (err) { return res.json(err); }
+    // numberOfAds
+    var limit = req.query.limit;
+    if (!limit || limit == '0' ) { limit = 1; }
 
-      if (!ads.winners || ads.winners.length === 0) {
-        return res.json({ message: "This auction had no winners." });
-      }
+    // get the AdsInRotation object that has the winners of the last auction
+    // this function will get all approved/in rotation ads for all winners
+    getWinnerAds(function(err, ads) {
+      // remove all ads not for this region 
+      var filteredAds = _.reject(ads, function(ad) {
+        return _.contains(ad.blacklistedCN, country);
+      });
 
-      // auction winners
-      var winners = ads.winners;
-      // get random winner
-      var winner = randomWinner(winners);
-
-      // get approved/rotation ads for random winner
-      getApprovedAds(winner, function(err, approvedAds) {
-        if (err) { return res.json(err); }
-
-        if (!approvedAds || approvedAds.length === 0) {
-          return res.json({ message: "There are no ads." });
-        }
-
-        // find random approved/rotational ad
-        var ad = randomAd(approvedAds);
-        return res.json(ad);
+      // limit the amount of ads returned
+      async.times(limit, function(n, next) {
+        var ad = randomAd(filteredAds);
+        next(null, ad);
+      },
+      function(err, limitedAds) {
+        if (err) { res.json(err); }
+        res.json(limitedAds);
       });
     });
   }
 };
 
-function randomWinner(winners) {
-  return winners[Math.floor(Math.random() * (winners.length))];
-}
+function getWinnerAds(callback) {
+  // get adsInRotation object
+  db.getAdsInRotation(function(err, air) {
+    var error;
+    if (err) {
+      error = { message: "There are no ads to display." };
+      return callback(error, undefined);
+    }
 
-function randomAd(ads) {
-  return ads[Math.floor(Math.random() * (ads.length))];
+    if (!air.winners || air.winners.length === 0) {
+      error = { message: "There are no ads to display." };
+      return callback(error, undefined);
+    }
+
+    // get all winners from last auction
+    var winners = air.winners;
+    // get all ads for each winner
+    async.concat(winners, getApprovedAds, function(err, ads) {
+      if (err) { return callback(err, undefined); }
+      return callback(null, ads);
+    });
+  });
 }
 
 function getApprovedAds(winner, callback) {
-  // get all their ads from the db
+  // get winner's ads from the db
   db.getUserAds(winner.userId, function(err, ads) {
     if (err) {
       console.log(err);
@@ -220,4 +237,8 @@ function findApprovedAds(ads, cb) {
     else { callback(false); }
   },
   function(results) { return cb(null, results); });
+}
+
+function randomAd(ads) {
+  return ads[Math.floor(Math.random() * (ads.length))];
 }

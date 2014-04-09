@@ -37,8 +37,9 @@
     "google-caja": "0.0.2",
     "node-resque": "~0.5.1",
     "basicpay": "slickage/basicpay",
-    "request": "~2.34.0", 
-    "heckler": "slickage/heckler"
+    "request": "~2.34.0",
+    "heckler": "slickage/heckler",
+    "geoip-lite": "~1.1.3"
   },
   "devDependencies": {
     "tap": "~0.4.8"
