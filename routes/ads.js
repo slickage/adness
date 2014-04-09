@@ -22,7 +22,7 @@ exports = module.exports = {
   getAd: function(req, res) {
     req.model.load('ad', req);
     req.model.end(function(err, models) {
-      if (err) console.log(err);
+      if (err) { console.log(err); return res.redirect(req.browsePrefix); }
       res.render('ads', {
         ad: models.ad,
         browsePrefix: req.browsePrefix,
