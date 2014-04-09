@@ -1,6 +1,6 @@
 var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
-var couch = nano.use('adness');
+var couch = nano.use(config.couchdb.name);
 var biddingAlg = require('./bidding');
 var validate = require('./validation');
 
@@ -97,7 +97,7 @@ var db = {
   },
   fullAuctions: function(cb) {
     var currentTime = new Date().getTime();
-    couch.view('adness', 'auctions', function(err, body) {
+    couch.view(config.couchdb.name, 'auctions', function(err, body) {
       if (!err) {
         var auctions = [];
         body.rows.forEach(function(doc) {
@@ -114,7 +114,7 @@ var db = {
   },
   allAuctions: function(cb) {
     var currentTime = new Date().getTime();
-    couch.view('adness', 'auctions', function(err, body) {
+    couch.view(config.couchdb.name, 'auctions', function(err, body) {
       if (!err) {
         var auctions = [];
         body.rows.forEach(function(doc) {
@@ -140,7 +140,7 @@ var db = {
       future: [],
       past: []
     };
-    couch.view('adness', 'auctions', function(err, body) {
+    couch.view(config.couchdb.name, 'auctions', function(err, body) {
       if (!err) {
         body.rows.forEach(function(doc) {
           var value = doc.value;
@@ -200,7 +200,7 @@ var db = {
   },
   getBidsPerAuction: function (auctionId, cb) {
     var key = auctionId;
-    couch.view('adness', 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
+    couch.view(config.couchdb.name, 'auctionBids', {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]}, function(err, body) {
       if (!err) {
         var bids = [];
         body.rows.forEach(function(bid) {
@@ -225,7 +225,7 @@ var db = {
   appendBidsToAuction: function(auction, cb) {
     var key = auction._id;
     var params = {startkey: [key,0, 0, 0], endkey: [key,1, {}, {}]};
-    couch.view('adness', 'auctionBids', params, function(err, body) {
+    couch.view(config.couchdb.name, 'auctionBids', params, function(err, body) {
       if (!err) {
         // first object is the auction itself
         var openAuction = body.rows.splice(0,1)[0].value;
@@ -414,7 +414,7 @@ var db = {
   },
   getUserAds: function(userId, cb) {
     var key = Number(userId); // userId must be a number
-    couch.view('adness', 'userAds', {startkey: [key, 0], endkey: [key, {}]}, function(err, body) {
+    couch.view(config.couchdb.name, 'userAds', {startkey: [key, 0], endkey: [key, {}]}, function(err, body) {
       if (!err) {
         var ads = [];
         body.rows.forEach(function(ad) {
@@ -426,7 +426,7 @@ var db = {
     });
   },
   getSubmittedAds: function(cb) {
-    couch.view('adness', 'submittedAds', function(err, body) {
+    couch.view(config.couchdb.name, 'submittedAds', function(err, body) {
       if (!err) {
         var ads = [];
         body.rows.forEach(function(ad) {
@@ -587,7 +587,7 @@ var db = {
     couch.insert(registeredUser, cb);
   },
   getRegisteredUser: function(userId, cb) {
-    couch.view('adness', 'registeredUser', { startkey: userId, endkey: {}, limit: 1 }, function(err, body) {
+    couch.view(config.couchdb.name, 'registeredUser', { startkey: userId, endkey: {}, limit: 1 }, function(err, body) {
 
       if (err) { return cb(null, undefined); }
       
@@ -602,7 +602,7 @@ var db = {
     });
   },
   getAdsInRotation: function(cb) {
-    couch.view('adness', 'adsInRotation', function(err, ads) {
+    couch.view(config.couchdb.name, 'adsInRotation', function(err, ads) {
       if (err) { return cb(err, undefined); }
 
       // limit 1

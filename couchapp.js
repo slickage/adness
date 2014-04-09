@@ -1,5 +1,7 @@
+var config = require('./config');
+
 var ddoc = {
-  _id: '_design/adness',
+  _id: '_design/' + config.couchdb.name,
   views: {},
   lists: {},
   shows: {}

@@ -24,7 +24,7 @@ site.use(require('./middleware/model-loader'));
 site.use(require('connect-assets')());
 site.use(express.favicon());
 site.use(express.logger('dev'));
-site.use(express.cookieParser('adness'));
+site.use(express.cookieParser(config.couchdb.name));
 site.use(express.bodyParser());
 site.use(browsePrefix);
 site.use(express.methodOverride());

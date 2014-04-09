@@ -1,12 +1,36 @@
 var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
-var dbname = 'adness';
+var couchapp = require('couchapp');
+var ddoc = require('./couchapp');
+var dbname = config.couchdb.name;
 var couch;
 
-nano.db.create(dbname, function(err, body) {
-  if (!err) { console.log('Database created.'); }
-  couch = nano.use(dbname);
-  seed();
+// check for db 
+nano.db.get(dbname, function(err, body) {
+  if (!err) {
+    couch = nano.use(dbname);
+    return seed();
+  }
+
+  // db not found so create it
+  console.log("Creating DB: " + dbname);
+  nano.db.create(dbname, function(err, body) {
+    if (err) {
+      console.log("DB " + dbname + " was not found.");
+      console.log("Could not create DB. Exiting...");
+      return process.exit(1);
+    }
+    else {
+      // build couchDB url
+      var db = config.couchdb.url + '/' + dbname;
+      // install db ddoc
+      couchapp.createApp(ddoc, db, function(app) {
+        app.push();
+        couch = nano.use(dbname);
+        seed();
+      });
+    }
+  });
 });
 
 var seed = function() {

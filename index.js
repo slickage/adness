@@ -2,22 +2,23 @@ var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couchapp = require('couchapp');
 var ddoc = require('./couchapp');
+var dbname = config.couchdb.name;
 
 // check for db 
-nano.db.get(config.couchdb.name, function(err, body) {
+nano.db.get(dbname, function(err, body) {
   if (!err) { return buildSite(); }
 
   // db not found so create it
-  console.log("Creating DB: " + config.couchdb.name);
-  nano.db.create(config.couchdb.name, function(err, body) {
+  console.log("Creating DB: " + dbname);
+  nano.db.create(dbname, function(err, body) {
     if (err) {
-      console.log("DB " + config.couchdb.name + " was not found.");
+      console.log("DB " + dbname + " was not found.");
       console.log("Could not create DB. Exiting...");
       return process.exit(1);
     }
     else {
       // build couchDB url
-      var db = config.couchdb.url + '/' + config.couchdb.name;
+      var db = config.couchdb.url + '/' + dbname;
       // install db ddoc
       couchapp.createApp(ddoc, db, function(app) {
         app.push();
