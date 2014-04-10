@@ -288,12 +288,16 @@ var db = {
             email: body.user.email
           };
 
+          // validate slot number max size
+          var slots = Number(body.slots);
+          if (slots > auction.slots) { slots = auction.slots; }
+
           // auction is open so make the bid
           var bid = {
             created_at: new Date().getTime(),
             type: 'bid',
             price: Number(body.price),
-            slots: Number(body.slots),
+            slots: slots,
             user: bidUser,
             auctionId: body.auctionId
           };
@@ -341,7 +345,11 @@ var db = {
               }
 
               if (bid.price) body.price = Number(bid.price);
-              if (bid.slots) body.slots = Number(bid.slots);
+              if (bid.slots) {
+                var slots = Number(bid.slots);
+                if (slots > auction.slots) { slots = auction.slots; }
+                body.slots = slots;
+              }
               couch.insert(body, cb);
             }
             else {
