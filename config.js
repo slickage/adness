@@ -32,8 +32,8 @@ module.exports = {
     user: process.env.BITCOIND_USER || 'bitcoinrpc',
     pass: process.env.BITCOIND_PASS || 'asdf1234'
   },
-  basicpay: {
-    url: 'http://localhost:3000'
+  baron: {
+    url: process.env.BARON_URL || 'http://localhost:5000'
   },
   admin: {
     email: process.env.ADMIN_EMAIL || 'admin@bitcointalk.org',

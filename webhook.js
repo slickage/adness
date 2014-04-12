@@ -36,7 +36,7 @@ module.exports = {
         var data = {
           username: regUser.username,
           invoiceId: bpReceipt.invoiceId,
-          invoiceUrl: config.basicpay.url
+          invoiceUrl: config.baron.url
         };
         var str = fs.readFileSync(regTemplate, 'utf8');
         var html = ejs.render(str, data);
@@ -77,7 +77,7 @@ module.exports = {
           userId: bpReceipt.userId,
           auctionId: auctionId,
           invoiceId: bpReceipt.invoiceId,
-          invoiceUrl: config.basicpay.url,
+          invoiceUrl: config.baron.url,
           site: config.site.url,
           browsePrefix: req.browsePrefix
         };

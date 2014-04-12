@@ -14,7 +14,13 @@ var express = require('express'),
     NR = require('node-resque'),
     connectionDetails = config.redis,
     jobs = require('./resque/jobs'),
-    webhook = require('./webhook');
+    webhook = require('./webhook'),
+    rateLimiter = require('rate-limiter');
+
+// rate limiter for login
+var rlRules = [
+  ['login', 'all', 10, 60, true]
+];
 
 // Express config on all environments
 site.engine('ejs', engine);
@@ -42,7 +48,7 @@ site.use(express.session({
 }));
 site.use(passport.initialize());
 site.use(passport.session());
-
+site.use(rateLimiter.expressMiddleware(rlRules));
 site.use(site.router);
 site.use(express.static(path.join(__dirname, 'public')));
 

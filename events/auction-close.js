@@ -88,7 +88,7 @@ function notifyWinner(user, auctionId) {
       auctionId: auctionId,
       user: user,
       invoiceId: invoiceId,
-      invoiceUrl: config.basicpay.url
+      invoiceUrl: config.baron.url
     };
     var str = fs.readFileSync(winnerTemplate, 'utf8');
     var html = ejs.render(str, data);

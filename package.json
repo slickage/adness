@@ -36,11 +36,12 @@
     "async": "~0.2.10",
     "google-caja": "0.0.2",
     "node-resque": "~0.5.1",
-    "basicpay": "slickage/basicpay",
+    "baron": "slickage/baron",
     "request": "~2.34.0",
     "heckler": "slickage/heckler",
     "geoip-lite": "~1.1.3",
-    "couchapp": "~0.11.0"
+    "couchapp": "~0.11.0",
+    "rate-limiter": "slickage/rate-limiter"
   },
   "devDependencies": {
     "tap": "~0.4.8"

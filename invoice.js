@@ -4,7 +4,7 @@ var request = require('request');
 
 module.exports = {
   registration: function(user, webhook, cb) {
-    // create basicpay receipt with username
+    // create baron receipt with username
     var bpReceipt = { userId: user.userId, username: user.username };
     generateBPReceipt(bpReceipt, function(err, bpReceipt) {
       if (err) { return cb(err, undefined); }
@@ -16,7 +16,7 @@ module.exports = {
     });
   },
   auction: function(auctionId, user, webhook, cb) {
-    // create basicpay receipt with username and auctionId
+    // create baron receipt with username and auctionId
     var bpReceipt = {
       auctionId: auctionId,
       userId: user.userId,
@@ -67,11 +67,11 @@ function createRegistrationInvoice(user, webhook, bpReceipt) {
 }
 
 function generateBPReceipt(bpReceipt, cb) {
-  // insert basicpay receipt into db
+  // insert baron receipt into db
   db.newBPReceipt(bpReceipt, function(err, body) {
     if (err) { return cb(err, undefined); }
 
-    // use basicpay receipt id as webhook token
+    // use baron receipt id as webhook token
     bpReceipt._id = body.id;
     console.log("Created a BP Receipt with ID: " + body.id);
 
@@ -80,10 +80,10 @@ function generateBPReceipt(bpReceipt, cb) {
 }
 
 function generateInvoice(invoiceForm, bpReceipt, cb) {
-  // send invoice to basicpay and get invoice id
+  // send invoice to baron and get invoice id
   request.post(
     {
-      uri: config.basicpay.url + '/invoices',
+      uri: config.baron.url + '/invoices',
       method: "POST",
       form: invoiceForm
     },
@@ -97,7 +97,7 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
 
       console.log("Invoice " + invoiceId + " created for BPReceipt: " + bpReceipt._id);
 
-      // update basicpay receipt with invoiceId
+      // update baron receipt with invoiceId
       bpReceipt.invoiceId = invoiceId;
       db.updateBPReceipt(bpReceipt, function(err, body) {
         if (err) { return cb(err, undefined); }
