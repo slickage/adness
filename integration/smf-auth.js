@@ -35,13 +35,7 @@ module.exports = {
             connection.release();
             if (rows && rows.length === 2 && rows[0] && rows[0].length === 1) {
               var isAdmin = _.contains(config.admins, username);
-              var userRow = rows[0];
-              var user = {
-                username: username,
-                userId: userRow['ID_MEMBER'],
-                email: userRow['emailAddress'],
-                admin: isAdmin
-              };
+              var user = {username: username, admin: isAdmin};
               cb(null, user);
             }
             else {
