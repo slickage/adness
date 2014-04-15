@@ -58,7 +58,8 @@ module.exports = {
         // save auction
         db.updateAuction(models.auction, function(err, body, header) {
           if (err) { console.log(err); }
-          res.redirect('/admin');
+          req.flash('info', "Auction Enabled.");
+          res.end();
         });
       }
     });
@@ -75,7 +76,8 @@ module.exports = {
         // save auction
         db.updateAuction(models.auction, function(err, body, header) {
           if (err) { console.log(err); }
-          res.redirect('/admin');
+          req.flash('info', "Auction Disabled.");
+          res.end();
         });
       }
     });
@@ -85,7 +87,8 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.newAuction(req.body, function(err, body, header) {
       if (err) { console.log(err); }
-      res.redirect('/admin');
+      req.flash('info', "Auction Created.");
+      res.end();
     });
   },
   updateAuction: function(req, res) {
@@ -103,7 +106,8 @@ module.exports = {
         if (req.body.enabled) auction.enabled = req.body.enabled;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
-          res.redirect('/admin');
+          req.flash('info', "Auction Updated.");
+          res.end();
         });
       }
     });
@@ -113,6 +117,7 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteAuction(req.params.auctionId, function(err, body) {
       if (err) { console.log(err); }
+      req.flash('info', "Auction Deleted.");
       res.end();
     });
   }

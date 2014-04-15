@@ -15,7 +15,8 @@ var express = require('express'),
     connectionDetails = config.redis,
     jobs = require('./resque/jobs'),
     webhook = require('./webhook'),
-    rateLimiter = require('rate-limiter');
+    rateLimiter = require('rate-limiter'),
+    flash = require('connect-flash');
 
 // rate limiter for login
 var rlRules = [
@@ -46,6 +47,7 @@ site.use(express.session({
     maxAge:86400000
   }
 }));
+site.use(flash());
 site.use(passport.initialize());
 site.use(passport.session());
 site.use(rateLimiter.expressMiddleware(rlRules));

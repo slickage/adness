@@ -1,6 +1,17 @@
 <% layout('sblayout') %>
 <div class="content-page col-sm-12">
 
+  <% if (infoMessage && infoMessage.length > 0) { %>
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+        &times;
+      </button>
+      <% infoMessage.forEach(function(item) { %>
+        <%= item %><br>
+      <% }) %>
+    </div>
+  <% } %>
+
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
