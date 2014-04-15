@@ -40,6 +40,7 @@ module.exports = function(user, cb) {
       registrationStatus: "Invoice Sent.",
       registered: false
     };
+    if (user.admin) { registeredUser.registered = true; }
     db.insertRegisteredUser(registeredUser, cb);
   });
 };

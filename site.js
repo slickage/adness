@@ -124,8 +124,14 @@ site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);
 site.del(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.deleteAd);
 site.post('/registration', router.registration);
+site.get('/failedLogin', function(req, res) {
+  // failed authentications go here and get redirected back to /login
+  // this is to log failed login attempts for banning purposes
+  res.redirect(config.sbPrefix + '/');
+  }
+);
 site.post('/login',
-  passport.authenticate('local', { failureRedirect: '/'}),
+  passport.authenticate('local', { failureRedirect: '/failedLogin'}),
   function(req, res) {
     res.redirect(config.sbPrefix + '/');
   }
@@ -148,16 +154,12 @@ var worker = new NR.worker({connection: connectionDetails, queues: ['auction']},
 worker.on('start',           function(){ console.log("worker started"); });
 worker.on('end',             function(){ console.log("worker ended"); });
 worker.on('cleaning_worker', function(worker, pid){ console.log("cleaning old worker " + worker); });
-worker.on('poll',            function(queue){ console.log("worker polling " + queue); });
 worker.on('job',             function(queue, job){ console.log("working job " + queue + " " + JSON.stringify(job)); });
-worker.on('reEnqueue',       function(queue, job, plugin){ console.log("reEnqueue job (" + plugin + ") " + queue + " " + JSON.stringify(job)); });
 worker.on('success',         function(queue, job, result){ console.log("job success " + queue + " " + JSON.stringify(job) + " >> " + result); });
 worker.on('error',           function(queue, job, error){ console.log("job failed " + queue + " " + JSON.stringify(job) + " >> " + error); });
-worker.on('pause',           function(){ console.log("worker paused"); });
 
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
   queue.enqueue('auction', 'auction-closing',  []);
 });
-
 
 module.exports = site;
