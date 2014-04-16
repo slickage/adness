@@ -63,7 +63,6 @@ if ('development' == site.get('env')) {
 site.get(config.sbPrefix, router.sbindex);
 site.get(config.sbPrefix + '/rules', router.rules);
 site.get(config.sbPrefix + '/history', router.history);
-site.get(config.sbPrefix + '/payment', router.payment);
 site.get(config.sbPrefix + '/qr/:qrString', router.qr);
 // AUCTIONS
 site.get(config.sbPrefix + '/auctions/:auctionId', router.auction.showAuction);
