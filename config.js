@@ -1,5 +1,5 @@
 var parseAdmins = function(adminsStr) {
-  var admins = undefined;
+  var admins;
   if (adminsStr) {
     admins = adminsStr.split(',');
   }
@@ -8,7 +8,7 @@ var parseAdmins = function(adminsStr) {
 
 module.exports = {
   port: process.env.PORT || 8080,
-  admins: parseAdmins(process.env.ADMINS) || ['admin'],
+  admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',

@@ -16,10 +16,15 @@ module.exports = {
       var regUser = models.registeredUser;
       // find latest price for this auction
       var latestPrice;
-      if (auction.winningBids.length > 0) {
-        latestPrice = auction.winningBids[0].price + 0.05;
+      // first check if there are slots open
+      if (auction.slots > auction.bidPerSlot.length) {
+        latestPrice = 0.50;
       }
-      else { latestPrice = 0.50; }
+      else {
+        // otherwise find the lowest price
+        var bidLength = auction.winningBids.length - 1;
+        latestPrice = auction.winningBids[bidLength].price + 0.05;
+      }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
       // render view
