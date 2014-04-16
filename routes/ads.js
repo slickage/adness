@@ -189,6 +189,7 @@ exports = module.exports = {
       // limit the amount of ads returned
       async.times(limit, function(n, next) {
         var ad = randomAd(filteredAds);
+        ad = cleanAd(ad);
         next(null, ad);
       },
       function(err, limitedAds) {
@@ -242,6 +243,19 @@ function findApprovedAds(ads, cb) {
     else { callback(false); }
   },
   function(results) { return cb(null, results); });
+}
+
+function cleanAd(ad) {
+  delete ad._id;
+  delete ad._rev;
+  delete ad.username;
+  delete ad.userId;
+  delete ad.type;
+  delete ad.approved;
+  delete ad.submitted;
+  delete ad.inRotation;
+  delete ad.rejected;
+  return ad;
 }
 
 function randomAd(ads) {
