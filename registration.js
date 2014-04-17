@@ -18,7 +18,7 @@ module.exports = function(user, cb) {
     // build registration email template
     var data = {
       invoiceId: invoiceId,
-      invoiceUrl: config.baron.url
+      invoiceUrl: config.baron.internalUrl
     };
     var str = fs.readFileSync(regTemplate, 'utf8');
     var html = ejs.render(str, data);

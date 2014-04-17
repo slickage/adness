@@ -83,7 +83,7 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
   // send invoice to baron and get invoice id
   request.post(
     {
-      uri: config.baron.url + '/invoices',
+      uri: config.baron.internalUrl + '/invoices',
       method: "POST",
       form: invoiceForm
     },
