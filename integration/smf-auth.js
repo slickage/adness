@@ -34,9 +34,9 @@ module.exports = {
           function(err, rows) {
             connection.release();
             if (rows && rows.length === 2 && rows[0] && rows[0].length === 1) {
-              var isAdmin = _.contains(config.admins, userRow['ID_MEMBER']);
               // rows[0][0] is the first row from mysql query
               var userRow = rows[0][0];
+              var isAdmin = _.contains(config.admins, userRow['ID_MEMBER']);
               var user = {
                 username: username,
                 userId: userRow['ID_MEMBER'],
