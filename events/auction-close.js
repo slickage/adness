@@ -96,7 +96,7 @@ function notifyWinner(user, auctionId) {
     // heckle the winners
     console.log("Emailing " + user.username + " with winner's template");
     heckler.email({
-      from: config.admin.senderEmail,
+      from: config.senderEmail,
       to: user.email,
       subject: "You're the winning bidder for an auction.",
       html: html
@@ -124,7 +124,7 @@ function notifyBidder(user, auctionId) {
     // heckle the winners
     console.log("Emailing " + user.username + " with bidder's template");
     heckler.email({
-      from: config.admin.senderEmail,
+      from: config.senderEmail,
       to: user.email,
       subject: "Auction " + auctionId + " has ended.",
       html: html

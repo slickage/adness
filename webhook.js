@@ -44,8 +44,8 @@ module.exports = {
         // heckle the user for registration fee
         console.log("Emailing Admin: Registration Cleared for " + regUser.username);
         heckler.email({
-          from: config.admin.senderEmail,
-          to: config.admin.email,
+          from: config.senderEmail,
+          to: config.admin.emails,
           subject: "Registration Fee Paid for " + regUser.username,
           html: html
         });
@@ -87,8 +87,8 @@ module.exports = {
         // heckle the user for registration fee
         console.log("Emailing Admin: Payment Cleared for " + bpReceipt.username + " For Auction: " + auctionId);
         heckler.email({
-          from: config.admin.senderEmail,
-          to: config.admin.email,
+          from: config.senderEmail,
+          to: config.admin.emails,
           subject: "Payment on Auction: " + auctionId + " by user: " + bpReceipt.username,
           html: html
         });

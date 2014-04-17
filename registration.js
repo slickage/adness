@@ -26,7 +26,7 @@ module.exports = function(user, cb) {
     // heckle the user for registration fee
     console.log("Emailing " + user.username + " with registration template");
     heckler.email({
-      from: config.admin.senderEmail,
+      from: config.senderEmail,
       to: user.email,
       subject: "Auction Registration Fee Invoice",
       html: html

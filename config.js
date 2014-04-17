@@ -10,6 +10,7 @@ module.exports = {
   port: process.env.PORT || 8080,
   admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
+  senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org',
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
@@ -31,8 +32,7 @@ module.exports = {
     internalUrl: process.env.BARON_INTERNAL_URL || 'http://localhost:5000'
   },
   admin: {
-    email: process.env.ADMIN_EMAIL || 'admin@bitcointalk.org',
-    senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org'
+    emails: process.env.ADMIN_EMAILS || ['admin@bitcointalk.org'],
   },
   site: {
     url: process.env.SITE_URL || 'http://localhost:8080'
