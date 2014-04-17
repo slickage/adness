@@ -28,6 +28,7 @@
       <br/>
       <strong>Auction End Date/Time:</strong>
       <span class="date"><%= new Date(auction.end).toUTCString() %></span>
+      <em>(within ~ 30 minutes)</em>
       <br/>
       <strong>Slots with Bids/Total Slots:</strong>
       <%= auction.bidPerSlot.length %>/<%= auction.slots %>
