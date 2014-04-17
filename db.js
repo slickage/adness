@@ -274,7 +274,7 @@ var db = {
         // check to see if auction is open
         var currentTime = new Date().getTime();
         if ((currentTime >= auction.start &&
-             currentTime < auction.end) &&
+             currentTime < auction.trueEnd) &&
             auction.enabled) {
 
           // validate input
@@ -336,7 +336,7 @@ var db = {
             // check that the auction is open
             var currentTime = new Date().getTime();
             var open = (currentTime >= auction.start &&
-                        currentTime < auction.end) &&
+                        currentTime < auction.trueEnd) &&
                         auction.enabled;
             if (open === true) {
               // validate input
