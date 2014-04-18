@@ -2,7 +2,7 @@
 
 Real-time ad auction system.
 
-[![Build Status](https://travis-ci.org/slickage/adness-api.png?branch=master)](https://travis-ci.org/slickage/adness-api)
+[![Build Status](https://travis-ci.org/slickage/adness.svg?branch=master)](https://travis-ci.org/slickage/adness)
 
 
 # Dependencies
