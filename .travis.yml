@@ -1,10 +1,10 @@
 before_script:
-  - echo "Testing."
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - whoami
 
 language: node_js
 node_js:
-  - "0.10"
+  - "0.10.26"
 notifications:
   email:
     - jw@slickage.com
@@ -12,3 +12,4 @@ notifications:
     - julie@slickage.com
     - anthony@slickage.com
     - warren@slickage.com
+
