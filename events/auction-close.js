@@ -47,16 +47,17 @@ function generateWinners(bidPerSlot) {
 
   bidPerSlot.forEach(function(bid) {
     if (users[bid.user.username]) {
+      // add a payment instance
+      users[bid.user.username].lineItems.push(Number(bid.price));
+      // tally up total payment
       var payment = Number(users[bid.user.username].payment) + Number(bid.price);
       payment = Number(payment).toFixed(2);
-      var slots = Number(users[bid.user.username].slots) + 1;
-      slots = Number(slots);
       users[bid.user.username].payment = payment;
-      users[bid.user.username].slots = slots;
     }
     else {
-      bid.user.payment = bid.price;
-      bid.user.slots = 1;
+      bid.user.payment = Number(bid.price);
+      bid.user.lineItems = [];
+      bid.user.lineItems.push(bid.user.payment);
       users[bid.user.username] = bid.user;
     }
   });

@@ -26,26 +26,26 @@ module.exports = {
       if (err) { return cb(err, undefined); }
 
       // generate an invoice for auction winners
-      var invoice = createAuctionInvoice(auctionId, user.payment, user.slots, webhook, bpReceipt._id);
+      var invoice = createAuctionInvoice(auctionId, user, webhook, bpReceipt._id);
       
       generateInvoice(invoice, bpReceipt, cb);
     });
   }
 };
 
-function createAuctionInvoice(auctionId, payment, slots, webhook, token) {
+function createAuctionInvoice(auctionId, user, webhook, token) {
   var invoice = {};
   invoice.currency = "BTC";
   invoice.min_confirmations = 6; // TODO: confirm block chain confirmations
   invoice.line_items = [];
-  for (var i = 0; i < slots; i++) {
+  for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
     lineItem.description = "Auction " + auctionId + " Ad Slot";
     lineItem.quantity = 1;
-    lineItem.amount = Number(payment) / Number(slots);
+    lineItem.amount = Number(user.lineItems[i]);
     invoice.line_items.push(lineItem);
   }
-  invoice.balance_due = payment;
+  invoice.balance_due = user.payment;
   invoice.webhooks = {};
   invoice.webhooks.paid = {url: webhook, token: token};
   return invoice;
