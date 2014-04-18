@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
   req.model.end(function(err, models) {
@@ -18,8 +20,14 @@ module.exports = function(req, res) {
       latestPrice = 0.50;
     }
 
+    // sort open auctions by start time
+    var open = models.auctionsTimeRelative.open;
+    var sortedOpen = _.sortBy(open, function(auction) {
+      return auction.start;
+    });
+
     res.render('sbindex', {
-      auctionsOpen: models.auctionsTimeRelative.open,
+      auctionsOpen: sortedOpen,
       latestAuction: latestAuction,
       latestAuctionBids: latestBids,
       latestPrice: latestPrice,
