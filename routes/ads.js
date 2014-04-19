@@ -93,6 +93,7 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
         ad.approved = true;
+        ad.submitted = false;
         ad.rejected = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
