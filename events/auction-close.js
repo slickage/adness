@@ -1,5 +1,5 @@
 var db = require(__dirname + '/../db');
-var _ = require('underscore');
+var _ = require('lodash');
 var config = require('../config');
 var invoice = require('../invoice');
 var ejs = require('ejs');

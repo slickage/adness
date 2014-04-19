@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var shacrypt = require('shacrypt');
-var _ = require('underscore');
+var _ = require('lodash');
 var config = require(__dirname + '/../config');
 
 var pool = mysql.createPool({

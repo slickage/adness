@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var config = require(__dirname + '/../config');
 
 module.exports = function(req, res, next) {

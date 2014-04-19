@@ -1,5 +1,5 @@
 var sanitize = require('google-caja').sanitize;
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = {
   isNumber: function(datetime) {
