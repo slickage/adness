@@ -46,6 +46,7 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
     invoice.line_items.push(lineItem);
   }
   invoice.balance_due = user.payment;
+  invoice.access_token = config.baron.key;
   invoice.webhooks = {};
   invoice.webhooks.paid = {url: webhook, token: token};
   return invoice;
@@ -61,6 +62,7 @@ function createRegistrationInvoice(user, webhook, bpReceipt) {
     amount: 0.25,
   }];
   invoice.balance_due = 0.25;
+  invoice.access_token = config.baron.key;
   invoice.webhooks = {};
   invoice.webhooks.paid = {url: webhook, token: bpReceipt._id};
   return invoice;

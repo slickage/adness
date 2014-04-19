@@ -57,7 +57,7 @@ body {
 
 @media (max-width: 768px) {
   .main-container {
-  margin-left: 0px; }
+  margin-left: 0; }
 }
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }

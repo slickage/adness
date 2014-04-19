@@ -29,7 +29,8 @@ module.exports = {
   },
   baron: {
     url: process.env.BARON_URL || 'http://localhost:5000',
-    internalUrl: process.env.BARON_INTERNAL_URL || 'http://localhost:5000'
+    internalUrl: process.env.BARON_INTERNAL_URL || 'http://localhost:5000',
+    key: process.env.BARON_API_KEY || ''
   },
   admin: {
     emails: process.env.ADMIN_EMAILS || ['admin@bitcointalk.org'],
