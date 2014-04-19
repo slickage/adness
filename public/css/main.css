@@ -4,15 +4,19 @@ body {
   padding: 0;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
-   color: #606060;
-   text-shadow: 0 1px #fff;
+  color: #606060;
+  text-shadow: 0 1px #fff;
 }
 .bootstrap-fluid-fix { padding: 0 15px; }
+
+.panel-primary > .panel-heading {
+  text-shadow: 0 0;
+}
 
 /* Main layout code */
 
 .header {
-  background-color: #F7F7F7;
+  background-color: #F2F2F2;
   padding-top: 10px;
   padding-bottom: 10px;
   border-bottom: 2px solid #eee;
@@ -21,10 +25,11 @@ body {
 }
 
 .sidebar {
-  background-color: #F7F7F7;
+  background-color: #F2F2F2;
   min-height: 100%;
   position: fixed;  
-  width: 100px; }
+  width: 100px; 
+  border-right: 2px solid #eee; }
 
 .sidebar-button {
   width: 100%;
@@ -41,14 +46,19 @@ body {
 .logo {
   height: 54px; 
   text-align: center;
-  background-color: #F7F7F7;
   padding-top: 18px;
-  margin: 0; }
+  margin: 0; 
+  border-bottom: 2px solid #eee; }
 
 .main-container {
   padding: 0 15px;
   margin-left: 100px; }
 .main-container h3 { margin-top: 10px; }
+
+@media (max-width: 768px) {
+  .main-container {
+  margin-left: 0px; }
+}
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }
 
@@ -58,7 +68,10 @@ body {
 .cardSpacing {margin: 10px 0; }
 .cardTitle { margin: 0; }
 
-.auctionCardLabel { font-size: 24px; }
+.auctionCardLabel { 
+  font-size: 24px;
+  text-shadow: 0 0;
+}
 
 
 
