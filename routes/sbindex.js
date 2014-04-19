@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);

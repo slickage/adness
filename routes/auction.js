@@ -1,5 +1,5 @@
 var db = require(__dirname + '/../db');
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = {
   showAuction: function(req, res) {

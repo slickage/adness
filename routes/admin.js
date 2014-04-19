@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 
 exports = module.exports = function(req, res) {
   // admin check
