@@ -169,38 +169,34 @@ exports = module.exports = {
     var country = "";
     if (geo) { country = geo.country; }
 
-    // numberOfAds
+    // number Of Ads to return
     var limit = req.query.limit;
     if (!limit || limit == '0' ) { limit = 1; }
 
     // get the AdsInRotation object that has the winners of the last auction
     // this function will get all approved/in rotation ads for all winners
-    getWinnerAds(function(err, ads) {
+    // already country filtered and cleaned up.
+    getWinnerAds(country, function(err, ads) {
       if (err) {
         console.log(err);
         return res.json([]);
       }
 
-      // remove all ads not for this region 
-      var filteredAds = _.reject(ads, function(ad) {
-        return _.contains(ad.blacklistedCN, country);
-      });
+      // check if there are any ads remaining
+      if (ads.length === 0) {
+        return res.json([]);
+      }
 
       // limit the amount of ads returned
-      async.times(limit, function(n, next) {
-        var ad = randomAd(filteredAds);
-        ad = cleanAd(ad);
-        next(null, ad);
-      },
-      function(err, limitedAds) {
-        if (err) { res.json(err); }
-        res.json(limitedAds);
+      fillAds(limit, ads, function(err, finalAds) {
+        if (err) { return res.json(err); }
+        return res.json(finalAds);
       });
     });
   }
 };
 
-function getWinnerAds(callback) {
+function getWinnerAds(country, callback) {
   // get adsInRotation object
   db.getAdsInRotation(function(err, air) {
     var error;
@@ -216,39 +212,62 @@ function getWinnerAds(callback) {
 
     // get all winners from last auction
     var winners = air.winners;
-    // get all ads for each winner
-    async.concat(winners, getApprovedAds, function(err, ads) {
+
+    // cull all filtered ads for each winner
+    async.concat(winners,
+      // winners Iterator
+      function(winner, callback) {
+        // number of ad slots for this winner
+        var slotLimit = winner.lineItems.length;
+
+        // get all winner's ads from the db
+        db.getUserAds(winner.userId, function(err, ads) {
+          if (err) {
+            console.log(err);
+            return callback(null, []);
+          }
+          // filter winner's ads 
+          filterAds(ads, country, slotLimit, callback);
+        });
+      },
+      // final callback
+      function(err, ads) {
       if (err) { return callback(err, undefined); }
       return callback(null, ads);
     });
   });
 }
 
-function getApprovedAds(winner, callback) {
-  // get winner's ads from the db
-  db.getUserAds(winner.userId, function(err, ads) {
-    if (err) {
-      console.log(err);
-      return callback(null, []);
-    }
-    // find all the approved ads and return
-    findApprovedAds(ads, callback);
-  });
-}
-
-function findApprovedAds(ads, cb) {
+function filterAds(ads, country, slotLimit, cb) {
   async.filter(ads, function(ad, callback) {
+    // country filter
+    if (_.contains(ad.blacklistedCN, country)) {
+      return callback(false);
+    }
+
     // check if ad is approved
-    if (ad.approved === true && ad.inRotation === true) { return callback(true); }
+    if (ad.approved === true && ad.inRotation === true) {
+      return callback(true);
+    }
     else { callback(false); }
   },
-  function(results) { return cb(null, results); });
+  function(results) {
+    // check if there are any ads left
+    if (results.length === 0) {
+      return cb(null, []);
+    }
+
+    // limit to slot size
+    fillAds(slotLimit, results, function(err, finalAds) {
+      if (err) { return cb(null, []); }
+      return cb(null, finalAds);
+    });
+  });
 }
 
 function cleanAd(ad) {
   delete ad._id;
   delete ad._rev;
-  delete ad.username;
   delete ad.userId;
   delete ad.type;
   delete ad.approved;
@@ -256,6 +275,18 @@ function cleanAd(ad) {
   delete ad.inRotation;
   delete ad.rejected;
   return ad;
+}
+
+function fillAds(size, ads, callback) {
+  async.times(size, function(n, next) {
+    var ad = randomAd(ads);
+    ad = cleanAd(ad);
+    next(null, ad);
+  },
+  function(err, results) {
+    if (err) { callback(err, null); }
+    callback(err, results);
+  });
 }
 
 function randomAd(ads) {

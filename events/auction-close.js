@@ -46,19 +46,19 @@ function generateWinners(bidPerSlot) {
   var users = {};
 
   bidPerSlot.forEach(function(bid) {
-    if (users[bid.user.username]) {
+    if (users[bid.user.userId]) {
       // add a payment instance
-      users[bid.user.username].lineItems.push(Number(bid.price));
+      users[bid.user.userId].lineItems.push(Number(bid.price));
       // tally up total payment
-      var payment = Number(users[bid.user.username].payment) + Number(bid.price);
+      var payment = Number(users[bid.user.userId].payment) + Number(bid.price);
       payment = Number(payment).toFixed(2);
-      users[bid.user.username].payment = payment;
+      users[bid.user.userId].payment = payment;
     }
     else {
       bid.user.payment = Number(bid.price);
       bid.user.lineItems = [];
       bid.user.lineItems.push(bid.user.payment);
-      users[bid.user.username] = bid.user;
+      users[bid.user.userId] = bid.user;
     }
   });
 
@@ -69,8 +69,8 @@ function generateBidders(bids) {
   var bidders = {};
 
   bids.forEach(function(bid) {
-    if (!bidders[bid.user.username]) {
-      bidders[bid.user.username] = bid.user;
+    if (!bidders[bid.user.userId]) {
+      bidders[bid.user.userId] = bid.user;
     }
   });
 
