@@ -88,18 +88,25 @@
         <hr>
       </noscript>
 
-      <div id="preview-text" class="row review-section">
-        <div class="col-sm-offset-3 col-sm-6">
-          This is what your add will look like on the page:</br>
-        </div>
-      </div>
+      
 
       <div id="preview-container" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6 well">
+          <div id="preview-text" class="row review-section-text">
+            <div class="col-sm-12">
+              This is what your add will look like on the page:</br>
+            </div>
+          </div>
+
           <div id="preview"></div>
-          <div style="padding-top: 20px;">
-            <button class="btn btn-primary pull-right" onclick="submitForReview(true);">Submit for Review</button>
-            <button class="btn btn-primary pull-right" onclick="submitForReview(false);">Save for Later</button>
+
+          <div class="btn-group btn-group-justified review-buttons">
+            <div class="btn-group">
+              <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-success pull-right" onclick="submitForReview(true);">Submit for Review</button>
+            </div>
           </div>
         </div>
       </div>

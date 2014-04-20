@@ -78,7 +78,7 @@ exports = module.exports = {
         ad.user = req.user; // add current user
         db.deleteAd(ad, function(err, body) {
           if (err) { console.log(err); }
-          res.redirect(req.browsePrefix);
+          res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
       }
     });
@@ -97,7 +97,7 @@ exports = module.exports = {
         ad.rejected = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
-          res.redirect(req.browsePrefix);
+          res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
       }
     });
@@ -116,7 +116,7 @@ exports = module.exports = {
         ad.submitted = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
-          res.redirect(req.browsePrefix);
+          res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
       }
     });

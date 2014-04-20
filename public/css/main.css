@@ -1,4 +1,4 @@
-/* CSS resets and bootstrap fluid fixes */
+/* -- CSS resets and bootstrap fluid fixes ------------- */
 body { 
   background-image: url(../images/subtlenet2.png);
   padding: 0;
@@ -11,7 +11,9 @@ body {
 .panel-primary > .panel-heading { text-shadow: 0 0; }
 .navbar { border-radius: 0; }
 
-/* Main layout code */
+/* -- Main layout code --------------------------------- */
+
+/* header */
 
 #header { margin-bottom: 0; }
 #mobile-menu-btn { height: 34px; padding-top: 6px; }
@@ -43,7 +45,7 @@ body {
   .header-logout-container-wide a { float: none; width: 100%; }
 }
 
-
+/* sidebar */
 
 .sidebar {
   background-color: #F2F2F2;
@@ -71,6 +73,8 @@ body {
   margin: 0; 
   border-bottom: 2px solid #eee; }
 
+/* main container */
+
 .main-container {
   padding: 0 15px;
   margin-left: 100px; }
@@ -83,7 +87,8 @@ body {
 
 .content-page { padding-top: 15px; padding-bottom: 30px; }
 
-/* Card Layouts */
+/* -- Card Layouts ------------------------------------- */
+
 .cardBody { margin: 0 15px; }
 .cardHeader { font-size: 20px; word-wrap: break-word; }
 .cardSpacing {margin: 10px 0; }
@@ -94,10 +99,7 @@ body {
   text-shadow: 0 0;
 }
 
-
-
-
-/* Auction Page */
+/* -- Auction Page ------------------------------------- */
 
 .slot {
   padding: 10px;
@@ -109,7 +111,7 @@ body {
 .bid_button { padding-top: 19px; }
 .slot_listing { margin-top: 15px;}
 
-/* Auction Details Page */
+/* -- Auction Details Page ----------------------------- */
 
 .slot_details_right {
   padding-top: 15px; 
@@ -117,35 +119,27 @@ body {
   font-weight: 700;
   background-color: #ECECEC; }
 .slot_details_right > div { padding-bottom: 15px; }
-.auction_listing {
-  padding: 10px 0;
-}
-.auction_header {
-  font-weight: 700;
-}
+.auction_listing { padding: 10px 0; }
+.auction_header { font-weight: 700; }
 
-
-/* Admin Page */
+/* -- Admin Page --------------------------------------- */
 
 .auction_add_button { text-align: center; padding-top: 30px; }
 
+/* -- Auction Edit Page -------------------------------- */
 
-/* Auction Edit Page */
+.editControls { margin-top: 30px; }
 
-.editControls {
-  margin-top: 30px;
-}
-
-
-/* Registration Page */
+/* -- Registration Page -------------------------------- */
 
 .reg_qr { padding: 15px; background-color: #ECECEC; text-align: center; }
 .reg_qr_text { font-size: larger; font-weight: 700; }
 .reg_qr_img { text-align: center; padding-top: 15px; }
 .reg_qr_img img { display: inline; }
 
-
-/* Ad Upload page  CSS */
+/* -- Ad Upload page  CSS ------------------------------ */
 .upload-header { padding-left: 20px; }
 .coding-section { padding-top: 20px; }
 .review-section { padding-top: 30px; }
+.review-section-text { padding-bottom: 20px; }
+.review-buttons { padding-top: 20px; }

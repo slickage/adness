@@ -12,26 +12,36 @@
       <div class="panel-body">
         <% if (ad.approved === true) { %>
           <% if (ad.inRotation === true) { %>
-            <form action="<%= browsePrefix %>/ads/<%= ad._id %>/outRotation" method="post" class="pull-left">
-              <button class="btn btn-primary">Remove from rotation</button>
-            </form>
+            <div class="btn-group">
+              <form action="<%= browsePrefix %>/ads/<%= ad._id %>/outRotation" method="post">
+                <button class="btn btn-primary">Remove from rotation</button>
+              </form>
+            </div>
           <% } else { %>
-            <form action="<%= browsePrefix %>/ads/<%= ad._id %>/inRotation" method="post" class="pull-left">
-              <button class="btn btn-primary">Add to rotation</button>
-            </form>            
+            <div class="btn-group">
+              <form action="<%= browsePrefix %>/ads/<%= ad._id %>/inRotation" method="post">
+                <button class="btn btn-primary">Add to rotation</button>
+              </form>            
+            </div>
           <% } %>
         <% } %>
 
-        <form action="<%= browsePrefix %>/ads/<%= ad._id %>/delete" method="post">
         <% if (ad.approved !== true && ad.submitted !== true) { %>
-          <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
-            Edit
-          </a>
+          <div class="btn-group">
+            <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
+              Edit
+            </a>
+          </div>
         <% } %>
-        <button class="btn btn-danger">
-          Delete
-        </button>
-      </form>
+
+        <div class="btn-group">
+          <form action="<%= browsePrefix %>/ads/<%= ad._id %>/delete" method="post">
+            <button class="btn btn-danger">
+              Delete
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   <% } %>
@@ -42,30 +52,40 @@
         <h3 class="panel-title">Admin Controls</h3>
       </div>
       <div class="panel-body">
-        <% if (ad.approved === true) { %>
-          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
-            <button class="btn btn-danger">
-              Reject
-            </button>
-          </form>
-        <% } else if (ad.rejected === true ) { %>
-          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
-            <button class="btn btn-success">
-              Approve
-            </button>
-          </form>
-        <% } else { %>
-          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post" class="pull-right">
-            <button class="btn btn-success">
-              Approve
-            </button>
-          </form>
-          <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post" class="pull-right">
-            <button class="btn btn-danger">
-              Reject
-            </button>
-          </form>
-        <% } %>
+        <div class="pull-right">
+          <% if (ad.approved === true) { %>
+            <div class="btn-group">
+              <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post">
+                <button class="btn btn-danger">
+                  Reject
+                </button>
+              </form>
+            </div>
+          <% } else if (ad.rejected === true ) { %>
+            <div class="btn-group">
+              <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post">
+                <button class="btn btn-success">
+                  Approve
+                </button>
+              </form>
+            </div>
+          <% } else { %>
+            <div class="btn-group">
+              <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post">
+                <button class="btn btn-success">
+                  Approve
+                </button>
+              </form>
+            </div>
+            <div class="btn-group">
+              <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post">
+                <button class="btn btn-danger">
+                  Reject
+                </button>
+              </form>
+            </div>
+          <% } %>
+        </div>
       </div>
     </div>
   <% } %>
