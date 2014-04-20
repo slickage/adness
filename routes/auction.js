@@ -63,7 +63,7 @@ module.exports = {
         // save auction
         db.updateAuction(models.auction, function(err, body, header) {
           if (err) { console.log(err); }
-          req.flash('info', "Auction Enabled.");
+          req.flash('info', "Auction " + body.id + " Enabled.");
           res.end();
         });
       }
@@ -81,7 +81,7 @@ module.exports = {
         // save auction
         db.updateAuction(models.auction, function(err, body, header) {
           if (err) { console.log(err); }
-          req.flash('info', "Auction Disabled.");
+          req.flash('info', "Auction " + body.id + " Disabled.");
           res.end();
         });
       }
@@ -92,7 +92,7 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.newAuction(req.body, function(err, body, header) {
       if (err) { console.log(err); }
-      req.flash('info', "Auction Created.");
+      req.flash('info', "Auction " + body.id + " Created.");
       res.end();
     });
   },
@@ -111,7 +111,7 @@ module.exports = {
         if (req.body.enabled) auction.enabled = req.body.enabled;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
-          req.flash('info', "Auction Updated.");
+          req.flash('info', "Auction " + body.id + " Updated.");
           res.end();
         });
       }
@@ -122,7 +122,7 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteAuction(req.params.auctionId, function(err, body) {
       if (err) { console.log(err); }
-      req.flash('info', "Auction Deleted.");
+      req.flash('info', "Auction " + body.id + " Deleted.");
       res.end();
     });
   }

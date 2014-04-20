@@ -44,16 +44,27 @@
     </div>
     <div class="panel-body slot_text">
       
+      <div class="row">
       <form role="form" method="post" action="/auctions">
         <div class="col-sm-3">
           Start Date/Time: 
-          <input name="startDate" id="startDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
-          <input name="startTime" id="startTime" type="time" placeholder="HH:MM AM/PM" class="form-control">
+          <div class="form-group">
+            <div class='input-group date' id='startDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="col-sm-3">
           End Date/Time: 
-          <input name="endDate" id="endDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
-          <input name="endTime" id="endTime" type="hour" placeholder="HH:MM AM/PM" class="form-control">
+          <div class="form-group">
+            <div class='input-group date' id='endDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="col-sm-3">
           Number of slots:<br>
@@ -64,6 +75,8 @@
         <button class="btn btn-primary btn-block" onclick="submitAuction();">
           Add Auction
         </button>
+      </div>
+
       </div>
 
     </div>
@@ -86,10 +99,10 @@
 
           <div class="col-sm-6">
             <span class="auction_header">Start: </span>
-            <span class="date"><%= new Date(auctionsOpen[i].start).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsOpen[i].start).toUTCString() %></span>
             <br>
             <span class="auction_header">End: </span>
-            <span class="date"><%= new Date(auctionsOpen[i].end).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsOpen[i].end).toUTCString() %></span>
           </div>
           
           <div class="col-sm-offset-3 col-sm-3 text-center">
@@ -141,10 +154,10 @@
 
           <div class="col-sm-6">
             <span class="auction_header">Start: </span>
-            <span class="date"><%= new Date(auctionsClosed[i].start).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsClosed[i].start).toUTCString() %></span>
             <br>
             <span class="auction_header">End: </span>
-            <span class="date"><%= new Date(auctionsClosed[i].end).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsClosed[i].end).toUTCString() %></span>
           </div>
           
           <div class="col-sm-offset-3 col-sm-3 text-center">
@@ -196,10 +209,10 @@
 
           <div class="col-sm-6">
             <span class="auction_header">Start: </span>
-            <span class="date"><%= new Date(auctionsFuture[i].start).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsFuture[i].start).toUTCString() %></span>
             <br>
             <span class="auction_header">End: </span>
-            <span class="date"><%= new Date(auctionsFuture[i].end).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsFuture[i].end).toUTCString() %></span>
           </div>
 
           <div class="col-sm-offset-3 col-sm-3 text-center">
@@ -246,10 +259,10 @@
 
           <div class="col-sm-6">
             <span class="auction_header">Start: </span>
-            <span class="date"><%= new Date(auctionsPast[i].start).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsPast[i].start).toUTCString() %></span>
             <br>
             <span class="auction_header">End: </span>
-            <span class="date"><%= new Date(auctionsPast[i].end).toUTCString() %></span>
+            <span class="adminDate"><%= new Date(auctionsPast[i].end).toUTCString() %></span>
           </div>
 
           <div class="col-sm-offset-3 col-sm-3 text-center">

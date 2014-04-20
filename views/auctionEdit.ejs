@@ -24,18 +24,28 @@
       
       <form role="form" method="post" action="/auctions">
         <input id="auctionId" type="hidden" value="<%= auction._id %>">
-        <input id="startDateTime" type="hidden" value="<%= auction.start %>">
-        <input id="endDateTime" type="hidden" value="<%= auction.end %>">
+        <input id="hiddenStart" type="hidden" value="<%= auction.start %>">
+        <input id="hiddenEnd" type="hidden" value="<%= auction.end %>">
 
         <div class="col-sm-3">
           Start Date/Time: 
-          <input name="startDate" id="startDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
-          <input name="startTime" id="startTime" type="time" placeholder="HH:MM AM/PM" class="form-control">
+          <div class="form-group">
+            <div class='input-group date' id='startDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="col-sm-3">
           End Date/Time: 
-          <input name="endDate" id="endDate" type="date" placeholder="YYYY-MM-DD" class="form-control">
-          <input name="endTime" id="endTime" type="hour" placeholder="HH:MM AM/PM" class="form-control">
+          <div class="form-group">
+            <div class='input-group date' id='endDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="col-sm-3">
           Number of slots:<br>

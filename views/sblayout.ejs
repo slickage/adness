@@ -17,9 +17,7 @@
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.css">
-    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.date.css">
-    <link rel="stylesheet" href="/css/pickadate/compressed/themes/default.time.css">
+    <link rel="stylesheet" href="/css/datetimepicker/bootstrap-datetimepicker.css">
     <!-- endbuild -->
   </head>
   <body>
@@ -172,36 +170,19 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="/scripts/jquery/jquery-2.1.0.min.js"></script>
+    <script src="/scripts/momentjs/moment.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.js"></script>
-    <script src="/scripts/pickadate/legacy.js"></script>
-    <script src="/scripts/pickadate/picker.js"></script>
-    <script src="/scripts/pickadate/picker.date.js"></script>
-    <script src="/scripts/pickadate/picker.time.js"></script>
+    <script src="/scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
-      var $startDate, $startTime, $endDate, $endTime;
-
-      // initialize the pickadate ui
       $(document).ready(function() {
-        $startDate = $("#startDate").pickadate({
-          format: 'yyyy-m-d',
-          editable: true
-        });
-        $startTime = $("#startTime").pickatime({
-          interval: 5,
-          editable: true
-        });
-        $endDate = $("#endDate").pickadate({
-          format: 'yyyy-m-d',
-          editable: true
-        });
-        $endTime = $("#endTime").pickatime({
-          interval: 5,
-          editable: true
-        });
+        // initialize the datetimepicker ui
+        $('#startDateTime').datetimepicker({ useStrict: true });
+        $('#endDateTime').datetimepicker({ useStrict: true });
 
+        // set date time picker values
         if (document.URL.indexOf("/admin/auctions/edit") >= 0) {
-          var start = $('#startDateTime').val();
-          var end = $('#endDateTime').val();
+          var start = $('#hiddenStart').val();
+          var end = $('#hiddenEnd').val();
           setDateTime(start, end);
         }
         else if (document.URL.indexOf("/admin") >= 0) {
@@ -264,108 +245,49 @@
       function setDateTime(start, end) {
         if (start && end) {
           var newStart = new Date(Number(start));
-          var startDatePicker = $startDate.pickadate('picker');
-          var startTimePicker = $startTime.pickatime('picker');
-          startDatePicker.set('select', newStart);
-          startTimePicker.set('select', newStart);
+          var momentStart = moment(newStart);
+          $('#startDateTime').data('DateTimePicker').setDate(momentStart);
 
           var newEnd = new Date(Number(end));
-          var endDatePicker = $endDate.pickadate('picker');
-          var endTimePicker = $endTime.pickatime('picker');
-          endDatePicker.set('select', newEnd);
-          endTimePicker.set('select', newEnd);
+          var momentEnd = moment(newEnd);
+          $('#endDateTime').data('DateTimePicker').setDate(momentEnd);
         }
         else {
-          // default date in input
+          // default date 
+          // start is one day ahead midnight
           var defaultStart = new Date();
           defaultStart.setDate(defaultStart.getDate()+1);
           defaultStart.setHours(0);
           defaultStart.setMinutes(0);
           defaultStart.setSeconds(0);
           defaultStart.setMilliseconds(0);
-          var startDatePicker = $startDate.pickadate('picker');
-          var startTimePicker = $startTime.pickatime('picker');
-          startDatePicker.set('select', defaultStart);
-          startTimePicker.set('select', defaultStart);
+          var momentStart = moment(defaultStart);
+          $('#startDateTime').data('DateTimePicker').setDate(momentStart);
 
+          // end is three days ahead midnight
           var defaultEnd = new Date();
           defaultEnd.setDate(defaultEnd.getDate() +3);
           defaultEnd.setHours(0);
           defaultEnd.setMinutes(0);
           defaultEnd.setSeconds(0);
           defaultEnd.setMilliseconds(0);
-          var endDatePicker = $endDate.pickadate('picker');
-          var endTimePicker = $endTime.pickatime('picker');
-          endDatePicker.set('select', defaultEnd);
-          endTimePicker.set('select', defaultEnd);
+          var momentEnd = moment(defaultEnd);
+          $('#endDateTime').data('DateTimePicker').setDate(momentEnd);
         }
-      }
-
-      function buildDateTime(date, time) {
-        // get the date, format yyyy-mm-dd
-        var year = date.split("-")[0];
-        var month = date.split("-")[1];
-        var day = date.split("-")[2];
-
-        // get the time, format HH:MM (AM/PM)
-        var hours = Number(time.split(":")[0]); // hours from [12]:00 AM
-        var timeSplit = time.split(":")[1]; // split second half 12:[00 AM]
-        var mins = 0;
-        if (timeSplit) { mins = timeSplit.split(" ")[0]; } // mins 12:[00] AM
-        if (timeSplit) {
-          var period = timeSplit.split(" ")[1]; // period 12:00 [AM]
-          if (period && period.toUpperCase() === "PM") {
-            hours = hours + 12;
-            if (hours === 24) { hours = 12; }
-          }
-          else if (period && period.toUpperCase() === "AM") {
-            if (hours === 12) hours = 0;
-          }
-          else {
-            return "";
-          }
-        }
-
-        // parse datetime into millisecs
-        var datetime = new Date();
-        datetime.setFullYear(Number(year));
-        datetime.setMonth(Number(month) -1, Number(day));
-        datetime.setHours(Number(hours), Number(mins));
-        return datetime.getTime();
       }
 
       function auctionValidation() {
         // Initial input validation
-        var datePicker = $startDate.pickadate('picker');
-        var startDateInput = datePicker.get();
-        if (!startDateInput || startDateInput.length === 0) {
-          alert("The Start Date is not filled out.");
-          return false;
-        }
+        var start;
+        var startDate = $('#startDateTime').data('DateTimePicker').getDate();
+        if (startDate) { start = startDate.valueOf(); }
+        else { return alert("Start Date/Time doesn't look right."); }
 
-        var timePicker = $startTime.pickatime('picker');
-        var startTimeInput = timePicker.get();
-        if (!startTimeInput || startTimeInput.length === 0) {
-          alert("The Start Time is not filled out.");
-          return false;
-        }
+        var end; 
+        var endDate = $('#endDateTime').data('DateTimePicker').getDate();
+        if (endDate) { end = endDate.valueOf(); }
+        else { return alert("End Date/Time doesn't look right."); }
 
-        var datePicker = $endDate.pickadate('picker');
-        var endDateInput = datePicker.get();
-        if (!endDateInput || endDateInput.length === 0) {
-          alert("The End Date is not filled out.");
-          return false;
-        }
-
-        var timePicker = $endTime.pickatime('picker');
-        var endTimeInput = timePicker.get();
-        if (!endTimeInput || endTimeInput.length === 0) {
-          alert("The End Time is not filled out.");
-          return false;
-        }
-
-        var start = buildDateTime(startDateInput, startTimeInput);
-        var end = buildDateTime(endDateInput, endTimeInput);
         var slots = $('#slots').val();
 
         // validate startDate, endDate and slots
@@ -406,7 +328,7 @@
 
       // format all date strings in admin page
       $(document).ready(function() {
-        $(".date").each(function(index, value) {
+        $(".adminDate").each(function(index, value) {
           var dateString = $(value).text();
           var date = new Date(dateString).toLocaleString();
           $(value).text(date);
