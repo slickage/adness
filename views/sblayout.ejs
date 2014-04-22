@@ -328,7 +328,7 @@
 
       // format all date strings in admin page
       $(document).ready(function() {
-        $(".adminDate").each(function(index, value) {
+        $(".scriptDate").each(function(index, value) {
           var dateString = $(value).text();
           var date = new Date(dateString).toLocaleString();
           $(value).text(date);
