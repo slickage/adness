@@ -279,17 +279,24 @@ function cleanAd(ad) {
 }
 
 function fillAds(size, ads, callback) {
-  async.times(size, function(n, next) {
-    var ad = randomAd(ads);
-    ad = cleanAd(ad);
-    next(null, ad);
-  },
-  function(err, results) {
-    if (err) { callback(err, null); }
-    callback(err, results);
-  });
-}
+   var results = _.sample(ads, size);
+   var fillSize = results.length;
 
-function randomAd(ads) {
-  return ads[Math.floor(Math.random() * (ads.length))];
+   while (fillSize < size) {
+    // find difference 
+    var diffSize = size - fillSize;
+
+    // get more ads
+    var moreAds = _.sample(ads, diffSize);
+
+    // add to results
+    moreAds.forEach(function(item) {
+      results.push(item);
+    });
+
+    // set new fillSize
+    fillSize = results.length;
+   }
+
+   callback(null, results);
 }

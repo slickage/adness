@@ -46,7 +46,7 @@
     </div>
   <% } %>
 
-  <% if( user && user.admin === true && ad.submitted === true || ad.approved === true || ad.rejected === true) { %>
+  <% if( user && user.admin === true && (ad.submitted === true || ad.approved === true || ad.rejected === true)) { %>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Admin Controls</h3>
