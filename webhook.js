@@ -1,4 +1,5 @@
 var db = require('./db');
+var crypto = require('crypto');
 var async = require('async');
 var config = require('./config');
 var ejs = require('ejs');
@@ -13,6 +14,7 @@ module.exports = {
     var bprId = req.body.token;
     var bpReceipt;
     var regUser;
+
     async.waterfall([
       // get Basic Pay Receipt from the DB
       function(cb) {
@@ -41,7 +43,7 @@ module.exports = {
         var str = fs.readFileSync(regTemplate, 'utf8');
         var html = ejs.render(str, data);
 
-        // heckle the user for registration fee
+        // heckle the admin that reg fee was paid
         console.log("Emailing Admin: Registration Cleared for " + regUser.username);
         heckler.email({
           from: config.senderEmail,
@@ -49,7 +51,11 @@ module.exports = {
           subject: "Registration Fee Paid for " + regUser.username,
           html: html
         });
-        return res.json({ ok: true });
+
+        // handshake token
+        var toHash = bprId + bpReceipt._id;
+        var newToken = crypto.createHash('sha1').update(toHash).digest('hex');
+        return res.json({ token: newToken });
       }
     );
   },
@@ -84,7 +90,7 @@ module.exports = {
         var str = fs.readFileSync(winTemplate, 'utf8');
         var html = ejs.render(str, data);
 
-        // heckle the user for registration fee
+        // heckle the admin that an  auction payment was made
         console.log("Emailing Admin: Payment Cleared for " + bpReceipt.username + " For Auction: " + auctionId);
         heckler.email({
           from: config.senderEmail,
@@ -92,14 +98,18 @@ module.exports = {
           subject: "Payment on Auction: " + auctionId + " by user: " + bpReceipt.username,
           html: html
         });
-        return res.json({ ok: true });
+        
+        // handshake token
+        var toHash = bprId + bpReceipt._id;
+        var newToken = crypto.createHash('sha1').update(toHash).digest('hex');
+        return res.json({ token: newToken });
       }
     );
   }
 };
 
 function getBPReceipt(bprId, cb) {
-  db.getBPReceipt(bprId, function(err, receipt) {
+  db.getBPReceiptBySHA(bprId, function(err, receipt) {
     if (err) { cb(err, undefined); }
     cb(null, receipt);
   });

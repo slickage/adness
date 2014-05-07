@@ -1,4 +1,5 @@
 var config = require('./config');
+var crypto = require('crypto');
 
 var ddoc = {
   _id: '_design/' + config.couchdb.name,
@@ -64,3 +65,10 @@ ddoc.views.adsInRotation = {
   }
 };
 
+ddoc.views.BPReceiptBySHA = {
+  map: function(doc) {
+    if(doc.type == 'bp_receipt') {
+      emit(doc.token, doc);
+    }
+  }
+};

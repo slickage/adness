@@ -1,4 +1,5 @@
 var db = require('./db');
+var crypto = require('crypto');
 var config = require('./config');
 var request = require('request');
 
@@ -36,7 +37,7 @@ module.exports = {
 function createAuctionInvoice(auctionId, user, webhook, token) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = 6; // TODO: confirm block chain confirmations
+  invoice.min_confirmations = 1; // TODO: confirm block chain confirmations
   invoice.line_items = [];
   for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
@@ -55,7 +56,7 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
 function createRegistrationInvoice(user, webhook, bpReceipt) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = 6; // TODO: confirm block chain confirmations
+  invoice.min_confirmations = 1; // TODO: confirm block chain confirmations
   invoice.line_items = [{
     description: user.username + " Auction Registration Fee",
     quantity: 1,
@@ -101,6 +102,7 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
 
       // update baron receipt with invoiceId
       bpReceipt.invoiceId = invoiceId;
+      bpReceipt.token = crypto.createHash('sha1').update(bpReceipt._id).digest('hex');
       db.updateBPReceipt(bpReceipt, function(err, body) {
         if (err) { return cb(err, undefined); }
         console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);
