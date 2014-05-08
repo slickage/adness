@@ -37,7 +37,7 @@ module.exports = {
 function createAuctionInvoice(auctionId, user, webhook, token) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = config.bitcoin.numberOfConfs;
+  invoice.min_confirmations = Number(config.bitcoin.numberOfConfs);
   invoice.line_items = [];
   for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
@@ -46,7 +46,6 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
     lineItem.amount = Number(user.lineItems[i]);
     invoice.line_items.push(lineItem);
   }
-  invoice.balance_due = user.payment;
   invoice.access_token = config.baron.key;
   invoice.webhooks = {};
   invoice.webhooks.paid = {url: webhook, token: token};
@@ -56,13 +55,12 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
 function createRegistrationInvoice(user, webhook, bpReceipt) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = config.bitcoin.numberOfConfs;
+  invoice.min_confirmations = Number(config.bitcoin.numberOfConfs);
   invoice.line_items = [{
     description: user.username + " Auction Registration Fee",
     quantity: 1,
     amount: 0.25,
   }];
-  invoice.balance_due = 0.25;
   invoice.access_token = config.baron.key;
   invoice.webhooks = {};
   invoice.webhooks.paid = {url: webhook, token: bpReceipt._id};

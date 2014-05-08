@@ -39,6 +39,6 @@ module.exports = {
     url: process.env.SITE_URL || 'http://localhost:8080'
   },
   bitcoin: {
-    numebrOfConfs: process.env.CONFS || 2
+    numberOfConfs: process.env.CONFS || 2
   }
 };
