@@ -93,10 +93,14 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
     function(err, response, body) {
       if (err) { return cb(err, undefined); }
       
-      // parse body into json (invoice)
-      var invoice = JSON.parse(body);
-      // get the invoiceId
-      var invoiceId = invoice.id;
+      var invoiceId;
+      try {
+        // parse body into json (invoice)
+        var invoice = JSON.parse(body);
+        // get the invoiceId
+        invoiceId = invoice.id;
+      }
+      catch (err) { return cb(err, undefined); }
 
       console.log("Invoice " + invoiceId + " created for BPReceipt: " + bpReceipt._id);
 
