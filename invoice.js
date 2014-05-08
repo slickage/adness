@@ -106,7 +106,7 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
 
       // update baron receipt with invoiceId
       bpReceipt.invoiceId = invoiceId;
-      bpReceipt.token = crypto.createHash('sha1').update(bpReceipt._id).digest('hex');
+      bpReceipt.token = crypto.createHash('sha256').update(bpReceipt._id).digest('hex');
       db.updateBPReceipt(bpReceipt, function(err, body) {
         if (err) { return cb(err, undefined); }
         console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);

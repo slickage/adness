@@ -54,7 +54,7 @@ module.exports = {
 
         // handshake token
         var toHash = bprId + bpReceipt._id;
-        var newToken = crypto.createHash('sha1').update(toHash).digest('hex');
+        var newToken = crypto.createHash('sha256').update(toHash).digest('hex');
         return res.json({ token: newToken });
       }
     );
@@ -101,7 +101,7 @@ module.exports = {
         
         // handshake token
         var toHash = bprId + bpReceipt._id;
-        var newToken = crypto.createHash('sha1').update(toHash).digest('hex');
+        var newToken = crypto.createHash('sha256').update(toHash).digest('hex');
         return res.json({ token: newToken });
       }
     );
