@@ -21,8 +21,9 @@ Install these dependencies as per your OS:
 # Configuration
 ```
   port: process.env.PORT || 8080,  
-  admins: parseAdmins(process.env.ADMINS) || ['admin'],  
+  admins: parseAdmins(process.env.ADMINS) || ['012345'],  
   sbPrefix: '/sb',
+  senderEmail: process.env.SENDER_EMAIL || 'no-reply@test.co',
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
@@ -40,28 +41,32 @@ Install these dependencies as per your OS:
     name: 'adness'
   },
   baron: {
-    url: process.env.BARON_URL || 'http://localhost:5000'
+    url: process.env.BARON_URL || 'http://localhost:5000',
+    internalUrl: process.env.BARON_INTERNAL_URL || 'http://localhost:5000',
+    key: process.env.BARON_API_KEY || ''
   },
   admin: {
-    email: process.env.ADMIN_EMAIL || 'admin@bitcointalk.org',
-    senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org'
+    email: process.env.ADMIN_EMAILS || ['admin@bitcointalk.org']
   },
   site: {
     url: process.env.SITE_URL || 'http://localhost:8080'
+  },
+  bitcoin: {
+    numebrOfConfs: process.env.CONFS || 2
   }
 ```
 * port: The port to run this server on
-* admins: The list of administrators
+* admins: The list of administrators by user ids
 * sbPrefix: the prefix for noscript pages (currently the only view available)
+* senderEmail: The email that will show up in the from field for all outgoing emails
 * redis: The Redis DB that holds user sessions
 * secret: it's a secret (to hash the user session)
 * mysql: The MySQL DB to grab users from
 * couchdb: The DB store for our objects
-* baron: The payment processor's URL
-* admin: 
-	* email: The administrator's email for registration and payment notification
-	* senderEmail: The email to use when sending emails out to users
+* baron: The payment processor's URL (internal/external) and API Key
+* admin: The administrators emails for registration and payment notification
 * site: The URL of this server
+* bitcoin: The number of confirmations before a payment is considered paid
 
 
 # Installation
