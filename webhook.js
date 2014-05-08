@@ -32,7 +32,7 @@ module.exports = {
       }],
       // heckler admin with payment and invoice info
       function(err, results) {
-        if (err) { return res.json(err); }
+        if (err) { return res.send(500, err.message); }
 
         // build registration email template
         var data = {
