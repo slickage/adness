@@ -37,7 +37,7 @@ module.exports = {
 function createAuctionInvoice(auctionId, user, webhook, token) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = 1; // TODO: confirm block chain confirmations
+  invoice.min_confirmations = config.bitcoin.numberOfConfs;
   invoice.line_items = [];
   for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
@@ -56,7 +56,7 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
 function createRegistrationInvoice(user, webhook, bpReceipt) {
   var invoice = {};
   invoice.currency = "BTC";
-  invoice.min_confirmations = 1; // TODO: confirm block chain confirmations
+  invoice.min_confirmations = config.bitcoin.numberOfConfs;
   invoice.line_items = [{
     description: user.username + " Auction Registration Fee",
     quantity: 1,

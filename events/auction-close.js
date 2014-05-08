@@ -80,7 +80,7 @@ function generateBidders(bids) {
 function notifyWinner(user, auctionId) {
   console.log("Notifying " + user.username + " that they've won.");
 
-  var webhook = config.site.url + '/auctions/' + auctionId;
+  var webhook = config.site.url + '/hooks/auctions/' + auctionId;
   invoice.auction(auctionId, user, webhook, function(err, invoiceId) {
     if (err) { return console.log(err); }
 
