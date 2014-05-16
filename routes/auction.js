@@ -3,9 +3,13 @@ var _ = require('lodash');
 
 module.exports = {
   showAuction: function(req, res) {
+    if (req.user) {
+      req.userId = req.user.userId;
+    }
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.load('registeredUser', req);
+    req.model.load('userAds', req);
     req.model.end(function(err, models) {
       if (err) {
         console.log(err);
@@ -14,6 +18,7 @@ module.exports = {
       var auction = models.auction;
       var bids = models.bids;
       var regUser = models.registeredUser;
+      var approvedAds = _.filter(models.userAds, function(ad) { return ad.inRotation === true; });
       // find latest price for this auction
       var latestPrice;
       // first check if there are slots open
@@ -34,7 +39,8 @@ module.exports = {
         browsePrefix: req.browsePrefix,
         latestPrice: latestPrice,
         user: req.user,
-        reguser: regUser
+        reguser: regUser,
+        ads: approvedAds
       });
     });
   },

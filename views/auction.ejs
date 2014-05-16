@@ -4,7 +4,7 @@
 
   <% if (user && auction.open) { %>
 
-    <% if (reguser && reguser.registered === true) { %>
+    <% if (reguser && reguser.registered === true && ads.length > 0) { %>
       
       <div style="margin: 0px 5px">
         <b>Advertising slots (1 in <%= auction.slots + 2%> chance)</b><br>
@@ -43,6 +43,19 @@
         </form>
       </div>
 
+    <% } else if (reguser && reguser.registered === true && ads.length === 0) { %>
+      
+      <div class="text-center" style="margin-bottom: 15px;">
+        Current Registration Status: 
+        <span class="label label-success">
+          Registered
+        </span>
+        <br>
+        <strong>
+          At least one approved ad that has been put into rotation is also necessary to bid on auctions.
+        </strong>
+      </div>
+
     <% } else if (reguser && reguser.registrationStatus) { %>
       
       <div class="text-center" style="margin-bottom: 15px;">
@@ -50,15 +63,21 @@
         <span class="label label-warning">
           <%= reguser.registrationStatus %>
         </span>
-      </div>    
+        <% if (ads.length === 0) { %>
+          <br>
+          <strong>*At least one approved ad that has been put into rotation is also necessary to bid on auctions.</strong>
+        <% }%>
+      </div>
 
     <% } else { %>
 
       <div class="text-center" style="margin-bottom: 15px;">
         <form action="/registration" method="POST">
           <button class="btn btn-success">
-            Register for this auction
+            Please Click Here to Register to bid on auctions
           </button>
+          <br>
+          <strong>*At least one approved ad that has been put into rotation is also necessary to bid on auctions.</strong>
         </form>
       </div>
 
