@@ -99,7 +99,7 @@ function notifyWinner(user, auctionId) {
     heckler.email({
       from: config.senderEmail,
       to: user.email,
-      subject: "You're the winning bidder for an auction.",
+      subject: "You're a winning bidder for #" + auctionId + ".",
       html: html
     });
   });
