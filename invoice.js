@@ -1,5 +1,4 @@
 var db = require('./db');
-var crypto = require('crypto');
 var config = require('./config');
 var request = require('request');
 
@@ -48,7 +47,9 @@ function createAuctionInvoice(auctionId, user, webhook, token) {
   }
   invoice.access_token = config.baron.key;
   invoice.webhooks = {};
-  invoice.webhooks.paid = {url: webhook, token: token};
+  invoice.webhooks.token = token;
+  invoice.webhooks.paid = {};
+  invoice.webhooks.paid.url = webhook;
   return invoice;
 }
 
@@ -63,7 +64,9 @@ function createRegistrationInvoice(user, webhook, bpReceipt) {
   }];
   invoice.access_token = config.baron.key;
   invoice.webhooks = {};
-  invoice.webhooks.paid = {url: webhook, token: bpReceipt._id};
+  invoice.webhooks.token = bpReceipt._id;
+  invoice.webhooks.paid = {};
+  invoice.webhooks.paid.url = webhook;
   return invoice;
 }
 
@@ -98,13 +101,18 @@ function generateInvoice(invoiceForm, bpReceipt, cb) {
         // get the invoiceId
         invoiceId = invoice.id;
       }
-      catch (err) { return cb(err, undefined); }
+      catch (error) {
+        errorMsg = "Could not generate an invoice, received response: ";
+        errorMsg += body + "\n";
+        errorMsg += error.message;
+        var invoiceError = new Error(errorMsg );
+        return cb(invoiceError, undefined);
+      }
 
       console.log("Invoice " + invoiceId + " created for BPReceipt: " + bpReceipt._id);
 
       // update baron receipt with invoiceId
       bpReceipt.invoiceId = invoiceId;
-      bpReceipt.token = crypto.createHash('sha256').update(bpReceipt._id).digest('hex');
       db.updateBPReceipt(bpReceipt, function(err, body) {
         if (err) { return cb(err, undefined); }
         console.log("Updated BP Receipt " + bpReceipt._id + " with Invoice ID " + bpReceipt.invoiceId);

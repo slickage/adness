@@ -1,7 +1,7 @@
 var db = require('./db');
-var crypto = require('crypto');
 var async = require('async');
 var config = require('./config');
+var request = require('request');
 var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
@@ -20,6 +20,10 @@ module.exports = {
       function(cb) {
         getBPReceipt(bprId, cb);
       },
+      // validate call 
+      function(receipt, cb) {
+        validateCall(receipt, cb);
+      },
       // get the RegisteredUser using the BPReceipt
       function(receipt, cb) {
         bpReceipt = receipt;
@@ -32,7 +36,10 @@ module.exports = {
       }],
       // heckler admin with payment and invoice info
       function(err, results) {
-        if (err) { return res.send(500, err.message); }
+        if (err) {
+          console.log(err);
+          return res.send(500, err.message);
+        }
 
         // build registration email template
         var data = {
@@ -52,10 +59,7 @@ module.exports = {
           html: html
         });
 
-        // handshake token
-        var toHash = bprId + bpReceipt._id;
-        var newToken = crypto.createHash('sha256').update(toHash).digest('hex');
-        return res.json({ token: newToken });
+        return res.json({ ok: true });
       }
     );
   },
@@ -67,6 +71,10 @@ module.exports = {
       // get Basic Pay Receipt from the DB
       function(cb) {
         getBPReceipt(bprId, cb);
+      },
+      // validate call 
+      function(receipt, cb) {
+        validateCall(receipt, cb);
       }],
       // heckler admin with payment and invoice info
       function(err, bpReceipt) {
@@ -99,17 +107,46 @@ module.exports = {
           html: html
         });
         
-        // handshake token
-        var toHash = bprId + bpReceipt._id;
-        var newToken = crypto.createHash('sha256').update(toHash).digest('hex');
-        return res.json({ token: newToken });
+        return res.json({ ok: true });
       }
     );
   }
 };
 
+function validateCall(receipt, cb) {
+  // call baron to check invoice status
+  request.get(
+    { uri: config.baron.internalUrl + '/status/' + receipt.invoiceId },
+    function(err, response, body) {
+      if (err) { return cb(err, undefined); }
+      
+      var status;
+      try {
+        // parse body into json (status object)
+        var parsedBody = JSON.parse(body);
+        // get the invoice status
+        status = parsedBody.status;
+        if (status && status === "paid") {
+          return cb(null, receipt);
+        }
+        else {
+          var statusError = new Error("Status is not set to paid.");
+          return cb(statusError, undefined);
+        }
+      }
+      catch (error) {
+        errorMsg = "Could not validate webhook call, received response: ";
+        errorMsg += body + "\n";
+        errorMsg += error.message;
+        var validateError = new Error(errorMsg );
+        return cb(validateError, undefined);
+      }
+    }
+  );
+}
+
 function getBPReceipt(bprId, cb) {
-  db.getBPReceiptBySHA(bprId, function(err, receipt) {
+  db.getBPReceipt(bprId, function(err, receipt) {
     if (err) { cb(err, undefined); }
     cb(null, receipt);
   });

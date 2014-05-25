@@ -555,21 +555,6 @@ var db = {
       else { cb(err, undefined); }
     });
   },
-  getBPReceiptBySHA: function(token, cb) {
-    couch.view(config.couchdb.name, 'BPReceiptBySHA', {key: token, limit: 1 }, function(err, body) {
-      if (!err) {
-        var receipt;
-        body.rows.forEach(function(row) {
-          // check that this is an receipt
-          if (row.value.type === 'bp_receipt') {
-            receipt = row.value;
-          }
-        });
-        cb(null, receipt);
-      }
-      else { cb(err, undefined); }
-    });
-  },
   updateBPReceipt: function(newReceipt, cb) {
     // ensure that the receipt exists first
     couch.get(newReceipt._id, null, function(err, oldReceipt) {
@@ -586,7 +571,6 @@ var db = {
         oldReceipt.userId = newReceipt.userId;
         oldReceipt.username = newReceipt.username;
         oldReceipt.invoiceId = newReceipt.invoiceId;
-        oldReceipt.token = newReceipt.token;
 
         // update receipt
         couch.insert(oldReceipt, cb);
