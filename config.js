@@ -11,6 +11,7 @@ module.exports = {
   admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org',
+  antiSnipeMinutes: process.env.ANTISNIPE_MINUTES || 30,
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379

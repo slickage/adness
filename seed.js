@@ -37,7 +37,7 @@ var seed = function() {
   var start = new Date();
   var end = new Date(start);
   end.setHours(end.getHours() + 4);
-  var timeDifference = (1000 * 60 * 30);
+  var timeDifference = (1000 * 60 * config.antiSnipeMinutes);
   var trueEnd = Math.floor(Math.random() * (timeDifference+1));
   trueEnd = end.getTime() + trueEnd;
 
