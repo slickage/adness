@@ -5,8 +5,10 @@ var request = require('request');
 var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
-var regTemplate = __dirname + '/email-templates/reg-paid.ejs';
-var winTemplate = __dirname + '/email-templates/winner-paid.ejs';
+var regAdminTemplate = __dirname + '/email-templates/reg-admin-paid.ejs';
+var regUserTemplate = __dirname + '/email-templates/reg-user-paid.ejs';
+var winAdminTemplate = __dirname + '/email-templates/winner-admin-paid.ejs';
+var winUserTemplate = __dirname + '/email-templates/winner-user-paid.ejs';
 
 module.exports = {
   registration: function(req, res) {
@@ -20,7 +22,7 @@ module.exports = {
       function(cb) {
         getBPReceipt(bprId, cb);
       },
-      // validate call 
+      // validate status call 
       function(receipt, cb) {
         validateCall(receipt, cb);
       },
@@ -41,22 +43,35 @@ module.exports = {
           return res.send(500, err.message);
         }
 
-        // build registration email template
+        // build registration email for admin template
         var data = {
           username: regUser.username,
           invoiceId: bpReceipt.invoiceId,
           invoiceUrl: config.baron.url
         };
-        var str = fs.readFileSync(regTemplate, 'utf8');
-        var html = ejs.render(str, data);
+        var adminStr = fs.readFileSync(regAdminTemplate, 'utf8');
+        var adminHtml = ejs.render(adminStr, data);
 
         // heckle the admin that reg fee was paid
-        console.log("Emailing Admin: Registration Cleared for " + regUser.username);
+        console.log("Emailing Admin: Registration paid for " + regUser.username);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
           subject: "Registration Fee Paid for " + regUser.username,
-          html: html
+          html: adminHtml
+        });
+
+        // build registration email for user template
+        var userStr = fs.readFileSync(regUserTemplate, 'utf8');
+        var userHtml = ejs.render(userStr, data);
+
+        // heckle the user that reg fee was paid
+        console.log("Emailing " + regUser.username + ": Registration Paid.");
+        heckler.email({
+          from: config.senderEmail,
+          to: config.admin.emails,
+          subject: "Registration Fee Paid for " + regUser.username,
+          html: userHtml
         });
 
         return res.json({ ok: true });
@@ -72,7 +87,7 @@ module.exports = {
       function(cb) {
         getBPReceipt(bprId, cb);
       },
-      // validate call 
+      // validate status call 
       function(receipt, cb) {
         validateCall(receipt, cb);
       }],
@@ -85,7 +100,7 @@ module.exports = {
           return res.send(500, "Invalid Request");
         }
 
-        // build registration email template
+        // build auction winner email template for admins
         var data = {
           username: bpReceipt.username,
           userId: bpReceipt.userId,
@@ -95,16 +110,29 @@ module.exports = {
           site: config.site.url,
           browsePrefix: req.browsePrefix
         };
-        var str = fs.readFileSync(winTemplate, 'utf8');
-        var html = ejs.render(str, data);
+        var adminStr = fs.readFileSync(winAdminTemplate, 'utf8');
+        var adminHtml = ejs.render(adminStr, data);
 
-        // heckle the admin that an  auction payment was made
+        // heckle the admin that an auction payment was made
         console.log("Emailing Admin: Payment Cleared for " + bpReceipt.username + " For Auction: " + auctionId);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
           subject: "Payment on Auction: " + auctionId + " by user: " + bpReceipt.username,
-          html: html
+          html: adminHtml
+        });
+
+        // build auction winner email template for users
+        var userStr = fs.readFileSync(winUserTemplate, 'utf8');
+        var userHtml = ejs.render(userStr, data);
+
+        // heckle the user that an auction payment was made
+        console.log("Emailing " + bpReceipt.username + ": Payment Made For Auction: " + auctionId);
+        heckler.email({
+          from: config.senderEmail,
+          to: config.admin.emails,
+          subject: "Payment Received for Auction: " + auctionId,
+          html: userHtml
         });
         
         return res.json({ ok: true });
