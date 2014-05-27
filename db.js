@@ -532,45 +532,43 @@ var db = {
       else { cb(err, undefined); }
     });
   },
-  newBPReceipt: function(newReceipt, cb) {
+  newReceipt: function(newReceipt, cb) {
     var receipt = {
-      auctionId: newReceipt.auctionId,
-      userId: newReceipt.userId,
-      username: newReceipt.username,
-      invoiceId: newReceipt.invoiceId || "",
+      metadata: newReceipt.metadata,
+      invoiceType: newReceipt.invoiceType,
+      invoice: newReceipt.invoice || {},
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
-      type: 'bp_receipt'
+      type: 'receipt'
     };
     couch.insert(receipt, cb);
   },
-  getBPReceipt: function(receiptId, cb) {
+  getReceipt: function(receiptId, cb) {
     couch.get(receiptId, null, function(err, body) {
       if (!err) {
-        if (body.type !== 'bp_receipt') {
-          return cb({ message: 'Id is not for an BPReceipt.'}, undefined );
+        if (body.type !== 'receipt') {
+          return cb({ message: 'Id is not for an Receipt.'}, undefined );
         }
         cb(null, body);
       }
       else { cb(err, undefined); }
     });
   },
-  updateBPReceipt: function(newReceipt, cb) {
+  updateReceipt: function(newReceipt, cb) {
     // ensure that the receipt exists first
     couch.get(newReceipt._id, null, function(err, oldReceipt) {
       if (!err) {
         // make sure we're getting an receipt
-        if (oldReceipt.type !== 'bp_receipt') {
-          return cb({ message: 'Id is not for an BPReceipt.'}, undefined );
+        if (oldReceipt.type !== 'receipt') {
+          return cb({ message: 'Id is not for an Receipt.'}, undefined );
         }
 
         // update modified_at
         oldReceipt.modified_at = new Date().getTime();
         // update the rest of the values
-        oldReceipt.auctionId = newReceipt.auctionId;
-        oldReceipt.userId = newReceipt.userId;
-        oldReceipt.username = newReceipt.username;
-        oldReceipt.invoiceId = newReceipt.invoiceId;
+        oldReceipt.metadata = newReceipt.metadata || oldReceipt.metadata;
+        oldReceipt.invoiceType = newReceipt.invoiceType || oldReceipt.invoiceType;
+        oldReceipt.invoice = newReceipt.invoice || oldReceipt.invoice;
 
         // update receipt
         couch.insert(oldReceipt, cb);

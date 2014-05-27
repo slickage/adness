@@ -9,38 +9,47 @@ var winnerTemplate = __dirname + '/../email-templates/notify-winners.ejs';
 var bidderTemplate = __dirname + '/../email-templates/notify-bidders.ejs';
 
 
-module.exports = auctionNotification;
+module.exports = {
+  notifyAuction: function (auction) {
+    console.log("Starting Auction Close Event...");
 
+    // get all the bids for this auction
+    db.getBidsPerAuction(auction._id, function(err, bids) {
+      // remove first bid since it's an auction
+      bids.splice(0,1);
 
-function auctionNotification(auction) {
-  console.log("Starting Auction Close Event...");
+      // generate bidders from list of bids
+      var bidders = generateBidders(bids);
+      for(var bidder in bidders) {
+        // notify bidders that the auction is closed
+        notifyBidder(bidders[bidder], auction._id);
+      }
+    });
 
-  // get all the bids for this auction
-  db.getBidsPerAuction(auction._id, function(err, bids) {
-    // remove first bid since it's an auction
-    bids.splice(0,1);
+    // get the winning bids and bids per slot from the db
+    db.appendBidsToAuction(auction, function(err, auctionBids) {
+      // calculate the winners and how much each owes
+      var winners = generateWinners(auctionBids.bidPerSlot);
+      for(var winner in winners) {
+        // notify winners with a link to payment
+        notifyWinner(winners[winner], auction._id);
+      }
 
-    // generate bidders from list of bids
-    var bidders = generateBidders(bids);
-    for(var bidder in bidders) {
-      // notify bidders that the auction is closed
-      notifyBidder(bidders[bidder], auction._id);
-    }
-  });
-
-  // get the winning bids and bids per slot from the db
-  db.appendBidsToAuction(auction, function(err, auctionBids) {
-    // calculate the winners and how much each owes
-    var winners = generateWinners(auctionBids.bidPerSlot);
-    for(var winner in winners) {
-      // notify winners with a link to payment
-      notifyWinner(winners[winner], auction._id);
-    }
-
-    // cull all the approved auctions from the winners
-    updateAds(winners, auction);
-  });
-}
+      // cull all the approved auctions from the winners
+      updateAds(winners, auction);
+    });
+  },
+  notifySingleWinner: function (winner, auctionId) {
+    // function needs to be setup like this due to loss of scope in notifyAuction
+    notifyWinner(winner, auctionId);
+  },
+  completeInvoice: function (err, results) {
+    // function needs to be setup like this due to loss of scope in notifyAuction
+    handleInvoice(err, results);
+  },
+  getWinListing: null,
+  updateWinners: null // will need to call updateAds
+};
 
 function generateWinners(bidPerSlot) {
   var users = {};
@@ -77,32 +86,16 @@ function generateBidders(bids) {
   return bidders;
 }
 
-function notifyWinner(user, auctionId) {
-  console.log("Notifying " + user.username + " that they've won.");
+function notifyWinner(winner, auctionId) {
+  console.log("Notifying " + winner.username + " that they've won.");
 
   var webhook = config.site.url + '/hooks/auctions/' + auctionId;
-  invoice.auction(auctionId, user, webhook, function(err, invoiceId) {
-    if (err) { return console.log(err); }
-
-    // build email template
-    var data = {
-      auctionId: auctionId,
-      user: user,
-      invoiceId: invoiceId,
-      invoiceUrl: config.baron.url
-    };
-    var str = fs.readFileSync(winnerTemplate, 'utf8');
-    var html = ejs.render(str, data);
-    
-    // heckle the winners
-    console.log("Emailing " + user.username + " with winner's template");
-    heckler.email({
-      from: config.senderEmail,
-      to: user.email,
-      subject: "You're a winning bidder for #" + auctionId + ".",
-      html: html
-    });
-  });
+  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, webhook);
+  var data = {
+    user: winner,
+    auctionId: auctionId,
+  };
+  invoice.createInvoice(data, "auction", invoiceForm, handleInvoice);
 }
 
 function notifyBidder(user, auctionId) {
@@ -130,6 +123,33 @@ function notifyBidder(user, auctionId) {
       subject: "Auction " + auctionId + " has ended.",
       html: html
     });
+  });
+}
+
+function handleInvoice(err, results) {
+  if (err) { return console.log(err); }
+
+  var auctionId = results.receipt.metadata.auctionId;
+  var winner = results.receipt.metadata.user;
+  var invoiceId = results.invoice.id;
+
+  // build email template
+  var data = {
+    auctionId: auctionId,
+    user: winner,
+    invoiceId: invoiceId,
+    invoiceUrl: config.baron.url
+  };
+  var str = fs.readFileSync(winnerTemplate, 'utf8');
+  var html = ejs.render(str, data);
+  
+  // heckle the winners
+  console.log("Emailing " + winner.username + " with winner's template");
+  heckler.email({
+    from: config.senderEmail,
+    to: winner.email,
+    subject: "You're a winning bidder for #" + auctionId + ".",
+    html: html
   });
 }
 

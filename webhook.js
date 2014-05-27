@@ -12,23 +12,23 @@ var winUserTemplate = __dirname + '/email-templates/winner-user-paid.ejs';
 
 module.exports = {
   registration: function(req, res) {
-    // get bpreceipt from the post body
-    var bprId = req.body.token;
-    var bpReceipt;
+    // get receipt id from the post body
+    var receiptId = req.body.token;
+    var cachedReceipt;
     var regUser;
 
     async.waterfall([
-      // get Basic Pay Receipt from the DB
+      // get Receipt from the DB
       function(cb) {
-        getBPReceipt(bprId, cb);
+        getReceipt(receiptId, cb);
       },
       // validate status call 
       function(receipt, cb) {
         validateCall(receipt, cb);
       },
-      // get the RegisteredUser using the BPReceipt
+      // get the RegisteredUser using the Receipt
       function(receipt, cb) {
-        bpReceipt = receipt;
+        cachedReceipt = receipt;
         getRegUser(receipt, cb);
       },
       // update the RegisteredUser
@@ -46,7 +46,7 @@ module.exports = {
         // build registration email for admin template
         var data = {
           username: regUser.username,
-          invoiceId: bpReceipt.invoiceId,
+          invoiceId: cachedReceipt.invoice.id,
           invoiceUrl: config.baron.url
         };
         var adminStr = fs.readFileSync(regAdminTemplate, 'utf8');
@@ -69,7 +69,7 @@ module.exports = {
         console.log("Emailing " + regUser.username + ": Registration Paid.");
         heckler.email({
           from: config.senderEmail,
-          to: config.admin.emails,
+          to: regUser.email,
           subject: "Registration Fee Paid for " + regUser.username,
           html: userHtml
         });
@@ -79,33 +79,33 @@ module.exports = {
     );
   },
   winner: function(req, res) {
-    // get bpreceipt from the post body
-    var bprId = req.body.token;
+    // get receipt id from the post body
+    var receiptId = req.body.token;
     var auctionId = req.params.auctionId;
     async.waterfall([
-      // get Basic Pay Receipt from the DB
+      // get Receipt from the DB
       function(cb) {
-        getBPReceipt(bprId, cb);
+        getReceipt(receiptId, cb);
       },
       // validate status call 
       function(receipt, cb) {
         validateCall(receipt, cb);
       }],
       // heckler admin with payment and invoice info
-      function(err, bpReceipt) {
+      function(err, receipt) {
         if (err) { return res.send(500, err.message); }
         
         // secondary vaildation
-        if (bpReceipt.auctionId !== auctionId) {
+        if (receipt.metadata.auctionId !== auctionId) {
           return res.send(500, "Invalid Request");
         }
 
         // build auction winner email template for admins
         var data = {
-          username: bpReceipt.username,
-          userId: bpReceipt.userId,
+          username: receipt.metadata.user.username,
+          userId: receipt.metadata.user.userId,
           auctionId: auctionId,
-          invoiceId: bpReceipt.invoiceId,
+          invoiceId: receipt.invoice.id,
           invoiceUrl: config.baron.url,
           site: config.site.url,
           browsePrefix: req.browsePrefix
@@ -114,11 +114,11 @@ module.exports = {
         var adminHtml = ejs.render(adminStr, data);
 
         // heckle the admin that an auction payment was made
-        console.log("Emailing Admin: Payment Cleared for " + bpReceipt.username + " For Auction: " + auctionId);
+        console.log("Emailing Admin: Payment Cleared for " + receipt.metadata.user.username + " For Auction: " + auctionId);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
-          subject: "Payment on Auction: " + auctionId + " by user: " + bpReceipt.username,
+          subject: "Payment on Auction: " + auctionId + " by user: " + receipt.metadata.user.username,
           html: adminHtml
         });
 
@@ -127,10 +127,10 @@ module.exports = {
         var userHtml = ejs.render(userStr, data);
 
         // heckle the user that an auction payment was made
-        console.log("Emailing " + bpReceipt.username + ": Payment Made For Auction: " + auctionId);
+        console.log("Emailing " + receipt.metadata.user.username + ": Payment Made For Auction: " + auctionId);
         heckler.email({
           from: config.senderEmail,
-          to: config.admin.emails,
+          to: receipt.metadata.user.email,
           subject: "Payment Received for Auction: " + auctionId,
           html: userHtml
         });
@@ -144,7 +144,7 @@ module.exports = {
 function validateCall(receipt, cb) {
   // call baron to check invoice status
   request.get(
-    { uri: config.baron.internalUrl + '/status/' + receipt.invoiceId },
+    { uri: config.baron.internalUrl + '/status/' + receipt.invoice.id },
     function(err, response, body) {
       if (err) { return cb(err, undefined); }
       
@@ -173,15 +173,15 @@ function validateCall(receipt, cb) {
   );
 }
 
-function getBPReceipt(bprId, cb) {
-  db.getBPReceipt(bprId, function(err, receipt) {
+function getReceipt(receiptId, cb) {
+  db.getReceipt(receiptId, function(err, receipt) {
     if (err) { cb(err, undefined); }
     cb(null, receipt);
   });
 }
 
 function getRegUser(receipt, cb) {
-  db.getRegisteredUser(receipt.userId, function(err, user) {
+  db.getRegisteredUser(receipt.metadata.userId, function(err, user) {
     if (err) { cb(err, undefined); }
     cb(null, user);
   });

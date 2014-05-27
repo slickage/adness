@@ -28,7 +28,7 @@ exports = module.exports = function(req, res) {
     }
 
     // register user to given auction
-    registration(req.user, function(err, results) {
+    registration.invoice(req.user, function(err, results) {
       if (err) {
         console.log(err);
         view = 'registrationError';

@@ -1,4 +1,4 @@
-var auctionNotification = require('./auction-close');
+var auctionEnd = require('./auction-close');
 
 var timedEvents = {};
 
@@ -11,7 +11,7 @@ module.exports = {
     // for auctions in the future, build queue to notify winners
     if (timeTill > 0) {
       // account for setTimeout not being able to handle more than 24 days
-      setDaysTimeout(auctionNotification, timeTill, auction);
+      setDaysTimeout(auctionEnd.notifyAuction, timeTill, auction);
       console.log("Auction " + auction._id + " added to event: auction close.");
     }
   },
@@ -30,7 +30,7 @@ module.exports = {
     // for auctions in the future, build queue to notify winners
     if (timeTill > 0) {
       // account for setTimeout not being able to handle more than 24 days
-      setDaysTimeout(auctionNotification, timeTill, auction);
+      setDaysTimeout(auctionEnd.notifyAuction, timeTill, auction);
     }
   },
   deleteAuction: function(auction) {
