@@ -1,11 +1,11 @@
 var db = require(__dirname + '/../db');
 var _ = require('lodash');
+var moment = require('moment');
 
 module.exports = {
   showAuction: function(req, res) {
-    if (req.user) {
-      req.userId = req.user.userId;
-    }
+    // move userId over for userAds
+    if (req.user) { req.userId = req.user.userId; }
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.load('registeredUser', req);
@@ -15,10 +15,13 @@ module.exports = {
         console.log(err);
         return res.redirect(req.browsePrefix);
       }
+
       var auction = models.auction;
       var bids = models.bids;
       var regUser = models.registeredUser;
-      var approvedAds = _.filter(models.userAds, function(ad) { return ad.inRotation === true; });
+      var approvedAds = _.filter(models.userAds, function(ad) {
+        return ad.inRotation === true;
+      });
       // find latest price for this auction
       var latestPrice;
       // first check if there are slots open
@@ -32,6 +35,15 @@ module.exports = {
       }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
+
+      // update start and end time 
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
+
       // render view
       res.render('auction', {
         auction: auction,

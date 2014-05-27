@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var moment = require('moment');
 
 exports = module.exports = function(req, res) {
   // admin check
@@ -32,6 +33,40 @@ exports = module.exports = function(req, res) {
     var past = models.auctionsTimeRelative.past;
     var sortedPast = _.sortBy(past, function(auction) {
       return -auction.end;
+    });
+
+    // update start and end times
+    sortedOpen.forEach(function(auction) {
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
+    });
+    sortedClosed.forEach(function(auction) {
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
+    });
+    sortedFuture.forEach(function(auction) {
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
+    });
+    sortedPast.forEach(function(auction) {
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
     });
 
     res.render('admin',

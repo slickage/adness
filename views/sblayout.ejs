@@ -176,8 +176,8 @@
     <script type="text/javascript">
       $(document).ready(function() {
         // initialize the datetimepicker ui
-        $('#startDateTime').datetimepicker({ useStrict: true });
-        $('#endDateTime').datetimepicker({ useStrict: true });
+        $('#startDateTime').datetimepicker({ useStrict: true, sideBySide: true });
+        $('#endDateTime').datetimepicker({ useStrict: true, sideBySide: true });
 
         // set date time picker values
         if (document.URL.indexOf("/admin/auctions/edit") >= 0) {
@@ -244,35 +244,31 @@
 
       function setDateTime(start, end) {
         if (start && end) {
-          var newStart = new Date(Number(start));
-          var momentStart = moment(newStart);
-          $('#startDateTime').data('DateTimePicker').setDate(momentStart);
+          var newStart = moment.utc(Number(start));
+          $('#startDateTime').data('DateTimePicker').setDate(newStart);
 
-          var newEnd = new Date(Number(end));
-          var momentEnd = moment(newEnd);
-          $('#endDateTime').data('DateTimePicker').setDate(momentEnd);
+          var newEnd = moment.utc(Number(end));
+          $('#endDateTime').data('DateTimePicker').setDate(newEnd);
         }
         else {
           // default date 
           // start is one day ahead midnight
-          var defaultStart = new Date();
-          defaultStart.setDate(defaultStart.getDate()+1);
-          defaultStart.setHours(0);
-          defaultStart.setMinutes(0);
-          defaultStart.setSeconds(0);
-          defaultStart.setMilliseconds(0);
-          var momentStart = moment(defaultStart);
-          $('#startDateTime').data('DateTimePicker').setDate(momentStart);
+          var defaultStart = moment.utc();
+          defaultStart.date(defaultStart.date()+1);
+          defaultStart.hours(0);
+          defaultStart.minutes(0);
+          defaultStart.seconds(0);
+          defaultStart.milliseconds(0);
+          $('#startDateTime').data('DateTimePicker').setDate(defaultStart);
 
           // end is three days ahead midnight
-          var defaultEnd = new Date();
-          defaultEnd.setDate(defaultEnd.getDate() +3);
-          defaultEnd.setHours(0);
-          defaultEnd.setMinutes(0);
-          defaultEnd.setSeconds(0);
-          defaultEnd.setMilliseconds(0);
-          var momentEnd = moment(defaultEnd);
-          $('#endDateTime').data('DateTimePicker').setDate(momentEnd);
+          var defaultEnd = moment.utc();
+          defaultEnd.date(defaultEnd.date()+3);
+          defaultEnd.hours(0);
+          defaultEnd.minutes(0);
+          defaultEnd.seconds(0);
+          defaultEnd.milliseconds(0);
+          $('#endDateTime').data('DateTimePicker').setDate(defaultEnd);
         }
       }
 
@@ -280,12 +276,30 @@
         // Initial input validation
         var start;
         var startDate = $('#startDateTime').data('DateTimePicker').getDate();
-        if (startDate) { start = startDate.valueOf(); }
+        // startDate is in local timezone so convert to UTC
+        if (startDate) { 
+          start = moment.utc();
+          start.date(startDate.date());
+          start.hours(startDate.hours());
+          start.minutes(startDate.minutes());
+          start.seconds(startDate.seconds());
+          start.milliseconds(startDate.milliseconds());
+          start = start.valueOf();
+        }
         else { return alert("Start Date/Time doesn't look right."); }
 
         var end; 
         var endDate = $('#endDateTime').data('DateTimePicker').getDate();
-        if (endDate) { end = endDate.valueOf(); }
+        // endDate is in local timezone so convert to UTC
+        if (endDate) {
+          end = moment.utc();
+          end.date(endDate.date());
+          end.hours(endDate.hours());
+          end.minutes(endDate.minutes());
+          end.seconds(endDate.seconds());
+          end.milliseconds(endDate.milliseconds());
+          end = end.valueOf();
+        }
         else { return alert("End Date/Time doesn't look right."); }
 
         var slots = $('#slots').val();
@@ -325,15 +339,6 @@
           slots: slots
         };
       }
-
-      // format all date strings in admin page
-      $(document).ready(function() {
-        $(".scriptDate").each(function(index, value) {
-          var dateString = $(value).text();
-          var date = new Date(dateString).toLocaleString();
-          $(value).text(date);
-        })
-      });
     </script>
     <!-- endbower -->
     <!-- endbuild -->

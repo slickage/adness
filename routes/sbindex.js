@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var moment = require('moment');
 
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
@@ -24,6 +25,16 @@ module.exports = function(req, res) {
     var open = models.auctionsTimeRelative.open;
     var sortedOpen = _.sortBy(open, function(auction) {
       return auction.start;
+    });
+
+    // update auction start and end times
+    sortedOpen.forEach(function(auction) {
+      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      startTime += ' (' + moment(auction.start).fromNow() +')';
+      endTime += ' (' + moment(auction.end).fromNow() + ')';
+      auction.start = startTime;
+      auction.end = endTime;
     });
 
     res.render('sbindex', {
