@@ -50,7 +50,7 @@ var db = {
         // random true ending time of auction within 30 minutes of end
         if (auction.end) {
           var end = Number(auction.end);
-          var timeDifference = (1000 * 60 * 30);
+          var timeDifference = (1000 * 60 * config.antiSnipeMinutes);
           var trueEnd = Math.floor(Math.random() * (timeDifference+1));
           body.trueEnd = new Date(end).getTime() + trueEnd;
         }
