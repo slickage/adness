@@ -15,9 +15,12 @@ Install these dependencies as per your OS:
 * [CouchDB](http://couchdb.apache.org/)
 * [Redis](http://redis.io/)
 * [Baron](http://github.com/slickage/baron)
+* [foreman](https://github.com/ddollar/foreman)
+* [nodemon](https://github.com/remy/nodemon) - for development
 * External Authentication (passport.js/MySQL)
 * (optional) SMTP Mailer - host, port, user, pass
 
+** Before proceeding with Adness' installation ensure that CouchDB is using the ['random' algorithm](http://docs.couchdb.org/en/latest/config/misc.html#uuids/algorithm) instead of the default 'sequential'. This is to prevent easy guessing of id hashes. **
 
 # Configuration
 ```
@@ -25,6 +28,7 @@ Install these dependencies as per your OS:
   admins: parseAdmins(process.env.ADMINS) || ['012345'],  
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'no-reply@test.co',
+  antiSnipeMinutes: process.env.ANTISNIPE_MINUTES || 30,
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: process.env.REDIS_PORT || 6379
@@ -60,6 +64,7 @@ Install these dependencies as per your OS:
 * admins: The list of administrators by user ids
 * sbPrefix: the prefix for noscript pages (currently the only view available)
 * senderEmail: The email that will show up in the from field for all outgoing emails
+* antiSnipeMinutes: The random max length of time added to the end time of an auction
 * redis: The Redis DB that holds user sessions
 * secret: it's a secret (to hash the user session)
 * mysql: The MySQL DB to grab users from
@@ -69,15 +74,24 @@ Install these dependencies as per your OS:
 * site: The URL of this server
 * bitcoin: The number of confirmations before a payment is considered paid
 
+**NOTES:**  
+* Properties in config.js can be overriden using a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file and [foreman](https://github.com/ddollar/foreman).
 
 # Installation
 * Install this software by downloading the master branch from GitHub. 
 * run 'npm install' to install dependencies
 * run 'node index.js'  
 
-Included is a Procfile to run this application from foreman. Also there's a dockerfile to bring up this application through docker. Use these files at your own discretion.
-    
-   
+Included is a Procfile to run this application from [foreman](https://github.com/ddollar/foreman). Also there's a dockerfile to bring up this application through [docker](https://www.docker.io/). Use these files at your own discretion.
+
+To run adness with foreman:  
+In Production:  
+```$ foreman start```
+
+In Development:  
+```$ foreman start -f Procfile-dev```
+
+
 # Views and Routes
 Views and routes may be specific to whether a user is logged in or not. Some of these views are not accessable if the user is not signed in and will be redirected to the index page.
 
@@ -89,7 +103,6 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 /sb - index route
 /sb/rules - Auction Rules
 /sb/history - Auction History
-/sb/qr/:qrString - QR code generator
 ```
 
 ## Auction
