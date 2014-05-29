@@ -508,7 +508,7 @@ var db = {
         // update ad
         couch.insert(body, cb);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   deleteAd: function(ad, cb) {
@@ -529,7 +529,7 @@ var db = {
 
         couch.destroy(body._id, body._rev, cb);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   newReceipt: function(newReceipt, cb) {
@@ -549,9 +549,9 @@ var db = {
         if (body.type !== 'receipt') {
           return cb({ message: 'Id is not for an Receipt.'}, undefined );
         }
-        cb(null, body);
+        return cb(null, body);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   updateReceipt: function(newReceipt, cb) {
@@ -573,7 +573,7 @@ var db = {
         // update receipt
         couch.insert(oldReceipt, cb);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   insertRegisteredUser: function(user, cb) {
@@ -604,7 +604,7 @@ var db = {
         else { user = row.value;}
       });
 
-      cb(null, user);
+      return cb(null, user);
     });
   },
   getAdsInRotation: function(cb) {
@@ -636,10 +636,43 @@ var db = {
     if (!air.created_at) adsInRotation.created_at = new Date().getTime();
 
     couch.insert(adsInRotation, cb);
+  },
+  newQueuedInvoice: function(queuedInvoice, cb) {
+    var newInvoice = {
+      invoice: queuedInvoice.invoice,
+      receipt: queuedInvoice.receipt,
+      created_at: new Date().getTime(),
+      modified_at: new Date().getTime(),
+      type: 'queuedInvoice'
+    };
+    couch.insert(newInvoice, cb);
+  },
+  getAllQueuedInvoices: function(cb) {
+    couch.view(config.couchdb.name, 'getQueuedInvoices', function(err, body) {
+      if (!err) {
+        var invoices = [];
+        body.rows.forEach(function(doc) { invoices.push(doc.value); });
+        cb(null, invoices);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  deleteQueuedInvoice: function(invoiceId, cb) {
+    // ensure that the ad exists first
+    couch.get(invoiceId, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting a bid
+        if (body.type !== 'queuedInvoice') {
+          return cb({ message: 'Id is not for an QueuedInvoice.'}, undefined );
+        }
+
+        couch.destroy(body._id, body._rev, cb);
+      }
+      else { return cb(err, undefined); }
+    });
   }
 };
 
 module.exports = db;
 
 var timer = require('./events/event-timer');
-

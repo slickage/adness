@@ -63,3 +63,11 @@ ddoc.views.adsInRotation = {
     }
   }
 };
+
+ddoc.views.getQueuedInvoices = {
+  map: function(doc) {
+    if (doc.type === 'queuedInvoice') {
+      emit(doc._id, doc);
+    }
+  }
+};

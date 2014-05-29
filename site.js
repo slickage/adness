@@ -16,7 +16,9 @@ var express = require('express'),
     jobs = require('./resque/jobs'),
     webhook = require('./webhook'),
     rateLimiter = require('rate-limiter'),
-    flash = require('connect-flash');
+    flash = require('connect-flash'),
+    invoice = require('./invoice'),
+    async = require('async');
 
 // rate limiter for login
 var rlRules = [
@@ -146,7 +148,7 @@ site.get('/logout', function(req, res){
 site.post('/hooks/registration', webhook.registration);
 site.post('/hooks/auctions/:auctionId', webhook.winner);
 
-// Node resque setup
+// Node resque setup (For Auction Closing)
 var worker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){
   worker.workerCleanup(); // optional: cleanup old improperly shutdown workers
   worker.start();
@@ -162,5 +164,19 @@ worker.on('error',           function(queue, job, error){ console.log("job faile
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
   queue.enqueue('auction', 'auction-closing',  []);
 });
+
+// Queued Invoice creation
+// Each iteration is only run after the last iteration has stopped.
+// Each iteration has a cool down period before being called.
+async.whilst(
+  function() { return true; }, // indefinite loop
+  function(callback) {
+    // cooled down call of queuedInvoices
+    setTimeout(invoice.queuedInvoices, 1000 * 10, callback);
+  },
+  function(err) {
+    console.log(err);
+  }
+);
 
 module.exports = site;

@@ -1,30 +1,7 @@
 var db = require('./db');
 var config = require('./config');
 var request = require('request');
-
-module.exports = {
-  auction: function(auctionId, user, webhook, cb) {
-    // create baron receipt with username and auctionId
-    var bpReceipt = {
-      auctionId: auctionId,
-      userId: user.userId,
-      username: user.username
-    };
-    generateReceipt(bpReceipt, function(err, bpReceipt) {
-      if (err) { return cb(err, undefined); }
-
-      // generate an invoice for auction winners
-      var invoice = createAuctionInvoice(auctionId, user, webhook, bpReceipt._id);
-      if (invoice.webhooks) invoice.webhooks.token = bpReceipt._id;
-
-      generateInvoice(user, invoice, bpReceipt, cb);
-    });
-  },
-
-  createAuctionInvoice: createAuctionInvoice,
-  createRegistrationInvoice: createRegistrationInvoice,
-  createInvoice: createInvoice
-};
+var async = require('async');
 
 function createAuctionInvoice(auctionId, user, webhook) {
   var invoice = {};
@@ -76,7 +53,7 @@ function createInvoice(metadata, invoiceType, invoice, cb) {
     if (err) { return cb(err, undefined); }
     // add the receipt's id as the webhook token 
     if (invoice.webhooks) invoice.webhooks.token = savedReceipt._id;
-    generateInvoice(invoice, savedReceipt, cb);
+    generateInvoice(invoice, savedReceipt, true, cb);
   });
 }
 
@@ -93,7 +70,7 @@ function generateReceipt(receipt, cb) {
   });
 }
 
-function generateInvoice(invoice, receipt, cb) {
+function generateInvoice(invoice, receipt, queue, cb) {
   // send invoice to baron and get invoice id
   request.post(
     {
@@ -103,10 +80,17 @@ function generateInvoice(invoice, receipt, cb) {
     },
     function(err, responce, body) {
       if (err) {
-        // queue broken invoices
+        if (queue) {
+          console.log("Encountered an Error, Queuing Invoice...");
+          var newInvoice = { invoice: invoice, receipt: receipt };
+          db.newQueuedInvoice(newInvoice, function(err, body) {
+            if (err) console.log(err);
+          });
+        }
+
         return cb(err, undefined);
       }
-      saveInvoice(receipt, body, cb);
+      else { saveInvoice(receipt, body, cb); }
     }
   );
 }
@@ -120,7 +104,7 @@ function saveInvoice(receipt, body, cb) {
     errorMsg += body + "\n";
     errorMsg += error.message;
     var invoiceError = new Error(errorMsg );
-    return cb(invoiceError, undefined, undefined);
+    return cb(invoiceError, undefined);
   }
 
   console.log("Invoice " + invoice.id + " created for Receipt: " + receipt._id);
@@ -128,13 +112,73 @@ function saveInvoice(receipt, body, cb) {
   // update receipt with new invoice
   receipt.invoice = invoice;
   db.updateReceipt(receipt, function(err, body) {
-    if (err) { return cb(err, undefined, undefined); }
+    if (err) { return cb(err, undefined); }
     console.log("Updated Receipt " + receipt._id + " with Invoice ID " + receipt.invoice.id);
     var results = { receipt: receipt, invoice: invoice };
     cb(null, results);
   });
 }
 
-function queueInvoice(invoiceForm, receipt, cb) {
-
+function queuedInvoices(callback) {
+  async.waterfall([
+    // get all the queuedInvoices
+    function (cb) {
+      db.getAllQueuedInvoices(cb);
+    },
+    // iterative through and call each queuedInvoice
+    function (invoices, cb) {
+      async.eachSeries(invoices, function(queuedInvoice, innerCb) {
+        retryInvoice(queuedInvoice, innerCb);
+      },
+      function(err) { return cb(err); });
+    }
+  ],
+  // final call to close this iteration of queuedInvoices
+  function (err, result) {
+    if (err) { console.log(err); }
+    return callback(null);
+  });
 }
+
+function retryInvoice(queuedInvoice, cb) {
+  // call each one
+  var invoice = queuedInvoice.invoice;
+  var receipt = queuedInvoice.receipt;
+  receipt.queuedInvoiceId = queuedInvoice._id;
+  generateInvoice(invoice, receipt, false, function(err, results) {
+    if (err) { console.log(err); }
+    else {
+      var invoiceType = results.receipt.invoiceType;
+      var queuedInvoiceId = results.receipt.queuedInvoiceId;
+      delete results.receipt.queuedInvoiceId;
+
+      // create a modified callback
+      if (invoiceType === "registration") {
+        registration.completeInvoice(null, results);
+      }
+      else if (invoiceType === "auction") {
+        auctionClose.completeInvoice(null, results);
+      }
+      else {
+        console.log("QueuedInvoice with unknown type found.");
+      }
+
+      // delete queuedInvoice
+      db.deleteQueuedInvoice(queuedInvoiceId, function(err, body) {
+        if (err) console.log(err);
+      });
+    }
+
+    return cb(null);
+  });
+}
+
+module.exports = {
+  createAuctionInvoice: createAuctionInvoice,
+  createRegistrationInvoice: createRegistrationInvoice,
+  createInvoice: createInvoice,
+  queuedInvoices: queuedInvoices
+};
+
+var registration = require('./registration');
+var auctionClose = require('./events/auction-close');

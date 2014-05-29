@@ -279,6 +279,8 @@
         // startDate is in local timezone so convert to UTC
         if (startDate) { 
           start = moment.utc();
+          start.year(startDate.year());
+          start.month(startDate.month());
           start.date(startDate.date());
           start.hours(startDate.hours());
           start.minutes(startDate.minutes());
@@ -293,6 +295,8 @@
         // endDate is in local timezone so convert to UTC
         if (endDate) {
           end = moment.utc();
+          end.year(endDate.year());
+          end.month(endDate.month());
           end.date(endDate.date());
           end.hours(endDate.hours());
           end.minutes(endDate.minutes());

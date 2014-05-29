@@ -1,7 +1,6 @@
 var db = require(__dirname + '/../db');
 var _ = require('lodash');
 var config = require('../config');
-var invoice = require('../invoice');
 var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
@@ -170,3 +169,5 @@ function updateAdsInRotation(auction, winners) {
     });
   });
 }
+
+var invoice = require('../invoice');

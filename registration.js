@@ -24,11 +24,8 @@ module.exports = {
     return cb(null, {});
   },
   completeInvoice: function(err, results) {
-    if (err) { return cb(err, undefined); }
-
-    console.log("results: ");
-    console.log(results);
-
+    if (err) { return console.log(err); }
+    
     var invoice = results.invoice;
     var metadata = results.receipt.metadata;
 
