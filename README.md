@@ -2,6 +2,7 @@
 
 Real-time ad auction system.
 
+[![Gitter chat](https://badges.gitter.im/slickage/adness.png)](https://gitter.im/slickage/adness)
 [![Build Status](https://travis-ci.org/slickage/adness.svg?branch=master)](https://travis-ci.org/slickage/adness)
 
 
