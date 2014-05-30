@@ -71,7 +71,8 @@ module.exports = {
     return true;
   },
   html: function(html) {
-    return sanitize(html);
+    function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+    return sanitize(html, urlX);
   },
   blacklistedCN: function(blacklist) {
     // check that the list is an array

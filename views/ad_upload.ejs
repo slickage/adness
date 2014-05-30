@@ -146,7 +146,7 @@
       function convert() {
         // scrub the raw html for any security leaks
         var raw_html = myCodeMirror.getValue();
-        function urlX(url) { if(/^https?:\/\//.test(url)) { return url }}
+        function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
         function idX(id) { return id }
         var parsedHtml = html_sanitize(raw_html, urlX, idX);
 

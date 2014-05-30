@@ -39,10 +39,16 @@ module.exports = {
       // update start and end time 
       var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() +')';
+      startTime += ' (' + moment(auction.start).fromNow() + ')';
       endTime += ' (' + moment(auction.end).fromNow() + ')';
       auction.start = startTime;
       auction.end = endTime;
+
+      // update creation time for bids
+      bids.forEach(function(bid) {
+        var bidTime = moment(bid.created_at).utc().format('YYYY MMMMM D, h:mm:ss A ZZ');
+        bid.created_at = bidTime + ' (' + moment(bid.created_at).fromNow() + ')';
+      });
 
       // render view
       res.render('auction', {
