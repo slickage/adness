@@ -53,6 +53,33 @@
         </div>
       <% } %>
 
+      <% if (auction.secondarySlots.length > 0) { %>
+
+        <br>
+        <b>Potential Auction Winners</b>
+        <br>
+        <em>
+          These bids are the next in line to be chosen if any of the above bidders decide to cancel or cannot make payment. Bids are sorted by price.
+        </em>
+        <br>
+
+        <% for(var i=0; i < auction.secondarySlots.length; i++) { %>
+          <div class="slot slot_text">
+            <div class="row">
+              <div class="col-sm-3">Ad Slot</div>
+              <div class="col-sm-6">
+                Bidder: 
+                <a href="<%= browsePrefix %>/users/<%= auction.secondarySlots[i].user.userId %>">
+                  <%= auction.secondarySlots[i].user.username %>
+                </a>
+              </div>
+              <div class="col-sm-3"><%= auction.secondarySlots[i].price %> BTC</div>
+            </div>
+          </div>
+        <% } %>
+
+      <% } %>
+
       <% if (auction.bidPerSlot.length === 0) { %>
         <div class="slot slot_text">
           No Current Winners

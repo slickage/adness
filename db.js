@@ -243,6 +243,7 @@ var db = {
         // add winning bids and bids per slot to openAuction
         auction.winningBids = results.winningBids;
         auction.bidPerSlot = results.bidPerSlot;
+        auction.secondarySlots = results.secondarySlots;
 
         cb(null, auction);
       }
