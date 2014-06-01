@@ -5,7 +5,7 @@ var moment = require('moment');
 module.exports = {
   showAuction: function(req, res) {
     // move userId over for userAds
-    if (req.user) { req.userId = req.user.userId; }
+    if (req.user) { req.params.userId = req.user.userId; }
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.load('registeredUser', req);
