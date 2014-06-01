@@ -2,6 +2,20 @@
 
 <div class="content-page col-sm-offset-1 col-sm-10">
 
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="">
+        <a href="<%= browsePrefix %>/users/<%= ad.userId %>" class="ad_nav_left">
+          <%= ad.username %>
+        </a>
+        <a href="https://bitcointalk.org/index.php?action=profile;u=<%= ad.userId %>;sa=showPosts" class="ad_nav_right">
+          <%= ad.username %>'s posts
+        </a>
+      </div>
+    </div><!-- /.container-fluid -->
+  </nav>
+
   <% include ads/show %>
 
   <% if (user && user.userId === ad.userId) { %>
@@ -26,7 +40,7 @@
           <% } %>
         <% } %>
 
-        <% if (ad.approved !== true && ad.submitted !== true) { %>
+        <% if (ad.approved === false && ad.submitted === false) { %>
           <div class="btn-group">
             <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit" class="btn btn-primary">
               Edit

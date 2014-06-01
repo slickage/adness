@@ -5,8 +5,7 @@ body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   color: #606060;
-  text-shadow: 0 1px #fff;
-}
+  text-shadow: 0 1px #fff; }
 .bootstrap-fluid-fix { padding: 0 15px; }
 .panel-primary > .panel-heading { text-shadow: 0 0; }
 .navbar { border-radius: 0; }
@@ -31,8 +30,7 @@ body {
 .header-logout-message {
   padding-top: 15px;
   padding-left: 15px;
-  float: left;
-}
+  float: left; }
 .header-logout-menu-message { padding-top: 7px; }
 .header-logout-container-wide { height: 40px; }
 .header-logout-container-wide a { float: right; }
@@ -59,8 +57,7 @@ body {
   text-align: center;
   padding: 10px;
   padding-top: 15px;
-  font-weight: bold;
-}
+  font-weight: bold; }
 .sidebar > a { color: #6C6C6C; }
 .sidebar > a:hover { text-decoration: none; }
 .sidebar-button:hover { background-color: #D7D7D7; }
@@ -96,8 +93,7 @@ body {
 
 .auctionCardLabel { 
   font-size: 24px;
-  text-shadow: 0 0;
-}
+  text-shadow: 0 0; }
 
 /* -- Auction Page ------------------------------------- */
 
@@ -138,8 +134,41 @@ body {
 .reg_qr_img img { display: inline; }
 
 /* -- Ad Upload page  CSS ------------------------------ */
+
 .upload-header { padding-left: 20px; }
 .coding-section { padding-top: 20px; }
 .review-section { padding-top: 30px; }
 .review-section-text { padding-bottom: 20px; }
 .review-buttons { padding-top: 20px; }
+
+/* -- Ad Page ------------------------------------------ */
+
+.ad_nav_left { 
+  float: left;
+  height: 50px;
+  padding: 15px 0px;
+  color: #428bca;
+  font-size: 18px;
+  line-height: 20px; }
+
+.ad_nav_right { 
+  float: right;
+  height: 50px;
+  padding: 15px 0px;
+  color: #428bca;
+  font-size: 18px;
+  line-height: 20px; }
+
+.ad_link_left {
+  float: left;
+  padding: 5px 0px;
+  color: #428bca;
+  font-size: 18px;
+  line-height: 20px; }
+
+.ad_link_right {
+  float: right;
+  padding: 5px 0px;
+  color: #428bca;
+  font-size: 18px;
+  line-height: 20px; }

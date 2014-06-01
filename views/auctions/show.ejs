@@ -43,7 +43,10 @@
           <div class="row">
             <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
             <div class="col-sm-6">
-              Winning Bidder: <%= auction.bidPerSlot[i].user.username %>
+              Bidder: 
+              <a href="<%= browsePrefix %>/users/<%= auction.bidPerSlot[i].user.userId %>">
+                <%= auction.bidPerSlot[i].user.username %>
+              </a>
             </div>
             <div class="col-sm-3"><%= auction.bidPerSlot[i].price %> BTC</div>
           </div>

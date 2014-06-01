@@ -32,7 +32,10 @@ exports = module.exports = {
   updateAd: function(req, res) {
     req.model.load('ad', req);
     req.model.end(function(err, models) {
-      if (err) { console.log(err); res.redirect(req.browsePrefix); }
+      if (err) {
+        console.log(err);
+        res.redirect(req.browsePrefix);
+      }
       else {
         var ad = models.ad;
         ad.user = req.user; // add current user
@@ -48,6 +51,8 @@ exports = module.exports = {
         if (req.body.blacklistedCN) ad.blacklistedCN = req.body.blacklistedCN;
         if (req.body.approved) ad.approved = req.body.approved;
         if (req.body.submitted) ad.submitted = req.body.submitted;
+        if (req.body.submitted && req.body.submitted.toLowerCase() === 'true')
+          ad.rejected = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix);

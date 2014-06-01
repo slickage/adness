@@ -11,8 +11,12 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">
-          <%= user.username %>
+        <a class="navbar-brand">
+          <% if (profileUser) { %>
+            <%= profileUser.username %>
+          <% } else {%>
+            No User Found
+          <% } %>
         </a>
       </div>
 
@@ -20,7 +24,16 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="<%= browsePrefix %>/ads/upload">New Ad</a>
+            <% if (profileUser) { %>
+              <a href="https://bitcointalk.org/index.php?action=profile;u=<%= profileUser.userId %>;sa=showPosts">
+                <%= profileUser.username %>'s Posts
+              </a>
+            <% } %>
+          </li>
+          <li>
+            <% if (profileUser && profileUser.userId === user.userId) { %>
+              <a href="<%= browsePrefix %>/ads/upload">New Ad</a>
+            <% } %>
           </li>
         </ul>
       </div><!-- /.navbar-collapse -->

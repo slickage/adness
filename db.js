@@ -593,7 +593,7 @@ var db = {
     couch.insert(registeredUser, cb);
   },
   getRegisteredUser: function(userId, cb) {
-    couch.view(config.couchdb.name, 'registeredUser', { startkey: userId, endkey: {}, limit: 1 }, function(err, body) {
+    couch.view(config.couchdb.name, 'registeredUser', { startkey: userId, endkey: userId, limit: 1 }, function(err, body) {
 
       if (err) { return cb(null, undefined); }
       

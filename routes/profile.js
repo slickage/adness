@@ -1,9 +1,10 @@
 module.exports = function(req, res) {
-  req.userId = req.params.userId;
   req.model.load("userAds", req);
+  req.model.load("profileUser", req);
   req.model.end(function(err, models) {
     if (err) console.log('error: ' + JSON.stringify(err));
 
+    var profileUser = models.profileUser;
     // sort ads
     var inRotation = [];
     var approved = [];
@@ -20,6 +21,7 @@ module.exports = function(req, res) {
 
     // render page
     res.render('profile', {
+      profileUser: profileUser,
       inRotation: inRotation,
       approved: approved,
       rejected: rejected,
