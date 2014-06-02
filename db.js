@@ -12,6 +12,9 @@ var db = {
       return cb({ message: 'Auction parameters were not valid.' }, undefined);
     }
 
+    // validate description 
+    var description = validate.html(body.description);
+
     // random true ending time of auction within 30 minutes of end
     var end = Number(body.end);
     var timeDifference = (1000 * 60 * config.antiSnipeMinutes);
@@ -23,6 +26,7 @@ var db = {
       end: end,
       trueEnd: trueEnd,
       slots: Number(body.slots),
+      description: description,
       type: 'auction',
       enabled: true
     };
@@ -45,6 +49,11 @@ var db = {
         // validate input
         if (!validate.updateAuction(auction.start, auction.end, auction.slots)) {
           return cb({ message: 'Auction parameters were not valid.'}, undefined );
+        }
+
+        // validate description
+        if (auction.description) {
+          body.description = validate.html(auction.description);
         }
 
         // random true ending time of auction within 30 minutes of end

@@ -22,46 +22,59 @@
     </div>
     <div class="panel-body slot_text">
       
-      <form role="form" method="post" action="/auctions">
-        <input id="auctionId" type="hidden" value="<%= auction._id %>">
-        <input id="hiddenStart" type="hidden" value="<%= auction.start %>">
-        <input id="hiddenEnd" type="hidden" value="<%= auction.end %>">
+      <div class="row text-left">
+        <form role="form" method="post" action="/auctions">
+          <input id="auctionId" type="hidden" value="<%= auction._id %>">
+          <input id="hiddenStart" type="hidden" value="<%= auction.start %>">
+          <input id="hiddenEnd" type="hidden" value="<%= auction.end %>">
 
-        <div class="col-sm-3">
-          Start Date/Time: 
-          <div class="form-group">
-            <div class='input-group date' id='startDateTime'>
-              <input type='text' class="form-control" />
-              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-              </span>
+          <div class="col-sm-4">
+            Start Date/Time: 
+            <div class="form-group">
+              <div class='input-group date' id='startDateTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-sm-3">
-          End Date/Time: 
-          <div class="form-group">
-            <div class='input-group date' id='endDateTime'>
-              <input type='text' class="form-control" />
-              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-              </span>
+          <div class="col-sm-4">
+            End Date/Time: 
+            <div class="form-group">
+              <div class='input-group date' id='endDateTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
+          <div class="col-sm-4">
+            Number of slots:<br>
+            <input id="slots" name="slots" type="number" class="form-control" value="<%= auction.slots %>" step="1" min="1">
+          </div>
+        </form>
+      </div>
+
+      <div class="row text-left">
+        <div class="form-group col-sm-12">
+          Auction Description: (HTML Allowed)
+          <textarea id="auctionDescription" class="form-control"><%= auction.description %></textarea>
         </div>
-        <div class="col-sm-3">
-          Number of slots:<br>
-          <input id="slots" name="slots" type="number" class="form-control" value="<%= auction.slots %>" step="1" min="1">
-          <div class="checkbox">
+      </div>
+  
+      <div class="row">
+        <div class="col-sm-offset-4 col-sm-4">
+          <div class="checkbox pull-right text-left">
             <label>
               <input id="auctionEnabled" type="checkbox" <% if (auction.enabled) { %>checked<% } %> >Enabled?
             </label>
           </div>
-
         </div>
-      </form>
-      <div class="col-sm-3 auction_add_button">
-        <button class="btn btn-primary btn-block" onclick="updateAuction();">
-          Update Auction
-        </button>
+        <div class="col-sm-4">
+          <button class="btn btn-primary btn-block" onclick="updateAuction();">
+            Update Auction
+          </button>
+        </div>
       </div>
 
     </div>

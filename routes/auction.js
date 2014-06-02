@@ -133,6 +133,7 @@ module.exports = {
         if (req.body.end) auction.end = req.body.end;
         if (req.body.slots) auction.slots = req.body.slots;
         if (req.body.enabled) auction.enabled = req.body.enabled;
+        if (req.body.description) auction.description = req.body.description;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
           req.flash('info', "Auction " + body.id + " Updated.");

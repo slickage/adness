@@ -173,6 +173,7 @@
     <script src="/scripts/momentjs/moment.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.js"></script>
     <script src="/scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="/scripts/caja/html-sanitizer-minified.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         // initialize the datetimepicker ui
@@ -184,6 +185,7 @@
           var start = $('#hiddenStart').val();
           var end = $('#hiddenEnd').val();
           setDateTime(start, end);
+          $('#auctionDescription')
         }
         else if (document.URL.indexOf("/admin") >= 0) {
           setDateTime();
@@ -202,7 +204,8 @@
           data: {
             start: valid.start,
             end: valid.end,
-            slots: valid.slots
+            slots: valid.slots,
+            description: valid.description
           },
           success: function() {
             location.reload();
@@ -230,10 +233,10 @@
             start: valid.start,
             end: valid.end,
             slots: valid.slots,
+            description: valid.description,
             enabled: enabled
           },
           success: function() {
-            console.log(window.location);
             window.location.replace("http://" + window.location.host + "/admin");
           },
           error: function() {
@@ -337,10 +340,16 @@
           return false;
         }
 
+        var description = $('#auctionDescription').val();
+        function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+        function idX(id) { return id }
+        var parsedHtml = html_sanitize(description, urlX, idX);
+
         return {
           start: start,
           end: end,
-          slots: slots
+          slots: slots,
+          description: parsedHtml
         };
       }
     </script>

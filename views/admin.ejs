@@ -44,39 +44,48 @@
     </div>
     <div class="panel-body slot_text">
       
-      <div class="row">
-      <form role="form" method="post" action="/auctions">
-        <div class="col-sm-3">
-          Start Date/Time: 
-          <div class="form-group">
-            <div class='input-group date' id='startDateTime'>
-              <input type='text' class="form-control" />
-              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-              </span>
+      <div class="row text-left">
+        <form role="form" method="post" action="/auctions">
+          <div class="col-sm-4">
+            Start Date/Time: 
+            <div class="form-group">
+              <div class='input-group date' id='startDateTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-sm-3">
-          End Date/Time: 
-          <div class="form-group">
-            <div class='input-group date' id='endDateTime'>
-              <input type='text' class="form-control" />
-              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-              </span>
+          <div class="col-sm-4">
+            End Date/Time: 
+            <div class="form-group">
+              <div class='input-group date' id='endDateTime'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-sm-3">
-          Number of slots:<br>
-          <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1">
-        </div>
-      </form>
-      <div class="col-sm-3 auction_add_button">
-        <button class="btn btn-primary btn-block" onclick="submitAuction();">
-          Add Auction
-        </button>
+          <div class="col-sm-4">
+            Number of slots:<br>
+            <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1">
+          </div>
+        </form>
       </div>
 
+      <div class="row text-left">
+        <div class="form-group col-sm-12">
+          Auction Description: (HTML Allowed)
+          <textarea id="auctionDescription" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-offset-8 col-sm-4">
+          <button class="btn btn-primary btn-block" onclick="submitAuction();">
+            Add Auction
+          </button>
+        </div>
       </div>
 
     </div>
