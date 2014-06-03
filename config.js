@@ -41,5 +41,8 @@ module.exports = {
   },
   bitcoin: {
     numberOfConfs: process.env.CONFS || 2
+  },
+  regions: {
+    whitelist: process.env.WHITE_REGIONS || ['US', 'CN', 'RU']
   }
 };

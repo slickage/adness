@@ -81,7 +81,16 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-offset-8 col-sm-4">
+        <div class="col-sm-4 text-left">
+          Region:
+          <select name="auctionRegion" id="auctionRegion" class="form-control">
+            <% regions.forEach(function(region) { %>
+              <option value="<%= region %>"><%= region %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="col-sm-offset-4 col-sm-4 auction_add_button">
           <button class="btn btn-primary btn-block" onclick="submitAuction();">
             Add Auction
           </button>
@@ -112,6 +121,11 @@
             <br>
             <span class="auction_header">End: </span>
             <span class="scriptDate"><%= auctionsOpen[i].end %></span>
+            <% if (auctionsOpen[i].region) { %>
+              <br>
+              <span class="auction_header">Region:</span>
+              <%= auctionsOpen[i].region %>
+            <% } %>
           </div>
           
           <div class="col-sm-offset-3 col-sm-3 text-center">

@@ -2,17 +2,30 @@
   <div class="panel-body cardBody">
     <div class="row">
       <span class="auctionCardLabel">
-      <% if(auction.open) { %>
-        <span class="label label-success">Open</span>
-      <% } else { %>
-        <% if (auction.start > new Date().getTime()) { %>
-          <span class="label label-primary">Upcoming</span>
-        <% } else if (auction.end < new Date().getTime()) { %>
-          <span class="label label-default">Past</span>
+        <% if(auction.open) { %>
+          <span class="label label-success">
+            <% if (auction.region) { %><%= auction.region %>
+            <% } else { %>Open<% } %>
+          </span>
         <% } else { %>
-          <span class="label label-danger">Closed</span>
-        <% } %>
-      <% } %>
+          <% if (auctionStart > new Date().getTime()) { %>
+            <span class="label label-primary">
+              <% if (auction.region) { %><%= auction.region %>
+              <% } else { %>Upcoming<% } %>
+            </span>
+          <% } else if (auctionEnd < new Date().getTime()) { %>
+            <span class="label label-default">
+              <% if (auction.region) { %><%= auction.region %>
+              <% } else { %>Past<% } %>
+            </span>
+          <% } else { %>
+            <span class="label label-danger">
+              <%= auction.start %><br><%= auction.end %>
+              <% if (auction.region) { %><%= auction.region %>
+              <% } else { %>Closed<% } %>
+            </span>
+          <% } %>
+        <% } %>&nbsp;
       </span>
       <span class="cardHeader">
         Auction:

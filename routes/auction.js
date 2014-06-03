@@ -1,6 +1,7 @@
 var db = require(__dirname + '/../db');
 var _ = require('lodash');
 var moment = require('moment');
+var config = require('../config');
 
 module.exports = {
   showAuction: function(req, res) {
@@ -36,6 +37,10 @@ module.exports = {
       // remove first item because it's the auction
       models.bids.splice(0, 1);
 
+      // preserve auction times
+      var auctionStart = auction.start;
+      var auctionEnd = auction.end;
+
       // update start and end time 
       var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
@@ -53,6 +58,8 @@ module.exports = {
       // render view
       res.render('auction', {
         auction: auction,
+        auctionStart: auctionStart,
+        auctionEnd: auctionEnd,
         bids: bids,
         browsePrefix: req.browsePrefix,
         latestPrice: latestPrice,
@@ -67,9 +74,17 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
+
+      // cull regions
+      var regions = [];
+      console.log(config.regions.whitelist);
+      regions = regions.concat(config.regions.whitelist);
+      regions.push('Global', 'EU');
+      
       if (err) console.log(err);
       res.render('auctionEdit', {
         auction: models.auction,
+        regions: regions,
         browsePrefix: req.browsePrefix,
         user: req.user
       });
@@ -134,6 +149,7 @@ module.exports = {
         if (req.body.slots) auction.slots = req.body.slots;
         if (req.body.enabled) auction.enabled = req.body.enabled;
         if (req.body.description) auction.description = req.body.description;
+        if (req.body.region) auction.region = req.body.region;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
           req.flash('info', "Auction " + body.id + " Updated.");

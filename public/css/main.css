@@ -120,6 +120,9 @@ body {
 
 /* -- Admin Page --------------------------------------- */
 
+.auction_add_button { text-align: center; padding-top: 20px; }
+.auction_enabled { padding-top: 25px; width: 100px; margin: 0 auto;}
+
 /* -- Auction Edit Page -------------------------------- */
 
 .editControls { margin-top: 30px; }

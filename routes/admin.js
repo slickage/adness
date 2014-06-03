@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var moment = require('moment');
+var config = require('../config');
 
 exports = module.exports = function(req, res) {
   // admin check
@@ -69,6 +70,12 @@ exports = module.exports = function(req, res) {
       auction.end = endTime;
     });
 
+    // cull regions
+    var regions = [];
+    console.log(config.regions.whitelist);
+    regions = regions.concat(config.regions.whitelist);
+    regions.push('Global', 'EU');
+
     res.render('admin',
       {
         auctionsOpen: sortedOpen,
@@ -76,6 +83,7 @@ exports = module.exports = function(req, res) {
         auctionsFuture: sortedFuture,
         auctionsPast: sortedPast,
         infoMessage: infoMessage,
+        regions: regions,
         browsePrefix: req.browsePrefix,
         user: req.user
       }

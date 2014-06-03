@@ -15,6 +15,12 @@ var db = {
     // validate description 
     var description = validate.html(body.description);
 
+    // validate region
+    var region = '';
+    if (validate.regions(body.region)) {
+      region = body.region;
+    }
+
     // random true ending time of auction within 30 minutes of end
     var end = Number(body.end);
     var timeDifference = (1000 * 60 * config.antiSnipeMinutes);
@@ -27,6 +33,7 @@ var db = {
       trueEnd: trueEnd,
       slots: Number(body.slots),
       description: description,
+      region: region,
       type: 'auction',
       enabled: true
     };
@@ -54,6 +61,11 @@ var db = {
         // validate description
         if (auction.description) {
           body.description = validate.html(auction.description);
+        }
+
+        // validate region
+        if (auction.region && validate.regions(auction.region)) {
+          body.region = auction.region;
         }
 
         // random true ending time of auction within 30 minutes of end

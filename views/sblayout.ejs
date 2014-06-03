@@ -197,6 +197,9 @@
         var valid = auctionValidation();
         if(!valid) { return; }
 
+        // grab region
+        var region = $('#auctionRegion').val();
+
         // ajax post call to server to create auction
         $.ajax({
           type: "POST",
@@ -205,7 +208,8 @@
             start: valid.start,
             end: valid.end,
             slots: valid.slots,
-            description: valid.description
+            description: valid.description,
+            region: region
           },
           success: function() {
             location.reload();
@@ -221,8 +225,12 @@
         var valid = auctionValidation();
         if(!valid) { return; }
 
+        // grab auction enabled
         var id = $('#auctionId').val();
         var enabled = $("#auctionEnabled").prop("checked");
+
+        // grab region
+        var region = $('#auctionRegion').val();
 
         // ajax post call to server to create auction
         $.ajax({
@@ -234,6 +242,7 @@
             end: valid.end,
             slots: valid.slots,
             description: valid.description,
+            region: region,
             enabled: enabled
           },
           success: function() {
@@ -340,6 +349,7 @@
           return false;
         }
 
+        // auction description
         var description = $('#auctionDescription').val();
         function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
         function idX(id) { return id }

@@ -1,5 +1,6 @@
 var sanitize = require('google-caja').sanitize;
 var _ = require('lodash');
+var config = require('./config');
 
 module.exports = {
   isNumber: function(datetime) {
@@ -74,6 +75,7 @@ module.exports = {
     function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
     return sanitize(html, urlX);
   },
+  // TO BE DEPRECATED
   blacklistedCN: function(blacklist) {
     // check that the list is an array
     if (!_.isArray(blacklist)) { return ['US', 'CN']; }
@@ -85,5 +87,28 @@ module.exports = {
     });
 
     return newList;
+  },
+  regions: function(region) {
+    // check against configs
+    var regionsList = config.regions.whitelist;
+    var whitelistRegion = _.contains(regionsList, region);
+
+    // check against global
+    var globalRegion = false;
+    if (region === 'Global') {
+      globalRegion = true;
+    }
+
+    // check again EU
+    var EURegion = false;
+    if (region === 'EU') {
+      EURegion = true;
+    }
+
+    if (whitelistRegion || globalRegion || EURegion) {
+      return true;
+    }
+    else { return false; }
+
   }
 };
