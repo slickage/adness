@@ -76,10 +76,7 @@ module.exports = {
     req.model.end(function(err, models) {
 
       // cull regions
-      var regions = [];
-      console.log(config.regions.whitelist);
-      regions = regions.concat(config.regions.whitelist);
-      regions.push('Global', 'EU');
+      var regions = _.pluck(config.regions, 'name');
       
       if (err) console.log(err);
       res.render('auctionEdit', {
@@ -146,10 +143,9 @@ module.exports = {
         var auction = models.auction;
         if (req.body.start) auction.start = req.body.start;
         if (req.body.end) auction.end = req.body.end;
-        if (req.body.slots) auction.slots = req.body.slots;
         if (req.body.enabled) auction.enabled = req.body.enabled;
         if (req.body.description) auction.description = req.body.description;
-        if (req.body.region) auction.region = req.body.region;
+        if (req.body.regions) auction.regions = req.body.regions;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
           req.flash('info', "Auction " + body.id + " Updated.");

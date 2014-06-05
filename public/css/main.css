@@ -9,7 +9,7 @@ body {
 .bootstrap-fluid-fix { padding: 0 15px; }
 .panel-primary > .panel-heading { text-shadow: 0 0; }
 .navbar { border-radius: 0; }
-
+hr { border-top: 1px solid #ccc; }
 /* -- Main layout code --------------------------------- */
 
 /* header */

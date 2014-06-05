@@ -67,7 +67,7 @@
           Region:
           <select name="auctionRegion" id="auctionRegion" class="form-control">
             <% regions.forEach(function(region) { %>
-              <option value="<%= region %>" <% if (auction.region === region) { %>selected<% } %>>
+              <option value="<%= region %>">
                 <%= region %>
               </option>
             <% }); %>

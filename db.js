@@ -7,18 +7,18 @@ var validate = require('./validation');
 
 var db = {
   newAuction: function(body, cb) {
-    // validate input
-    if (!validate.createAuction(body.start, body.end, body.slots)) {
+    // validate times
+    if (!validate.createAuction(body.start, body.end)) {
       return cb({ message: 'Auction parameters were not valid.' }, undefined);
     }
 
     // validate description 
     var description = validate.html(body.description);
 
-    // validate region
-    var region = '';
-    if (validate.regions(body.region)) {
-      region = body.region;
+    // validate regions
+    var regions;
+    if (validate.regions(body.regions)) {
+      regions = body.regions;
     }
 
     // random true ending time of auction within 30 minutes of end
@@ -31,9 +31,8 @@ var db = {
       start: Number(body.start),
       end: end,
       trueEnd: trueEnd,
-      slots: Number(body.slots),
       description: description,
-      region: region,
+      regions: regions,
       type: 'auction',
       enabled: true
     };
@@ -53,8 +52,8 @@ var db = {
           return cb({ message: 'Id is not for an auction.'}, undefined );
         }
 
-        // validate input
-        if (!validate.updateAuction(auction.start, auction.end, auction.slots)) {
+        // validate times
+        if (!validate.updateAuction(auction.start, auction.end)) {
           return cb({ message: 'Auction parameters were not valid.'}, undefined );
         }
 
@@ -63,9 +62,9 @@ var db = {
           body.description = validate.html(auction.description);
         }
 
-        // validate region
-        if (auction.region && validate.regions(auction.region)) {
-          body.region = auction.region;
+        // validate regions
+        if (auction.regions && validate.regions(auction.regions)) {
+          body.regions = auction.regions;
         }
 
         // random true ending time of auction within 30 minutes of end
@@ -79,7 +78,6 @@ var db = {
         // copy over on the allowed values into the retrieved auction
         if (auction.start) body.start = Number(auction.start);
         if (auction.end) body.end = Number(auction.end);
-        if (auction.slots) body.slots = Number(auction.slots);
         // handle both boolean and String true/false
         if (String(auction.enabled).toLowerCase()  === "true") {
           body.enabled = true;

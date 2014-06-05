@@ -192,32 +192,59 @@
         }
       });
 
-      function submitAuction(event) {
-        // input validation
-        var valid = auctionValidation();
-        if(!valid) { return; }
+      function addRegion() {
+        // get all existing regions
+        var regions = gatherRegions();
 
-        // grab region
-        var region = $('#auctionRegion').val();
-
-        // ajax post call to server to create auction
-        $.ajax({
-          type: "POST",
-          url: '<%= browsePrefix %>/auctions',
-          data: {
-            start: valid.start,
-            end: valid.end,
-            slots: valid.slots,
-            description: valid.description,
-            region: region
-          },
-          success: function() {
-            location.reload();
-          },
-          error: function() {
-            alert("There was an error creating the auction.");
+        // check that region isn't already used
+        var regionName = $('#auctionRegion').val();
+        var matchFound = false;
+        regions.forEach(function(region) {
+          if (region.name === regionName) {
+            matchFound = true;
           }
         });
+        if (matchFound) {
+          $('#errorText').text(regionName + ' is already included.');
+          return;
+        }
+
+        // check that slots is a valid number
+        var slots = $('#slots').val();
+        var slotsIsNumber = !isNaN(parseFloat(slots)) && isFinite(slots);
+        if (!slotsIsNumber) {
+          $('#errorText').text('Slots must be a number');
+          return;
+        }
+
+        if (slotsIsNumber && slots < 1) {
+          $('#errorText').text('Slots cannot be negative or zero');
+          return;
+        }
+
+        // add region to the table to the table
+        var html = '<tr><td>';
+        html += regionName;
+        html += '</td><td>';
+        html += slots;
+        html += '</td></tr>';
+        $('#regionsTable tbody').append(html);
+      }
+
+      function gatherRegions() {
+        var regions = [];
+
+        // get all row in the regions table
+        $('#regionsTable tbody tr').each(function(index, value) {
+          var regionName = $(this).find('td:nth-child(1)').text();
+          var slots = Number($(this).find('td:nth-child(2)').text());
+
+          // build region json object
+          var region = { name: regionName, slots: slots };
+          regions.push(region);
+        });
+
+        return regions;
       }
 
       function updateAuction(id, enabled) {
@@ -230,7 +257,9 @@
         var enabled = $("#auctionEnabled").prop("checked");
 
         // grab region
-        var region = $('#auctionRegion').val();
+        var regions = gatherRegions();
+        var regionsValid = validateRegions(regions);
+        if (!regionsValid) { return; }
 
         // ajax post call to server to create auction
         $.ajax({
@@ -240,9 +269,8 @@
             auctionId: id,
             start: valid.start,
             end: valid.end,
-            slots: valid.slots,
             description: valid.description,
-            region: region,
+            regions: regions,
             enabled: enabled
           },
           success: function() {
@@ -318,8 +346,6 @@
         }
         else { return alert("End Date/Time doesn't look right."); }
 
-        var slots = $('#slots').val();
-
         // validate startDate, endDate and slots
         var startValid = !isNaN(parseFloat(start)) && isFinite(start);
         if (startValid === false) {
@@ -338,17 +364,6 @@
           return false;
         }
 
-        var slotsValid = !isNaN(parseFloat(slots)) && isFinite(slots);
-        if (slotsValid === false) {
-          alert("The number of slots is not valid.");
-          return false;
-        }
-
-        if (slots < 0) {
-          alert("Slots Cannot be negative.");
-          return false;
-        }
-
         // auction description
         var description = $('#auctionDescription').val();
         function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
@@ -361,6 +376,18 @@
           slots: slots,
           description: parsedHtml
         };
+      }
+
+      function validateRegions(regions) {
+        var valid = true;
+
+        if (regions.length < 1) { valid = false; }
+
+        if (valid === false) {
+          alert('At least one region is required.');
+        }
+
+        return valid;
       }
     </script>
     <!-- endbower -->

@@ -1,6 +1,7 @@
 <% layout('sblayout') %>
 <div class="content-page col-sm-12">
 
+  <!-- flash message from the system -->
   <% if (infoMessage && infoMessage.length > 0) { %>
     <div class="alert alert-success alert-dismissable">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
@@ -12,6 +13,7 @@
     </div>
   <% } %>
 
+  <!-- admin navigation bar -->
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
@@ -38,60 +40,102 @@
     </div><!-- /.container-fluid -->
   </nav>
 
+  <!-- Auction Creation Tool -->
   <div class="panel panel-default"> 
-    <div class="panel-heading">
-      <b>Add Auction</b>
-    </div>
+    <div class="panel-heading"><strong>Add Auction</strong></div>
+
     <div class="panel-body slot_text">
       
+      <!-- Auction Times -->
       <div class="row text-left">
-        <form role="form" method="post" action="/auctions">
-          <div class="col-sm-4">
-            Start Date/Time: 
-            <div class="form-group">
-              <div class='input-group date' id='startDateTime'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
+        <div class="col-sm-4">
+          Start Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='startDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
             </div>
           </div>
-          <div class="col-sm-4">
-            End Date/Time: 
-            <div class="form-group">
-              <div class='input-group date' id='endDateTime'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
+        </div>
+        <div class="col-sm-4">
+          End Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='endDateTime'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
             </div>
           </div>
-          <div class="col-sm-4">
-            Number of slots:<br>
-            <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1">
-          </div>
-        </form>
+        </div>
       </div>
 
+      <!-- Auction Description -->
       <div class="row text-left">
-        <div class="form-group col-sm-12">
+        <div class="form-group col-sm-8">
           Auction Description: (HTML Allowed)
           <textarea id="auctionDescription" class="form-control"></textarea>
         </div>
       </div>
+  
+      <br>
 
-      <div class="row">
-        <div class="col-sm-4 text-left">
-          Region:
-          <select name="auctionRegion" id="auctionRegion" class="form-control">
-            <% regions.forEach(function(region) { %>
-              <option value="<%= region %>"><%= region %></option>
-            <% }); %>
-          </select>
+      <!-- Auction Regions -->
+      <div class="panel panel-default">
+        <div class="panel-heading text-left">
+          Auction Regions
         </div>
+        
+        <div class="panel-body">
 
-        <div class="col-sm-offset-4 col-sm-4 auction_add_button">
-          <button class="btn btn-primary btn-block" onclick="submitAuction();">
+          <div class="row">
+            <div class="col-sm-5 text-left">
+              Region:
+              <select name="auctionRegions" id="auctionRegion" class="form-control">
+                <% regions.forEach(function(region) { %>
+                  <option value="<%= region %>"><%= region %></option>
+                <% }); %>
+              </select>
+            </div>
+      
+            <div class="col-sm-5 text-left">
+              Number of slots:<br>
+              <input id="slots" name="slots" type="number" class="form-control" value="8" step="1" min="1">
+            </div>
+
+            <div class="col-sm-2 auction_add_button">
+              <button class="btn btn-primary btn-block" onclick="addRegion();">
+                Add Region
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <br>
+            <div class="col-sm-12 table-responsive">
+              <table id="regionsTable" class="table table-striped table-condensed table-hover">
+                <thead>
+                  <tr>
+                    <th>Region</th>
+                    <th>Number of Slots</th>
+                  </tr>
+                </thead>
+                <tbody class="text-left"></tobdy>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <span id="errorText" class="text-danger"></span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Auction submit -->
+      <div class="row">
+        <div class="col-sm-offset-8 col-sm-4 auction_add_button">
+          <button class="btn btn-success btn-block" onclick="submitAuction();">
             Add Auction
           </button>
         </div>
@@ -340,6 +384,35 @@
 
 
 <script type="text/javascript">
+  function submitAuction(event) {
+    // input validation
+    var valid = auctionValidation();
+    if(!valid) { return; }
+
+    // grab region
+    var regions = gatherRegions();
+    var regionsValid = validateRegions(regions);
+    if (!regionsValid) { return; }
+
+    // ajax post call to server to create auction
+    $.ajax({
+      type: "POST",
+      url: '<%= browsePrefix %>/auctions',
+      data: {
+        start: valid.start,
+        end: valid.end,
+        description: valid.description,
+        regions: regions
+      },
+      success: function() {
+        location.reload();
+      },
+      error: function() {
+        alert("There was an error creating the auction.");
+      }
+    });
+  }
+
   function auctionEnable(ev, auctionId) {
     ev.preventDefault();
     $.post("<%= browsePrefix %>/auctions/enable/" + auctionId, 

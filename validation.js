@@ -7,16 +7,15 @@ module.exports = {
     // return true if this is a number
     return !isNaN(parseFloat(datetime)) && isFinite(datetime);
   },
-  createAuction: function(start, end, slots) {
+  createAuction: function(start, end) {
     // ensure all three parameters are given
-    if (start && end && slots) {
-      return this.updateAuction(start, end, slots);
+    if (start && end) {
+      return this.updateAuction(start, end);
     }
     else { return false; }
   },
-  updateAuction: function(start, end, slots) {
+  updateAuction: function(start, end) {
     // validate all inputs are numbers
-    // validate that slots can't be negative
     // validate end time is after start time
 
     // check that start datetime is valid millisec
@@ -28,15 +27,7 @@ module.exports = {
     if (end && !this.isNumber(end)) {
       return false;
     }
-
-    if (slots && !this.isNumber(slots)) {
-      return false;
-    }
-
-    if (slots && slots < 0) {
-      return false;
-    }
-
+    
     // check that end is after start
     if (start && end && end < start) {
       return false;
@@ -88,27 +79,27 @@ module.exports = {
 
     return newList;
   },
-  regions: function(region) {
-    // check against configs
-    var regionsList = config.regions.whitelist;
-    var whitelistRegion = _.contains(regionsList, region);
+  regions: function(regions) {
+    // get all regions by name
+    var configRegions = config.regions;
+    var configRegionNames = _.pluck(configRegions, 'name');
 
-    // check against global
-    var globalRegion = false;
-    if (region === 'Global') {
-      globalRegion = true;
-    }
+    var valid = true;
 
-    // check again EU
-    var EURegion = false;
-    if (region === 'EU') {
-      EURegion = true;
-    }
+    if (regions.length < 1) { valid = false; }
 
-    if (whitelistRegion || globalRegion || EURegion) {
-      return true;
-    }
-    else { return false; }
+    regions.forEach(function(region) {
+      // validate region name
+      if (_.contains(configRegionNames, region.name) === false) {
+        valid = false;
+      }
 
+      // validate slots is a number
+      if (region.slots && !this.isNumber(region.slots)) { valid = false; }
+      // validate slots is not negative
+      if (valid && region.slots < 1) { valid = false; }
+    });
+
+    return valid;
   }
 };

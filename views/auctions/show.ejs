@@ -3,29 +3,16 @@
     <div class="row">
       <span class="auctionCardLabel">
         <% if(auction.open) { %>
-          <span class="label label-success">
-            <% if (auction.region) { %><%= auction.region %>
-            <% } else { %>Open<% } %>
-          </span>
+          <span class="label label-success">Open</span>
         <% } else { %>
           <% if (auctionStart > new Date().getTime()) { %>
-            <span class="label label-primary">
-              <% if (auction.region) { %><%= auction.region %>
-              <% } else { %>Upcoming<% } %>
-            </span>
+            <span class="label label-primary">Upcoming</span>
           <% } else if (auctionEnd < new Date().getTime()) { %>
-            <span class="label label-default">
-              <% if (auction.region) { %><%= auction.region %>
-              <% } else { %>Past<% } %>
-            </span>
+            <span class="label label-default">Past</span>
           <% } else { %>
-            <span class="label label-danger">
-              <%= auction.start %><br><%= auction.end %>
-              <% if (auction.region) { %><%= auction.region %>
-              <% } else { %>Closed<% } %>
-            </span>
+            <span class="label label-danger">Closed</span>
           <% } %>
-        <% } %>&nbsp;
+        <% } %>
       </span>
       <span class="cardHeader">
         Auction:
@@ -49,11 +36,11 @@
       <strong>Auction Description:</strong>
       <br />
       <%= auction.description %>
-
     </div>
+
     <div class="row">
-      <br>
-      <b>Current Auction Winners</b>
+      <hr>
+      <b>Current Region Winning Bids</b>
       <br>
 
       <% for(var i=0; i < auction.bidPerSlot.length; i++) { %>

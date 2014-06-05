@@ -37,44 +37,13 @@ exports = module.exports = function(req, res) {
     });
 
     // update start and end times
-    sortedOpen.forEach(function(auction) {
-      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() +')';
-      endTime += ' (' + moment(auction.end).fromNow() + ')';
-      auction.start = startTime;
-      auction.end = endTime;
-    });
-    sortedClosed.forEach(function(auction) {
-      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() +')';
-      endTime += ' (' + moment(auction.end).fromNow() + ')';
-      auction.start = startTime;
-      auction.end = endTime;
-    });
-    sortedFuture.forEach(function(auction) {
-      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() +')';
-      endTime += ' (' + moment(auction.end).fromNow() + ')';
-      auction.start = startTime;
-      auction.end = endTime;
-    });
-    sortedPast.forEach(function(auction) {
-      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() +')';
-      endTime += ' (' + moment(auction.end).fromNow() + ')';
-      auction.start = startTime;
-      auction.end = endTime;
-    });
+    formatAuctionTime(sortedOpen);
+    formatAuctionTime(sortedClosed);
+    formatAuctionTime(sortedFuture);
+    formatAuctionTime(sortedPast);
 
     // cull regions
-    var regions = [];
-    console.log(config.regions.whitelist);
-    regions = regions.concat(config.regions.whitelist);
-    regions.push('Global', 'EU');
+    var regions = _.pluck(config.regions, 'name');
 
     res.render('admin',
       {
@@ -90,3 +59,14 @@ exports = module.exports = function(req, res) {
     );
   });
 };
+
+function formatAuctionTime(auctions) {
+  auctions.forEach(function(auction) {
+    var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+    var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+    startTime += ' (' + moment(auction.start).fromNow() +')';
+    endTime += ' (' + moment(auction.end).fromNow() + ')';
+    auction.start = startTime;
+    auction.end = endTime;
+  });
+}

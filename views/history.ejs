@@ -24,10 +24,12 @@
           <br>
           <span class="auction_header">End: </span>
           <span class="scriptDate"><%= auction.end %></span>
-          <% if (auction.region) { %>
+          <% if (auction.regions) { %>
             <br>
-            <span class="auction_header">Region:</span>
-            <%= auction.region %>
+            <span class="auction_header">Regions:</span>
+            <% auction.regions.forEach(function(region) { %>
+              <%= region %>
+             <% }) %>
           <% } %>
         </div>
         <div class="col-sm-3">
