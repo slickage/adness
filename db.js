@@ -8,7 +8,7 @@ var validate = require('./validation');
 var db = {
   newAuction: function(body, cb) {
     // validate times
-    if (!validate.createAuction(body.start, body.end)) {
+    if (!validate.createAuction(body.start, body.end, body.adsStart, body.adsEnd)) {
       return cb({ message: 'Auction parameters were not valid.' }, undefined);
     }
 
@@ -31,6 +31,8 @@ var db = {
       start: Number(body.start),
       end: end,
       trueEnd: trueEnd,
+      adsStart: body.adsStart,
+      adsEnd: body.adsEnd,
       description: description,
       regions: regions,
       type: 'auction',
@@ -53,7 +55,7 @@ var db = {
         }
 
         // validate times
-        if (!validate.updateAuction(auction.start, auction.end)) {
+        if (!validate.updateAuction(auction.start, auction.end, auction.adsStart, auction.adsEnd)) {
           return cb({ message: 'Auction parameters were not valid.'}, undefined );
         }
 
@@ -78,6 +80,8 @@ var db = {
         // copy over on the allowed values into the retrieved auction
         if (auction.start) body.start = Number(auction.start);
         if (auction.end) body.end = Number(auction.end);
+        if (auction.adsStart) body.adsStart = Number(auction.adsStart);
+        if (auction.adsEnd) body.adsEnd = Number(auction.adsEnd);
         // handle both boolean and String true/false
         if (String(auction.enabled).toLowerCase()  === "true") {
           body.enabled = true;

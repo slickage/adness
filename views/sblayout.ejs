@@ -177,15 +177,18 @@
     <script type="text/javascript">
       $(document).ready(function() {
         // initialize the datetimepicker ui
-        $('#startDateTime').datetimepicker({ useStrict: true, sideBySide: true });
-        $('#endDateTime').datetimepicker({ useStrict: true, sideBySide: true });
+        $('#auctionStart').datetimepicker({ useStrict: true, sideBySide: true });
+        $('#auctionEnd').datetimepicker({ useStrict: true, sideBySide: true });
+        $('#adsStart').datetimepicker({ useStrict: true, sideBySide: true });
+        $('#adsEnd').datetimepicker({ useStrict: true, sideBySide: true });
 
         // set date time picker values
         if (document.URL.indexOf("/admin/auctions/edit") >= 0) {
-          var start = $('#hiddenStart').val();
-          var end = $('#hiddenEnd').val();
-          setDateTime(start, end);
-          $('#auctionDescription')
+          var auctionStart = $('#hiddenAuctionStart').val();
+          var auctionEnd = $('#hiddenAuctionEnd').val();
+          var adsStart = $('#hiddenAdsStart').val();
+          var adsEnd = $('#hiddenAdsEnd').val();
+          setDateTime(auctionStart, auctionEnd, adsStart, adsEnd);
         }
         else if (document.URL.indexOf("/admin") >= 0) {
           setDateTime();
@@ -267,8 +270,10 @@
           url: '<%= browsePrefix %>/auctions/edit',
           data: {
             auctionId: id,
-            start: valid.start,
-            end: valid.end,
+            start: valid.auctionStart,
+            end: valid.auctionEnd,
+            adsStart: valid.adsStart,
+            adsEnd: valid.adsEnd,
             description: valid.description,
             regions: regions,
             enabled: enabled
@@ -282,85 +287,168 @@
         });
       }
 
-      function setDateTime(start, end) {
-        if (start && end) {
-          var newStart = moment.utc(Number(start));
-          $('#startDateTime').data('DateTimePicker').setDate(newStart);
+      function setDateTime(auctionStart, auctionEnd, adsStart, adsEnd) {
+        if (auctionStart && auctionEnd && adsStart && adsEnd) {
+          var newAuctionStart = moment.utc(Number(auctionStart));
+          $('#auctionStart').data('DateTimePicker').setDate(newAuctionStart);
 
-          var newEnd = moment.utc(Number(end));
-          $('#endDateTime').data('DateTimePicker').setDate(newEnd);
+          var newAuctionEnd = moment.utc(Number(auctionEnd));
+          $('#auctionEnd').data('DateTimePicker').setDate(newAuctionEnd);
+
+          var newAdsStart = moment.utc(Number(adsStart));
+          $('#adsStart').data('DateTimePicker').setDate(newAdsStart);
+
+          var newAdsEnd = moment.utc(Number(adsEnd));
+          $('#adsEnd').data('DateTimePicker').setDate(newAdsEnd);
         }
         else {
-          // default date 
-          // start is one day ahead midnight
-          var defaultStart = moment.utc();
-          defaultStart.date(defaultStart.date()+1);
-          defaultStart.hours(0);
-          defaultStart.minutes(0);
-          defaultStart.seconds(0);
-          defaultStart.milliseconds(0);
-          $('#startDateTime').data('DateTimePicker').setDate(defaultStart);
+          // auction start is one day ahead midnight
+          var defaultAuctionStart = moment.utc();
+          defaultAuctionStart.date(defaultAuctionStart.date()+1);
+          defaultAuctionStart.hours(0);
+          defaultAuctionStart.minutes(0);
+          defaultAuctionStart.seconds(0);
+          defaultAuctionStart.milliseconds(0);
+          $('#auctionStart').data('DateTimePicker').setDate(defaultAuctionStart);
 
-          // end is three days ahead midnight
-          var defaultEnd = moment.utc();
-          defaultEnd.date(defaultEnd.date()+3);
-          defaultEnd.hours(0);
-          defaultEnd.minutes(0);
-          defaultEnd.seconds(0);
-          defaultEnd.milliseconds(0);
-          $('#endDateTime').data('DateTimePicker').setDate(defaultEnd);
+          // auction end is three days ahead midnight
+          var defaultAuctionEnd = moment.utc();
+          defaultAuctionEnd.date(defaultAuctionEnd.date()+3);
+          defaultAuctionEnd.hours(0);
+          defaultAuctionEnd.minutes(0);
+          defaultAuctionEnd.seconds(0);
+          defaultAuctionEnd.milliseconds(0);
+          $('#auctionEnd').data('DateTimePicker').setDate(defaultAuctionEnd);
+
+          // ads start is two days ahead midnight of auction end 
+          var defaultAdsStart = moment.utc();
+          defaultAdsStart.date(defaultAdsStart.date()+5);
+          defaultAdsStart.hours(0);
+          defaultAdsStart.minutes(0);
+          defaultAdsStart.seconds(0);
+          defaultAdsStart.milliseconds(0);
+          $('#adsStart').data('DateTimePicker').setDate(defaultAdsStart);
+
+          // ads end is seven days ahead midnight of adsStart
+          var defaultAdsEnd = moment.utc();
+          defaultAdsEnd.date(defaultAdsEnd.date()+12);
+          defaultAdsEnd.hours(0);
+          defaultAdsEnd.minutes(0);
+          defaultAdsEnd.seconds(0);
+          defaultAdsEnd.milliseconds(0);
+          $('#adsEnd').data('DateTimePicker').setDate(defaultAdsEnd);
         }
       }
 
       function auctionValidation() {
         // Initial input validation
-        var start;
-        var startDate = $('#startDateTime').data('DateTimePicker').getDate();
-        // startDate is in local timezone so convert to UTC
-        if (startDate) { 
-          start = moment.utc();
-          start.year(startDate.year());
-          start.month(startDate.month());
-          start.date(startDate.date());
-          start.hours(startDate.hours());
-          start.minutes(startDate.minutes());
-          start.seconds(startDate.seconds());
-          start.milliseconds(startDate.milliseconds());
-          start = start.valueOf();
+        var auctionStart;
+        var auctionStartDate = $('#auctionStart').data('DateTimePicker').getDate();
+        // auctionStartDate is in local timezone so convert to UTC
+        if (auctionStartDate) { 
+          auctionStart = moment.utc();
+          auctionStart.year(auctionStartDate.year());
+          auctionStart.month(auctionStartDate.month());
+          auctionStart.date(auctionStartDate.date());
+          auctionStart.hours(auctionStartDate.hours());
+          auctionStart.minutes(auctionStartDate.minutes());
+          auctionStart.seconds(auctionStartDate.seconds());
+          auctionStart.milliseconds(auctionStartDate.milliseconds());
+          auctionStart = auctionStart.valueOf();
         }
-        else { return alert("Start Date/Time doesn't look right."); }
+        else { return alert("Auction Start Date/Time doesn't look right."); }
 
-        var end; 
-        var endDate = $('#endDateTime').data('DateTimePicker').getDate();
-        // endDate is in local timezone so convert to UTC
-        if (endDate) {
-          end = moment.utc();
-          end.year(endDate.year());
-          end.month(endDate.month());
-          end.date(endDate.date());
-          end.hours(endDate.hours());
-          end.minutes(endDate.minutes());
-          end.seconds(endDate.seconds());
-          end.milliseconds(endDate.milliseconds());
-          end = end.valueOf();
+        var auctionEnd; 
+        var auctionEndDate = $('#auctionEnd').data('DateTimePicker').getDate();
+        // auctionEndDate is in local timezone so convert to UTC
+        if (auctionEndDate) {
+          auctionEnd = moment.utc();
+          auctionEnd.year(auctionEndDate.year());
+          auctionEnd.month(auctionEndDate.month());
+          auctionEnd.date(auctionEndDate.date());
+          auctionEnd.hours(auctionEndDate.hours());
+          auctionEnd.minutes(auctionEndDate.minutes());
+          auctionEnd.seconds(auctionEndDate.seconds());
+          auctionEnd.milliseconds(auctionEndDate.milliseconds());
+          auctionEnd = auctionEnd.valueOf();
         }
-        else { return alert("End Date/Time doesn't look right."); }
+        else { return alert("Auction End Date/Time doesn't look right."); }
 
-        // validate startDate, endDate and slots
-        var startValid = !isNaN(parseFloat(start)) && isFinite(start);
-        if (startValid === false) {
-          alert("The Start date/time is not valid.");
+        var adsStart;
+        var adsStartDate = $('#adsStart').data('DateTimePicker').getDate();
+        // adsStartDate is in local timezone so convert to UTC
+        if (adsStartDate) { 
+          adsStart = moment.utc();
+          adsStart.year(adsStartDate.year());
+          adsStart.month(adsStartDate.month());
+          adsStart.date(adsStartDate.date());
+          adsStart.hours(adsStartDate.hours());
+          adsStart.minutes(adsStartDate.minutes());
+          adsStart.seconds(adsStartDate.seconds());
+          adsStart.milliseconds(adsStartDate.milliseconds());
+          adsStart = adsStart.valueOf();
+        }
+        else { return alert("Ads Start Date/Time doesn't look right."); }
+
+        var adsEnd; 
+        var adsEndDate = $('#adsEnd').data('DateTimePicker').getDate();
+        // adsEndDate is in local timezone so convert to UTC
+        if (adsEndDate) {
+          adsEnd = moment.utc();
+          adsEnd.year(adsEndDate.year());
+          adsEnd.month(adsEndDate.month());
+          adsEnd.date(adsEndDate.date());
+          adsEnd.hours(adsEndDate.hours());
+          adsEnd.minutes(adsEndDate.minutes());
+          adsEnd.seconds(adsEndDate.seconds());
+          adsEnd.milliseconds(adsEndDate.milliseconds());
+          adsEnd = adsEnd.valueOf();
+        }
+        else { return alert("Ads End Date/Time doesn't look right."); }
+
+        // check that auction start datetime is valid
+        var auctionStartValid = !isNaN(parseFloat(auctionStart)) && isFinite(auctionStart);
+        if (auctionStartValid === false) {
+          alert("The Auction Start date/time is not valid.");
           return false;
         }
 
-        var endValid = !isNaN(parseFloat(end)) && isFinite(end);
-        if (endValid === false) {
-          alert("The End date/time is not valid.");
+        // check that auction end datetime is valid
+        var auctionEndValid = !isNaN(parseFloat(auctionEnd)) && isFinite(auctionEnd);
+        if (auctionEndValid === false) {
+          alert("The Auction End date/time is not valid.");
           return false;
         }
 
-        if (end < start) {
-          alert("The End date/time is before Start date/time.");
+        // check that auction end is not before auction start
+        if (auctionEnd < auctionStart) {
+          alert("The Auction End date/time is before Auction Start date/time.");
+          return false;
+        }
+
+        // check that ads start datetime is valid
+        var adsStartValid = !isNaN(parseFloat(adsStart)) && isFinite(adsStart);
+        if (adsStartValid === false) {
+          alert("The Ads Start date/time is not valid.");
+          return false;
+        }
+
+        // check that ads end datetime is valid
+        var adsEndValid = !isNaN(parseFloat(adsEnd)) && isFinite(adsEnd);
+        if (adsEndValid === false) {
+          alert("The Ads End date/time is not valid.");
+          return false;
+        }
+
+        // check that ads end is not before ads start
+        if (adsEnd < adsStart) {
+          alert("The Ads End date/time is before Ads Start date/time.");
+          return false;
+        }
+
+        // check that ads Start is not before Auction end datetime
+        if (adsStart < auctionEnd) {
+          alert("The Ads Start date/time is before Auction End date/time.");
           return false;
         }
 
@@ -371,9 +459,10 @@
         var parsedHtml = html_sanitize(description, urlX, idX);
 
         return {
-          start: start,
-          end: end,
-          slots: slots,
+          auctionStart: auctionStart,
+          auctionEnd: auctionEnd,
+          adsStart: adsStart,
+          adsEnd: adsEnd,
           description: parsedHtml
         };
       }

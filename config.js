@@ -59,7 +59,7 @@ module.exports = {
       inclusive: true
     },
     {
-      name: 'Global',
+      name: 'Global'
     },
   ]
 };

@@ -17,44 +17,60 @@
   </h3>
 
   <div class="panel panel-default editControls"> 
-    <div class="panel-heading">
-      <b>Edit Auction</b>
-    </div>
-    <div class="panel-body slot_text">
-      
-      <div class="row text-left">
-        <form role="form" method="post" action="/auctions">
-          <input id="auctionId" type="hidden" value="<%= auction._id %>">
-          <input id="hiddenStart" type="hidden" value="<%= auction.start %>">
-          <input id="hiddenEnd" type="hidden" value="<%= auction.end %>">
+    <div class="panel-heading"><b>Edit Auction</b></div>
 
-          <div class="col-sm-4">
-            Start Date/Time: 
-            <div class="form-group">
-              <div class='input-group date' id='startDateTime'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
+    <div class="panel-body slot_text">
+      <input id="auctionId" type="hidden" value="<%= auction._id %>">
+      <input id="hiddenAuctionStart" type="hidden" value="<%= auction.start %>">
+      <input id="hiddenAuctionEnd" type="hidden" value="<%= auction.end %>">
+      <input id="hiddenAdsStart" type="hidden" value="<%= auction.adsStart %>">
+      <input id="hiddenAdsEnd" type="hidden" value="<%= auction.adsEnd %>">
+        
+      <!-- Auction/Ads Times -->
+      <div class="row text-left">
+        <div class="col-sm-3">
+          Auction Start Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='auctionStart'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
             </div>
           </div>
-          <div class="col-sm-4">
-            End Date/Time: 
-            <div class="form-group">
-              <div class='input-group date' id='endDateTime'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
+        </div>
+        <div class="col-sm-3">
+          Auction End Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='auctionEnd'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
             </div>
           </div>
-          <div class="col-sm-4">
-            Number of slots:<br>
-            <input id="slots" name="slots" type="number" class="form-control" value="<%= auction.slots %>" step="1" min="1">
+        </div>
+        <div class="col-sm-3">
+          Ads Start Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='adsStart'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
           </div>
-        </form>
+        </div>
+        <div class="col-sm-3">
+          Ads End Date/Time: 
+          <div class="form-group">
+            <div class='input-group date' id='adsEnd'>
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!-- Auction Description -->
       <div class="row text-left">
         <div class="form-group col-sm-12">
           Auction Description: (HTML Allowed)
@@ -62,18 +78,67 @@
         </div>
       </div>
   
-      <div class="row">
-        <div class="col-sm-4">
-          Region:
-          <select name="auctionRegion" id="auctionRegion" class="form-control">
-            <% regions.forEach(function(region) { %>
-              <option value="<%= region %>">
-                <%= region %>
-              </option>
-            <% }); %>
-          </select>
+      <br />
+
+      <!-- Auctin Regions -->
+      <div class="panel panel-default">
+        <div class="panel-heading text-left">Auction Regions</div>
+        
+        <div class="panel-body">
+          
+          <div class="row">
+            <div class="col-sm-5 text-left">
+              Region:
+              <select name="auctionRegion" id="auctionRegion" class="form-control">
+                <% regions.forEach(function(region) { %>
+                  <option value="<%= region %>">
+                    <%= region %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div class="col-sm-5 text-left">
+              Number of slots:<br />
+              <input id="slots" type="number" class="form-control" value="8" step="1" min="1">
+            </div>
+
+            <div class="col-sm-2 auction_add_button">
+              <button class="btn btn-primary btn-block" onclick="addRegion();">
+                Add Region
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <br \>
+            <div class="col-sm-12 table-responsive">
+              <table id="regionsTable" class="table table-striped table-condensed table-hover">
+                <thead>
+                  <tr>
+                    <th>Regions</th>
+                    <th>Number of Slots</th>
+                  </tr>
+                </thead>
+                <tbody class="text-left">
+                  <% auction.regions.forEach(function(region) { %>
+                    <tr><td><%= region.name %></td><td><%= region.slots %></td></tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <span id="errorText" class="text-danger"></span>
+          </div>
+
         </div>
-        <div class="col-sm-4">
+      </div>
+
+      <!-- Auction submit -->
+      <div class="row">
+        <div class="col-sm-offset-4 col-sm-4">
           <div class="checkbox auction_enabled">
             <label>
               <input id="auctionEnabled" type="checkbox" <% if (auction.enabled) { %>checked<% } %> >Enabled?
@@ -81,13 +146,11 @@
           </div>
         </div>
         <div class="col-sm-4 auction_add_button">
-          <button class="btn btn-primary btn-block" onclick="updateAuction();">
+          <button class="btn btn-success btn-block" onclick="updateAuction();">
             Update Auction
           </button>
         </div>
       </div>
-
     </div>
   </div>
-
 </div>
