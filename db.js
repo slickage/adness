@@ -3,6 +3,7 @@ var nano = require('nano')(config.couchdb.url);
 var couch = nano.use(config.couchdb.name);
 var biddingAlg = require('./bidding');
 var validate = require('./validation');
+var _ = require('lodash');
 
 
 var db = {
@@ -251,8 +252,8 @@ var db = {
     couch.view(config.couchdb.name, 'auctionBids', params, function(err, body) {
       if (!err) {
         // first object is the auction itself
-        var openAuction = body.rows.splice(0,1)[0].value;
         // the rest of the array are the bids
+        var openAuction = body.rows.splice(0,1)[0].value;
 
         // parse out the bids
         var bids = [];
@@ -260,13 +261,20 @@ var db = {
           bids.push(rawBids.value);
         });
 
-        // figure out winning bids
-        var results = biddingAlg(Number(openAuction.slots), bids);
+        // for each region, run biddingAlg and append
+        auction.regions.forEach(function(region) {
+          // grab only the bids for this region
+          var regionBids = _.filter(bids, function(bid) {
+            if (bid.region === region.name) { return true; }
+          });
 
-        // add winning bids and bids per slot to openAuction
-        auction.winningBids = results.winningBids;
-        auction.bidPerSlot = results.bidPerSlot;
-        auction.secondarySlots = results.secondarySlots;
+          // figure out winning bids
+          var results = biddingAlg(Number(region.slots), regionBids);
+          // add winning bids, primarySlots and secondarySlots to this region
+          region.winningBids = results.winningBids;
+          region.primarySlots = results.bidPerSlot;
+          region.secondarySlots = results.secondarySlots;
+        });
 
         cb(null, auction);
       }

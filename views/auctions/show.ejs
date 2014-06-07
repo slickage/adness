@@ -22,74 +22,79 @@
       </span>
     </div>
     <div class="row">
-      <br/>
+      <br />
       <strong>Auction Start Date/Time:</strong>
-      <span class="scriptDate"><%= auction.start %></span>
-      <br/>
+      <span><%= auction.start %></span>
+      <br />
       <strong>Auction End Date/Time:</strong>
-      <span class="scriptDate"><%= auction.end %></span>
-      <em>(within ~ 30 minutes)</em>
-      <br/>
-      <strong>Slots with Bids/Total Slots:</strong>
-      <%= auction.bidPerSlot.length %>/<%= auction.slots %>
+      <span><%= auction.end %></span><em>(within ~ 30 minutes)</em>
+      <br /><br />
+      <strong>Ads Start Date/Time:</strong>
+      <span><%= auction.adsStart %></span>
       <br />
-      <strong>Auction Description:</strong>
+      <strong>Ads End Date/Time:</strong>
+      <span><%= auction.adsEnd %></span>
       <br />
-      <%= auction.description %>
+      <% if (auction.description) { %>
+        <br />
+        <strong>Auction Description:</strong>
+        <br />
+        <%= auction.description %>
+      <% } %>
     </div>
 
     <div class="row">
-      <hr>
-      <b>Current Region Winning Bids</b>
-      <br>
+      <% auction.regions.forEach(function(region) { %>
+        <hr />
+        <strong><%= region.name %> Winning Bids</strong>
+        <br />
 
-      <% for(var i=0; i < auction.bidPerSlot.length; i++) { %>
-        <div class="slot slot_text">
-          <div class="row">
-            <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
-            <div class="col-sm-6">
-              Bidder: 
-              <a href="<%= browsePrefix %>/users/<%= auction.bidPerSlot[i].user.userId %>">
-                <%= auction.bidPerSlot[i].user.username %>
-              </a>
-            </div>
-            <div class="col-sm-3"><%= auction.bidPerSlot[i].price %> BTC</div>
-          </div>
-        </div>
-      <% } %>
-
-      <% if (auction.secondarySlots.length > 0) { %>
-
-        <br>
-        <b>Potential Auction Winners</b>
-        <br>
-        <em>
-          These bids are the next in line to be chosen if any of the above bidders decide to cancel or cannot make payment. Bids are sorted by price.
-        </em>
-        <br>
-
-        <% for(var i=0; i < auction.secondarySlots.length; i++) { %>
+        <% for(var i=0; i < region.primarySlots.length; i++) { %>
           <div class="slot slot_text">
             <div class="row">
-              <div class="col-sm-3">Ad Slot</div>
+              <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
               <div class="col-sm-6">
                 Bidder: 
-                <a href="<%= browsePrefix %>/users/<%= auction.secondarySlots[i].user.userId %>">
-                  <%= auction.secondarySlots[i].user.username %>
+                <a href="<%= browsePrefix %>/users/<%= auction.bidPerSlot[i].user.userId %>">
+                  <%= region.primarySlots[i].user.username %>
                 </a>
               </div>
-              <div class="col-sm-3"><%= auction.secondarySlots[i].price %> BTC</div>
+              <div class="col-sm-3"><%= region.primarySlots[i].price %> BTC</div>
             </div>
           </div>
         <% } %>
 
-      <% } %>
+        <% if (region.secondarySlots.length > 0) { %>
+          <br>
+          <b>Potential Auction Winners</b>
+          <br>
+          <em>
+            These bids are the next in line to be chosen if any of the above bidders decide to cancel or cannot make payment. Bids are sorted by price.
+          </em>
+          <br>
 
-      <% if (auction.bidPerSlot.length === 0) { %>
-        <div class="slot slot_text">
-          No Current Winners
-        </div>
-      <% } %>
+          <% for(var i=0; i < region.secondarySlots.length; i++) { %>
+            <div class="slot slot_text">
+              <div class="row">
+                <div class="col-sm-3">Ad Slot</div>
+                <div class="col-sm-6">
+                  Bidder: 
+                  <a href="<%= browsePrefix %>/users/<%= auction.secondarySlots[i].user.userId %>">
+                    <%= region.secondarySlots[i].user.username %>
+                  </a>
+                </div>
+                <div class="col-sm-3"><%= region.secondarySlots[i].price %> BTC</div>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+
+        <% if (region.primarySlots.length === 0) { %>
+          <div class="slot slot_text">
+            No Current Winners
+          </div>
+        <% } %>
+      <% }) %>
     </div>
   </div>
 </div>

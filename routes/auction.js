@@ -24,16 +24,16 @@ module.exports = {
         return ad.inRotation === true;
       });
       // find latest price for this auction
-      var latestPrice;
-      // first check if there are slots open
-      if (auction.slots > auction.bidPerSlot.length) {
-        latestPrice = 0.50;
-      }
-      else {
-        // otherwise find the lowest price
-        var bidLength = auction.winningBids.length - 1;
-        latestPrice = auction.winningBids[bidLength].price + 0.05;
-      }
+      // var latestPrice;
+      // // first check if there are slots open
+      // if (auction.slots > auction.bidPerSlot.length) {
+      //   latestPrice = 0.50;
+      // }
+      // else {
+      //   // otherwise find the lowest price
+      //   var bidLength = auction.winningBids.length - 1;
+      //   latestPrice = auction.winningBids[bidLength].price + 0.05;
+      // }
       // remove first item because it's the auction
       models.bids.splice(0, 1);
 
@@ -48,6 +48,12 @@ module.exports = {
       endTime += ' (' + moment(auction.end).fromNow() + ')';
       auction.start = startTime;
       auction.end = endTime;
+      var adsStartTime = moment(auction.adsStart).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var adsEndTime = moment(auction.adsEnd).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      adsStartTime += ' (' + moment(auction.adsStart).fromNow() + ')';
+      adsEndTime += ' (' + moment(auction.adsEnd).fromNow() + ')';
+      auction.adsStart = adsStartTime;
+      auction.adsEnd = adsEndTime;
 
       // update creation time for bids
       bids.forEach(function(bid) {
@@ -62,7 +68,7 @@ module.exports = {
         auctionEnd: auctionEnd,
         bids: bids,
         browsePrefix: req.browsePrefix,
-        latestPrice: latestPrice,
+        // latestPrice: latestPrice,
         user: req.user,
         reguser: regUser,
         ads: approvedAds
