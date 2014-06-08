@@ -5,7 +5,7 @@ module.exports = function(slots, bids) {
   // the winning bids and the slots filled by the set of bids
   var retVal = {
     winningBids: [],
-    bidPerSlot: [],
+    primarySlots: [],
     secondarySlots: []
   };
   var slotsFilled = 0; // slot (filling loop) counter
@@ -33,9 +33,9 @@ module.exports = function(slots, bids) {
 
     // fill the slots with the winning bid
     var counter = 0;
-    while (retVal.bidPerSlot.length < slots &&
+    while (retVal.primarySlots.length < slots &&
            counter < highestBid.slots) {
-      retVal.bidPerSlot.push(highestBid);
+      retVal.primarySlots.push(highestBid);
       counter++;
     }
 

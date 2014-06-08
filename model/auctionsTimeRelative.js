@@ -46,10 +46,8 @@ module.exports = function(req, cb) {
         }
       },
       function(err, results) {
-        if (!err) {
-          cb(null, auctions);
-        }
-        else { db(err, []); }
+        if (!err) { cb(null, auctions); }
+        else { cb(err, []); }
       });
     } // end if
     else { cb(err, []); }

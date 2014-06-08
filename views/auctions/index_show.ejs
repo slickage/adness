@@ -1,5 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-body cardBody">
+    <!-- Auction Ttile -->
     <div class="row">
       <span class="auctionCardLabel">
         <% if(auction.open) { %>
@@ -21,13 +22,18 @@
         </a>
       </span>
     </div>
+    <!-- Auction Details --> 
     <div class="row">
       <br />
       <strong>Auction Start Date/Time:</strong>
       <span><%= auction.start %></span>
       <br />
       <strong>Auction End Date/Time:</strong>
-      <span><%= auction.end %></span><em>(within ~ 30 minutes)</em>
+      <span><%= auction.end %></span><em> (~ 30 minutes)</em>
+      <br />
+      <em>
+        To prevent sniping, the auction will end at a random time within the listed prefix.
+      </em>
       <br /><br />
       <strong>Ads Start Date/Time:</strong>
       <span><%= auction.adsStart %></span>
@@ -43,50 +49,56 @@
       <% } %>
     </div>
 
+    <!-- Auction Regions -->
     <div class="row">
       <% auction.regions.forEach(function(region) { %>
         <hr />
-        <strong><%= region.name %> Winning Bids</strong>
+        <strong><%= region.name %> Winning Bids</strong><br />
+        <em>
+          Advertising slots probability: <%= region.probability %> or <%= region.chances %>
+        </em>
+        <br>
+        <%= Number(region.slots) + 2 %> are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
         <br />
 
-        <% for(var i=0; i < region.primarySlots.length; i++) { %>
+        <% region.primarySlots.forEach(function(slot) { %>
           <div class="slot slot_text">
             <div class="row">
-              <div class="col-sm-3">Ad Slot #<%= i+1 %></div>
+              <div class="col-sm-3">Ad Slot</div>
               <div class="col-sm-6">
                 Bidder: 
-                <a href="<%= browsePrefix %>/users/<%= auction.bidPerSlot[i].user.userId %>">
-                  <%= region.primarySlots[i].user.username %>
+                <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
+                  <%= slot.user.username %>
                 </a>
               </div>
-              <div class="col-sm-3"><%= region.primarySlots[i].price %> BTC</div>
+              <div class="col-sm-3"><%= slot.price %> BTC</div>
             </div>
           </div>
-        <% } %>
+        <% }) %>
 
         <% if (region.secondarySlots.length > 0) { %>
           <br>
-          <b>Potential Auction Winners</b>
+          <em>Potential Auction Winners</em>
           <br>
           <em>
             These bids are the next in line to be chosen if any of the above bidders decide to cancel or cannot make payment. Bids are sorted by price.
           </em>
           <br>
 
-          <% for(var i=0; i < region.secondarySlots.length; i++) { %>
+          <% region.secondarySlots.forEach(function(slot) { %>
             <div class="slot slot_text">
               <div class="row">
                 <div class="col-sm-3">Ad Slot</div>
                 <div class="col-sm-6">
                   Bidder: 
-                  <a href="<%= browsePrefix %>/users/<%= auction.secondarySlots[i].user.userId %>">
-                    <%= region.secondarySlots[i].user.username %>
+                  <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
+                    <%= slot.user.username %>
                   </a>
                 </div>
-                <div class="col-sm-3"><%= region.secondarySlots[i].price %> BTC</div>
+                <div class="col-sm-3"><%= slot.price %> BTC</div>
               </div>
             </div>
-          <% } %>
+          <% }) %>
         <% } %>
 
         <% if (region.primarySlots.length === 0) { %>

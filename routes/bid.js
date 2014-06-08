@@ -17,7 +17,7 @@ module.exports = {
   updateBid: function(req, res) {
     // updating bids are a admin only function for now
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    req.params.bidId = req.body.bidId;
+    req.params.bidId = req.body.bidId; // is this really needed?
     req.model.load('bid', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect(req.browsePrefix); }
@@ -26,6 +26,7 @@ module.exports = {
         bid.user = req.user; // add current user
         if (req.body.price) bid.price = req.body.price;
         if (req.body.slots) bid.slots = req.body.slots;
+        if (req.body.region) bid.region = req.body.region;
         db.updateBid(bid, function(err, body) {
           if(err) { console.log(err); }
           res.redirect(req.browsePrefix);

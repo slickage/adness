@@ -272,7 +272,7 @@ var db = {
           var results = biddingAlg(Number(region.slots), regionBids);
           // add winning bids, primarySlots and secondarySlots to this region
           region.winningBids = results.winningBids;
-          region.primarySlots = results.bidPerSlot;
+          region.primarySlots = results.primarySlots;
           region.secondarySlots = results.secondarySlots;
         });
 
@@ -314,6 +314,14 @@ var db = {
             return cb({ message: 'Bid parameters were not valid.' }, undefined);
           }
 
+          // validate bid region against auction regions
+          var bidRegion = body.region;
+          var auctionRegions = _.pluck(auction.regions, 'name');
+          if (!_.contains(auctionRegions, bidRegion)) {
+            var errorMessage = 'Bid does not contain a valid region for auction';
+            return cb(new Error(errorMessage), undefined);
+          }
+
           var bidUser = {
             username: body.user.username,
             userId: body.user.userId,
@@ -330,6 +338,7 @@ var db = {
             type: 'bid',
             price: Number(body.price),
             slots: slots,
+            region: body.region,
             user: bidUser,
             auctionId: body.auctionId
           };
@@ -376,6 +385,15 @@ var db = {
                 return cb({ message: 'Bid parameters were not valid.'}, undefined );
               }
 
+              // validate bid region against auction regions
+              var bidRegion = bid.region;
+              var auctionRegions = _.pluck(auction.regions, 'name');
+              if (!_.contains(auctionRegions, bidRegion)) {
+                var errorMessage = 'Bid does not contain a valid region for auction';
+                return cb(new Error(errorMessage), undefined);
+              }
+
+              if (bid.region) body.region = bid.region;
               if (bid.price) body.price = Number(bid.price);
               if (bid.slots) {
                 var slots = Number(bid.slots);
