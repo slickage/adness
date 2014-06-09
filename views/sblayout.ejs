@@ -230,8 +230,17 @@
         html += regionName;
         html += '</td><td>';
         html += slots;
-        html += '</td></tr>';
+        html += '</td>';
+        html += '<td class="text-center">';
+        html += '<button class="btn btn-xs btn-danger" onclick="removeRegion(this);">';
+        html += '<span class="glyphicon glyphicon-remove"></span></button></td>';
+        html += '</tr>';
         $('#regionsTable tbody').append(html);
+      }
+
+      function removeRegion(element) {
+        var parentRow = $(element).closest('tr');
+        parentRow.remove();
       }
 
       function gatherRegions() {

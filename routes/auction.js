@@ -88,14 +88,32 @@ module.exports = {
     // editing auctions is an admin open function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
+    req.model.load('bids', req);
     req.model.end(function(err, models) {
+      var auction = models.auction;
+      var bids = models.bids;
 
       // cull regions
       var regions = _.pluck(config.regions, 'name');
       
+      // pull all the regions in bids
+      var bidRegions = [];
+      bids.forEach(function(bid) {
+        bidRegions.push(bid.region);
+        return;
+      });
+      bidRegions = _.uniq(bidRegions);
+
+      // for each region, mark if region has a bid
+      auction.regions.forEach(function(region) {
+        if (_.contains(bidRegions, region.name)) {
+          region.hasBids = true;
+        }
+      });
+
       if (err) console.log(err);
       res.render('auctionEdit', {
-        auction: models.auction,
+        auction: auction,
         regions: regions,
         browsePrefix: req.browsePrefix,
         user: req.user
@@ -152,10 +170,43 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.params.auctionId = req.body.auctionId;
     req.model.load('auction', req);
+    req.model.load('bids', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
       else {
         var auction = models.auction;
+        var bids = models.bids;
+
+        // validate bids regions (need in the api call)
+        if (req.body.regions) {
+          // get all region names from bids
+          var bidRegions = [];
+          bids.forEach(function(bid) {
+            bidRegions.push(bid.region);
+            return;
+          });
+          bidRegions = _.uniq(bidRegions);
+
+          // get existing regions with bids
+          var regionsWithBids = [];
+          auction.regions.forEach(function(region) {
+            if (_.contains(bidRegions, region.name)) {
+              regionsWithBids.push(region);
+            }
+          });
+
+          // make sure regions in regionsWithBids are in the req.body.regions
+          var reqRegionNames = _.pluck(req.body.regions, 'name');
+          regionsWithBids.forEach(function(region) {
+            if (!_.contains(reqRegionNames, region.name)) {
+              delete region.winningBids;
+              delete region.primarySlots;
+              delete region.secondarySlots;
+              req.body.regions.push(region);
+            }
+          });
+        }
+
         if (req.body.start) auction.start = req.body.start;
         if (req.body.end) auction.end = req.body.end;
         if (req.body.adsStart) auction.adsStart = req.body.adsStart;

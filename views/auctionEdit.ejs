@@ -89,7 +89,7 @@
           <div class="row">
             <div class="col-sm-5 text-left">
               Region:
-              <select name="auctionRegion" id="auctionRegion" class="form-control">
+              <select id="auctionRegion" class="form-control">
                 <% regions.forEach(function(region) { %>
                   <option value="<%= region %>">
                     <%= region %>
@@ -122,11 +122,21 @@
                 </thead>
                 <tbody class="text-left">
                   <% auction.regions.forEach(function(region) { %>
-                    <tr><td><%= region.name %></td><td><%= region.slots %></td></tr>
+                    <tr>
+                      <td><%= region.name %></td>
+                      <td><%= region.slots %></td>
+                      <td class="text-center">
+                        <% if (!region.hasBids) { %>
+                          <button class="btn btn-xs btn-danger" onclick="removeRegion(this);">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
+                        <% } %>
+                    </tr>
                   <% }) %>
                 </tbody>
               </table>
             </div>
+            <em>Regions can only be removed if they don't have bids</em>
           </div>
 
           <div class="row">
