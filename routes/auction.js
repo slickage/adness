@@ -41,22 +41,6 @@ module.exports = {
       });
       approvedRegions = _.uniq(approvedRegions);
 
-      // find global regions
-      var globalRegion = [];
-      config.regions.forEach(function(region) {
-        if (!region.countries) {
-          globalRegion.push(region.name);
-        }
-      });
-
-      // see if global regions are found
-      var hasGlobalAd = false;
-      globalRegion.forEach(function(global) {
-        if (_.contains(approvedRegions, global)) {
-          hasGlobalAd = true;
-        }
-      });
-
       // find lowest price for each auction region
       auction.regions.forEach(function(region) {
         // find latest price for this region
@@ -106,7 +90,6 @@ module.exports = {
         user: req.user,
         registered: registered,
         regStatus: regStatus,
-        hasGlobalAd: hasGlobalAd,
         approvedRegions: approvedRegions
       });
     });

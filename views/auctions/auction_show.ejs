@@ -62,7 +62,7 @@
         <br /><br />
 
         <% if (user && auction.open) { %>
-          <% if (registered && (approvedRegions.indexOf(region.name) > -1 || hasGlobalAd)) { %>
+          <% if (registered && (approvedRegions.indexOf(region.name) > -1)) { %>
             <div class="row bidding">
               <form role="form" method="post" action="/sb/bids">
                 <input type="hidden" name="auctionId" value="<%= auction._id %>">
@@ -84,16 +84,16 @@
               </form>
             </div>
           <% } %>
-            <% if (!(approvedRegions.indexOf(region.name) > -1 || hasGlobalAd)) { %>
-              <div class="alert alert-danger text-center">
-                <strong>You do not have an approved ad for this region.</strong>
-              </div>
-            <% } %>
-            <% if (!registered) { %>
-              <div class="alert alert-danger text-center">
-                <strong>You are not registered with the Auction.</strong>
-              </div>
-            <% } %>
+          <% if (!(approvedRegions.indexOf(region.name) > -1)) { %>
+            <div class="alert alert-danger text-center">
+              <strong>You do not have an approved ad for this region.</strong>
+            </div>
+          <% } %>
+          <% if (!registered) { %>
+            <div class="alert alert-danger text-center">
+              <strong>You are not registered with the Auction.</strong>
+            </div>
+          <% } %>
         <% } %>
 
         <% region.primarySlots.forEach(function(slot) { %>
