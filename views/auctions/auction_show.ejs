@@ -59,29 +59,41 @@
         </em>
         <br>
         <%= Number(region.slots) + 2 %> are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-        <br />
+        <br /><br />
 
-        <% if (auction.open && registered && hasAds) { %>
-          <div class="row bidding">
-            <form role="form" method="post" action="/sb/bids">
-              <input type="hidden" name="auctionId" value="<%= auction._id %>">
-              <input type="hidden" name="region" value="<%= region.name %>">
+        <% if (user && auction.open) { %>
+          <% if (registered && (approvedRegions.indexOf(region.name) > -1 || hasGlobalAd)) { %>
+            <div class="row bidding">
+              <form role="form" method="post" action="/sb/bids">
+                <input type="hidden" name="auctionId" value="<%= auction._id %>">
+                <input type="hidden" name="region" value="<%= region.name %>">
 
-              <div class="col-sm-4 slot_text">
-                Advertising Slot(s):<br>
-                <input type="number" name="slots" class="form-control" value="1" min="1" max="<%= region.slots %>">
+                <div class="col-sm-4 slot_text">
+                  Advertising Slot(s):<br>
+                  <input type="number" name="slots" class="form-control" value="1" min="1" max="<%= region.slots %>">
+                </div>
+
+                <div class="col-sm-4 slot_text">
+                  Bid Per Slot:<br>
+                  <input type="number" name="price" class="form-control" step="0.05" min="0.5" value="<%= region.latestPrice %>">
+                </div>
+
+                <div class="col-sm-4 slot_text bid_button">
+                  <button type="submit" class="btn btn-primary btn-block">Bid</button>
+                </div>
+              </form>
+            </div>
+          <% } %>
+            <% if (!(approvedRegions.indexOf(region.name) > -1 || hasGlobalAd)) { %>
+              <div class="alert alert-danger text-center">
+                <strong>You do not have an approved ad for this region.</strong>
               </div>
-
-              <div class="col-sm-4 slot_text">
-                Bid Per Slot:<br>
-                <input type="number" name="price" class="form-control" step="0.05" min="0.5" value="<%= region.latestPrice %>">
+            <% } %>
+            <% if (!registered) { %>
+              <div class="alert alert-danger text-center">
+                <strong>You are not registered with the Auction.</strong>
               </div>
-
-              <div class="col-sm-4 slot_text bid_button">
-                <button type="submit" class="btn btn-primary btn-block">Bid</button>
-              </div>
-            </form>
-          </div>
+            <% } %>
         <% } %>
 
         <% region.primarySlots.forEach(function(slot) { %>

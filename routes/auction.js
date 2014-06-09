@@ -22,16 +22,41 @@ module.exports = {
       var auction = models.auction;
       var bids = models.bids;
       var minutes = config.antiSnipeMinutes;
-      var rotationAds = _.filter(models.userAds, function(ad) {
-        return ad.inRotation === true;
-      });
-      var hasAds = rotationAds.length > 0;
       var registered = models.registeredUser && models.registeredUser.registered;
       var regStatus;
       if (models.registeredUser && models.registeredUser.registrationStatus) {
         regStatus = models.registeredUser.registrationStatus;
       }
-      
+
+      // find all approved ads for this user
+      var userAds = models.userAds;
+      var approvedAds = _.filter(userAds, function(ad) {
+        return ad.approved === true;
+      });
+
+      // get all regions for all approved ads
+      var approvedRegions = [];
+      approvedAds.forEach(function(ad) {
+        approvedRegions = approvedRegions.concat(ad.regions);
+      });
+      approvedRegions = _.uniq(approvedRegions);
+
+      // find global regions
+      var globalRegion = [];
+      config.regions.forEach(function(region) {
+        if (!region.countries) {
+          globalRegion.push(region.name);
+        }
+      });
+
+      // see if global regions are found
+      var hasGlobalAd = false;
+      globalRegion.forEach(function(global) {
+        if (_.contains(approvedRegions, global)) {
+          hasGlobalAd = true;
+        }
+      });
+
       // find lowest price for each auction region
       auction.regions.forEach(function(region) {
         // find latest price for this region
@@ -81,8 +106,8 @@ module.exports = {
         user: req.user,
         registered: registered,
         regStatus: regStatus,
-        hasAds: hasAds,
-        ads: rotationAds
+        hasGlobalAd: hasGlobalAd,
+        approvedRegions: approvedRegions
       });
     });
   },

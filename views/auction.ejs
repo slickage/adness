@@ -3,16 +3,11 @@
 <div class="content-page col-sm-offset-1 col-sm-10">
 
   <% if (user && auction.open) { %>
-    <div class="text-center" <%if (!registered || !hasAds || regStatus) { %> style="padding-bottom: 15px;" <% } %>>
+    <div class="text-center" <%if (!registered || regStatus) { %> style="padding-bottom: 15px;" <% } %>>
       <% if (regStatus) { %>
         Current Registration Status: 
         <span class="label label-warning">
           <%= regStatus %>
-        </span>
-      <% } else if (registered && !hasAds) { %>
-        Current Registration Status: 
-        <span class="label label-success">
-          Registered
         </span>
       <% } else if (!registered) { %>
         <form action="/registration" method="POST">
@@ -21,12 +16,10 @@
           </button>
         </form>
       <% } %>
-      <% if (!hasAds) { %>
-        <br>
-        <strong>
-          For each region in an auction, at least one in-rotation ad for that region is also necessary to bid.
-        </strong>
-      <% }%>
+      <br>
+      <strong>
+        Reminder: For each region in an auction, at least one approved ad for that region is also necessary to bid.
+      </strong>
     </div>
   <% } %>
 
