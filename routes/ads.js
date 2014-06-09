@@ -2,16 +2,20 @@ var db = require(__dirname + '/../db');
 var _ = require('lodash');
 var async = require('async');
 var geoip = require('geoip-lite');
+var config = require('../config');
 
 exports = module.exports = {
   newAd: function(req, res) {
     req.body.user = req.user;
 
-    if (req.body.blacklistedCN === undefined &&
-       (req.body.blacklistUS || req.body.blacklistCN)) {
-      req.body.blacklistedCN = [];
-      if (req.body.blacklistUS) { req.body.blacklistedCN.push("US"); }
-      if (req.body.blacklistCN) { req.body.blacklistedCN.push("CN"); }
+    // cull regions
+    if (!req.body.regions) {
+      var regions = [];
+      var configRegions = _.pluck(config.regions, 'name');
+      configRegions.forEach(function(region) {
+        if (req.body[region]) { regions.push(region); }
+      });
+      req.body.regions = regions;
     }
 
     db.newAd(req.body, function(err, body, header) {
@@ -40,15 +44,18 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
 
-        if (req.body.blacklistedCN === undefined &&
-            (req.body.blacklistUS || req.body.blacklistCN)) {
-          req.body.blacklistedCN = [];
-          if (req.body.blacklistUS) { req.body.blacklistedCN.push("US"); }
-          if (req.body.blacklistCN) { req.body.blacklistedCN.push("CN"); }
+        // cull regions
+        if (!req.body.regions) {
+          var regions = [];
+          var configRegions = _.pluck(config.regions, 'name');
+          configRegions.forEach(function(region) {
+            if (req.body[region]) { regions.push(region); }
+          });
+          req.body.regions = regions;
         }
 
         if (req.body.html) ad.html = req.body.html;
-        if (req.body.blacklistedCN) ad.blacklistedCN = req.body.blacklistedCN;
+        if (req.body.regions) ad.regions = req.body.regions;
         if (req.body.approved) ad.approved = req.body.approved;
         if (req.body.submitted) ad.submitted = req.body.submitted;
         if (req.body.submitted && req.body.submitted.toLowerCase() === 'true')

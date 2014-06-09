@@ -433,8 +433,17 @@ var db = {
     // validate html
     var html = validate.html(body.html);
 
-    // validate blacklisted countries
-    var blacklist = validate.blacklistedCN(body.blacklistedCN);
+    // cull regions
+    var regions = _.pluck(config.regions, 'name');
+
+    // validate bid region against auction regions
+    var adRegions = body.regions;
+    adRegions.forEach(function(region) {
+      if (!_.contains(regions, region)) {
+        var errorMessage = 'Ad does not contain a valid region for auction';
+        return cb(new Error(errorMessage), undefined);
+      }
+    });
 
     // validate submitted
     var submitted = false;
@@ -449,7 +458,7 @@ var db = {
       html: html,
       username: body.user.username,
       userId: body.user.userId,
-      blacklistedCN: blacklist,
+      regions: adRegions,
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
       type: 'ad',
@@ -501,13 +510,15 @@ var db = {
       if (!err) {
         // make sure we're getting an ad
         if (body.type !== 'ad') {
-          return cb({ message: 'Id is not for an ad.'}, undefined );
+          var typeErrorMessage = 'Id is not for an ad.';
+          return cb(new Error(typeErrorMessage), undefined );
         }
 
         // validate admin or user
         if (ad.user.admin !== true) {
           if (body.userId !== ad.user.userId) {
-            return cb({ message: "Editing another user's ad is not allowed."}, undefined);
+            var userErrorMessage = "Editing another user's ad is not allowed.";
+            return cb(new Error(userErrorMessage), undefined);
           }
         }
 
@@ -516,10 +527,20 @@ var db = {
           if (ad.html) body.html = validate.html(ad.html);
         }
 
-        // update blacklisted Countries
-        if (ad.blacklistedCN) {
-          // validate blacklisted countries
-          body.blacklistedCN = validate.blacklistedCN(ad.blacklistedCN);
+        if (ad.regions) {
+          // cull regions
+          var regions = _.pluck(config.regions, 'name');
+
+          // validate bid region against auction regions
+          var adRegions = ad.regions;
+          adRegions.forEach(function(region) {
+            if (!_.contains(regions, region)) {
+              var errorMessage = 'Ad does not contain a valid region for auction';
+              return cb(new Error(errorMessage), undefined);
+            }
+          });
+
+          body.regions = adRegions;
         }
 
         // update modified_at

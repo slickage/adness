@@ -83,19 +83,6 @@ module.exports = {
     function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
     return sanitize(html, urlX);
   },
-  // TO BE DEPRECATED
-  blacklistedCN: function(blacklist) {
-    // check that the list is an array
-    if (!_.isArray(blacklist)) { return ['US', 'CN']; }
-
-    // check that each item in the list is a string
-    var newList = [];
-    blacklist.forEach(function(item) {
-      if (_.isString(item)) { newList.push(item); }
-    });
-
-    return newList;
-  },
   regions: function(regions) {
     // get all regions by name
     var configRegions = config.regions;

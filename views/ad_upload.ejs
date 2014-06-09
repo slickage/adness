@@ -57,18 +57,14 @@
 
               <br>
               
-              Some ads may not be legal in certain countries. Please choose the countries you do not want your ad to display in. 
-              <div class="checkbox">
-                <label>
-                  <input id="blacklistUS" name="blacklistUS" type="checkbox" <% if (ad && ad.blacklistedCN.indexOf("US") > -1) { %>checked<% } %> >Do Not Show in US
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input id="blacklistCN" name="blacklistCN" type="checkbox" <% if (ad && ad.blacklistedCN.indexOf("CN") > -1) { %>checked<% } %> >Do Not Show in China
-                </label>
-              </div>
-
+              Please choose the regions you want your ad to display in. 
+              <% regions.forEach(function(region) { %>
+                <div class="checkbox">
+                  <label>
+                    <input id="<%= region %>" name="<%= region %>" type="checkbox" <% if (ad.regions && ad.regions.indexOf(region) > -1) { %>checked<% } %> class="region"><%= region %>
+                  </label>
+                </div>
+              <% }) %>
               <noscript>
                 <input type="hidden" name="submitted" id="submitted" value="true">
                 <br>
@@ -87,8 +83,6 @@
         </div>
         <hr>
       </noscript>
-
-      
 
       <div id="preview-container" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6 well">
@@ -159,18 +153,15 @@
         var html = $("#preview").html();
 
         // get blacklist values
-        var blacklist = [];
-        if ($("#blacklistUS").prop("checked")) {
-          blacklist.push("US");
-        }
-        if ($("#blacklistCN").prop("checked")) {
-          blacklist.push("CN");
-        }
+        var regions = [];
+        $('.region').each(function(index, value) {
+          if ($(value).prop('checked')) { regions.push(value.id); }
+        });
 
         var data = {
           submitted: submit,
           html: html,
-          blacklistedCN: blacklist
+          regions: regions
         }
 
         var url = "<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>";
