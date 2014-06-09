@@ -29,10 +29,10 @@
       <span><%= auction.startFormatted %></span>
       <br />
       <strong>Auction End Date/Time:</strong>
-      <span><%= auction.endFormatted %></span><em> (~ 30 minutes)</em>
+      <span><%= auction.endFormatted %></span><em> (~ <%= minutes %> minutes)</em>
       <br />
       <em>
-        To prevent sniping, the auction will end at a random time within the listed prefix.
+        To prevent sniping, the auction will end at a random time within the listed time range.
       </em>
       <br /><br />
       <strong>Ads Start Date/Time:</strong>

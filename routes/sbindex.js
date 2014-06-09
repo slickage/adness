@@ -1,11 +1,14 @@
 var _ = require('lodash');
 var moment = require('moment');
 var probability = require('../auction_probability');
+var config = require('../config');
 
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
   req.model.end(function(err, models) {
     if (err) console.log(err);
+
+    var minutes = config.antiSnipeMinutes;
 
     // sort open auctions by start time
     var open = models.auctionsTimeRelative.open;
@@ -35,6 +38,7 @@ module.exports = function(req, res) {
 
     res.render('sbindex', {
       auctionsOpen: sortedOpen,
+      minutes: minutes,
       browsePrefix: req.browsePrefix,
       user: req.user
     });

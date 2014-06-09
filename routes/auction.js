@@ -21,6 +21,7 @@ module.exports = {
       // template variables
       var auction = models.auction;
       var bids = models.bids;
+      var minutes = config.antiSnipeMinutes;
       var rotationAds = _.filter(models.userAds, function(ad) {
         return ad.inRotation === true;
       });
@@ -75,6 +76,7 @@ module.exports = {
       res.render('auction', {
         auction: auction,
         bids: bids,
+        minutes: minutes,
         browsePrefix: req.browsePrefix,
         user: req.user,
         registered: registered,
