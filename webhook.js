@@ -144,7 +144,7 @@ module.exports = {
 function validateCall(receipt, cb) {
   // call baron to check invoice status
   request.get(
-    { uri: config.baron.internalUrl + '/status/' + receipt.invoice.id },
+    { uri: config.baron.internalUrl + '/api/invoices/' + receipt.invoice.id },
     function(err, response, body) {
       if (err) { return cb(err, undefined); }
       
@@ -153,8 +153,8 @@ function validateCall(receipt, cb) {
         // parse body into json (status object)
         var parsedBody = JSON.parse(body);
         // get the invoice status
-        status = parsedBody.status;
-        if (status && status === "paid") {
+        is_paid = parsedBody.is_paid;
+        if (is_paid && is_paid === true) {
           return cb(null, receipt);
         }
         else {
