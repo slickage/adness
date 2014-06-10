@@ -25,17 +25,28 @@ module.exports = {
       }
     });
 
-    // get the winning bids and bids per slot from the db
-    db.appendBidsToAuction(auction, function(err, auctionBids) {
-      // calculate the winners and how much each owes
-      var winners = generateWinners(auctionBids.bidPerSlot);
-      for(var winner in winners) {
-        // notify winners with a link to payment
-        notifyWinner(winners[winner], auction._id);
-      }
+    // get auction with all the winning bids for each region
+    db.appendBidsToAuction(auction, function(err, auctionWithBids) {
+      // find all winners across all regions
+      var winningSlots = [];
+      auctionWithBids.regions.forEach(function(region) {
+        // get all the primarySlots from every region
+        winningSlots = winningSlots.concat(region.primarySlots);
+        // keep a list of winners per region
+        region.winners = generateWinners(region.primarySlots);
+      });
+
+      // calculate the winners across all regions and how much each owes
+      var winners = generateWinners(winningSlots);
+      winners = _.values(winners);
+
+      // notify all winners with a link to payment
+      winners.forEach(function(winner) {
+        notifyWinner(winner, auction._id);
+      });
 
       // cull all the approved auctions from the winners
-      updateAds(winners, auction);
+      upsertAdsInRotation(auctionWithBids);
     });
   },
   notifySingleWinner: function (winner, auctionId) {
@@ -50,13 +61,14 @@ module.exports = {
   updateWinners: null // will need to call updateAds
 };
 
-function generateWinners(bidPerSlot) {
+function generateWinners(primarySlots) {
   var users = {};
 
-  bidPerSlot.forEach(function(bid) {
+  primarySlots.forEach(function(bid) {
     if (users[bid.user.userId]) {
       // add a payment instance
-      users[bid.user.userId].lineItems.push(Number(bid.price));
+      var lineItem = { price: Number(bid.price), region: bid.region };
+      users[bid.user.userId].lineItems.push(lineItem);
       // tally up total payment
       var payment = Number(users[bid.user.userId].payment) + Number(bid.price);
       payment = Number(payment).toFixed(2);
@@ -65,7 +77,8 @@ function generateWinners(bidPerSlot) {
     else {
       bid.user.payment = Number(bid.price);
       bid.user.lineItems = [];
-      bid.user.lineItems.push(bid.user.payment);
+      var firstLineItem = { price: bid.user.payment, region: bid.region };
+      bid.user.lineItems.push(firstLineItem);
       users[bid.user.userId] = bid.user;
     }
   });
@@ -152,21 +165,16 @@ function handleInvoice(err, results) {
   });
 }
 
-function updateAds(winnersObject, auction) {
-  var winners = _.values(winnersObject);
-  updateAdsInRotation(auction, winners);
-}
+function upsertAdsInRotation(auction) {
+  air = {};
+  air.auctionId = auction._id;
+  air.adsStart = auction.adsStart;
+  air.adsEnd = auction.adsEnd;
+  air.regions = auction.regions;
 
-function updateAdsInRotation(auction, winners) {
-  db.getAdsInRotation(function(err, air) {
-    if (err) { air = {}; }
-    air.auctionId = auction._id;
-    air.winners = winners;
-    
-    // insert the ads
-    db.insertAdsInRotation(air, function(err, body) {
-      if (err) { console.log(err); }
-    });
+  // insert the ads
+  db.upsertAdsInRotation(air, function(err, body) {
+    if (err) { console.log(err); }
   });
 }
 

@@ -61,7 +61,7 @@
               <% regions.forEach(function(region) { %>
                 <div class="checkbox">
                   <label>
-                    <input id="<%= region %>" name="<%= region %>" type="checkbox" <% if (ad.regions && ad.regions.indexOf(region) > -1) { %>checked<% } %> class="region"><%= region %>
+                    <input id="<%= region %>" name="<%= region %>" type="checkbox" <% if (ad && ad.regions && ad.regions.indexOf(region) > -1) { %>checked<% } %> class="region"><%= region %>
                   </label>
                 </div>
               <% }) %>

@@ -32,8 +32,8 @@ var db = {
       start: Number(body.start),
       end: end,
       trueEnd: trueEnd,
-      adsStart: body.adsStart,
-      adsEnd: body.adsEnd,
+      adsStart: Number(body.adsStart),
+      adsEnd: Number(body.adsEnd),
       description: description,
       regions: regions,
       type: 'auction',
@@ -678,8 +678,8 @@ var db = {
       return cb(null, user);
     });
   },
-  getAdsInRotation: function(cb) {
-    couch.view(config.couchdb.name, 'adsInRotation', function(err, ads) {
+  getLatestAdsInRotation: function(cb) {
+    couch.view(config.couchdb.name, 'latestAdsInRotation', function(err, ads) {
       if (err) { return cb(err, undefined); }
 
       // limit 1
@@ -695,18 +695,39 @@ var db = {
       return cb(err, ad);
     });
   },
-  insertAdsInRotation: function(air, cb) {
-    var adsInRotation = {
-      auctionId: air.auctionId,
-      winners: air.winners,
-      modified_at: new Date().getTime(),
-      type: "adsInRotation"
-    };
-    if (air._id) adsInRotation._id = air._id;
-    if (air._rev) adsInRotation._rev = air._rev;
-    if (!air.created_at) adsInRotation.created_at = new Date().getTime();
+  getAdsInRotation: function(airId, cb) {
+    couch.get(airId, null, function(err, body) {
+      if (err) { body = undefined; }
+      else {
+        if (body.type !== 'adsInRotation') {
+          err = new Error('Id is not for a AdsInRotation');
+          body = undefined;
+        }
+      }
+      return cb(err, body);
+    });
+  },
+  upsertAdsInRotation: function(air, cb) {
+    var airId = air.auctionId + "-air";
+    couch.get(airId, null, function(err, body) {
+      var airInsert = {};
+      // air doesn't exist already
+      if (err) {
+        airInsert = air;
+        airInsert._id = airId;
+        airInsert.modified_at = new Date().getTime();
+        airInsert.type = "adsInRotation";
+      }
+      else {
+        airInsert = body;
+        if (air.adsStart) airInsert.adsStart = air.adsStart;
+        if (air.adsEnd) airInsert.adsEnd = air.adsEnd;
+        if (air.regions) airInsert.regions = air.regions;
+        airInsert.modified_at = new Date().getTime();
+      }
 
-    couch.insert(adsInRotation, cb);
+      couch.insert(airInsert, cb);
+    });
   },
   newQueuedInvoice: function(queuedInvoice, cb) {
     var newInvoice = {

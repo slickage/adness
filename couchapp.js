@@ -56,7 +56,7 @@ ddoc.views.userAds = {
   }
 };
 
-ddoc.views.adsInRotation = {
+ddoc.views.latestAdsInRotation = {
   map: function(doc) {
     if(doc.type == 'adsInRotation') {
       emit(doc._id, doc);

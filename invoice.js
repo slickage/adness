@@ -10,9 +10,9 @@ function createAuctionInvoice(auctionId, user, webhook) {
   invoice.line_items = [];
   for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
-    lineItem.description = "Auction " + auctionId + " Ad Slot";
+    lineItem.description = "Auction " + auctionId + " Ad Slot for " + user.lineItems[i].region;
     lineItem.quantity = 1;
-    lineItem.amount = Number(user.lineItems[i]);
+    lineItem.amount = Number(user.lineItems[i].price);
     invoice.line_items.push(lineItem);
   }
   invoice.access_token = config.baron.key;

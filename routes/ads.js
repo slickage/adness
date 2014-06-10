@@ -126,6 +126,7 @@ exports = module.exports = {
         ad.approved = false;
         ad.rejected = true;
         ad.submitted = false;
+        ad.inRotation = false;
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/users/' + req.user.userId);
@@ -211,7 +212,7 @@ exports = module.exports = {
 
 function getWinnerAds(country, callback) {
   // get adsInRotation object
-  db.getAdsInRotation(function(err, air) {
+  db.getLatestAdsInRotation(function(err, air) {
     var error;
     if (err) {
       error = new Error("There are no ads to display.");

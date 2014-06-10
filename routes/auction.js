@@ -65,11 +65,14 @@ module.exports = {
       var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       endTime += ' (' + moment(auction.end).fromNow() + ')';
       auction.endFormatted = endTime;
-      var adsStartTime = moment(auction.adsStart).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      adsStartTime += ' (' + moment(auction.adsStart).fromNow() + ')';
+      
+      var adsStartTime = moment(auction.adsStart).utc();
+      adsStartTime = adsStartTime.format('YYYY MMMM D, h:mm:ss A ZZ');
+      adsStartTime += ' (' + moment(auction.adsStart).utc().fromNow() + ')';
       auction.adsStart = adsStartTime;
-      var adsEndTime = moment(auction.adsEnd).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      adsEndTime += ' (' + moment(auction.adsEnd).fromNow() + ')';
+      var adsEndTime = moment(auction.adsEnd).utc();
+      adsEndTime = adsEndTime.format('YYYY MMMM D, h:mm:ss A ZZ');
+      adsEndTime += ' (' + moment(auction.adsEnd).utc().fromNow() + ')';
       auction.adsEnd = adsEndTime;
 
       // remove first item because it's the auction
