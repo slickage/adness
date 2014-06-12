@@ -177,105 +177,127 @@ exports = module.exports = {
     });
   },
   random: function(req, res) {
-    // ip
+    // ip -> country code (country)
     var ip = req.query.ip;
     var geo = geoip.lookup(ip);
     var country = "";
     if (geo) { country = geo.country; }
 
-    // number Of Ads to return
+    // number Of Ads to return (limit)
     var limit = req.query.limit;
     if (!limit || limit == '0' ) { limit = 1; }
 
-    // get the AdsInRotation object that has the winners of the last auction
-    // this function will get all approved/in rotation ads for all winners
-    // already country filtered and cleaned up.
-    getWinnerAds(country, function(err, ads) {
-      if (err) {
-        console.log(err);
-        return res.json([]);
-      }
-
-      // check if there are any ads remaining
-      if (ads.length === 0) {
-        return res.json([]);
-      }
-
-      // limit the amount of ads returned
-      fillAds(limit, ads, function(err, finalAds) {
-        if (err) { return res.json(err); }
-        return res.json(finalAds);
-      });
+    // get ads based on region and limit
+    // should always return an array even if it is empty or error
+    getRandomAds(country, limit, function(err, ads) {
+      if (err) { console.log(err); }
+      return res.json(ads);
     });
   }
 };
 
-function getWinnerAds(country, callback) {
+function getRandomAds(country, limit, callback) {
   // get adsInRotation object
   db.getLatestAdsInRotation(function(err, air) {
     var error;
     if (err) {
       error = new Error("There are no ads to display.");
-      return callback(error, undefined);
+      return callback(error, []);
     }
 
-    if (!air.winners || air.winners.length === 0) {
-      error = new Error("There are no ads to display.");
-      return callback(error, undefined);
-    }
+    // get all regions that match this country code
+    var matchingRegions = findMatchingRegions(country, air.regions);
 
-    // get all winners from last auction
-    var winners = air.winners;
+    // for each matching region, 
+    // get all the ads from the winners
+    async.concat(matchingRegions, getRegionalAds,
+      function(err, results) {
+        if (err) { console.log(err); results = []; }
 
-    // cull all filtered ads for each winner
-    async.concat(winners,
-      // winners Iterator
-      function(winner, callback) {
-        // number of ad slots for this winner
-        var slotLimit = winner.lineItems.length;
+        // random select ads until limit is reached and callback
+        results = fillAds(results, limit);
 
-        // get all winner's ads from the db
-        db.getUserAds(winner.userId, function(err, ads) {
-          if (err) {
-            console.log(err);
-            return callback(null, []);
-          }
-          // filter winner's ads 
-          filterAds(ads, country, slotLimit, callback);
-        });
-      },
-      // final callback
-      function(err, ads) {
-      if (err) { return callback(err, undefined); }
-      return callback(null, ads);
-    });
+        // clean each ad
+        results.forEach(function(ad) { cleanAd(ad); });
+        return callback(null, results);
+      }
+    );
   });
 }
 
-function filterAds(ads, country, slotLimit, cb) {
-  async.filter(ads, function(ad, callback) {
-    // country filter
-    if (_.contains(ad.blacklistedCN, country)) {
-      return callback(false);
+function findMatchingRegions(country, regions) {
+  var matchingRegions = [];
+  regions.forEach(function(region) {
+    // get the same region from config
+    var configRegion = _.find(config.regions, { name: region.name });
+    var countriesList = configRegion.countries;
+    var exclusive = configRegion.exclusive;
+
+    // add any global regions
+    if (!countriesList) { matchingRegions.push(region); }
+
+    // if there's a countries list and an exclusive boolean
+    if (countriesList && exclusive) {
+      if (!_.contains(countriesList, country)) {
+        matchingRegions.push(region);
+      }
+    }
+    else if (countriesList) {
+      if (_.contains(countriesList, country)) {
+        matchingRegions.push(region);
+      }
+    }
+  });
+  return matchingRegions;
+}
+
+// returns all the ads for a region
+function getRegionalAds(region, cb) {
+  var winners = region.winners;
+  async.concat(winners,
+    function(winner, callback) {
+      getWinnersAds(winner, region.name, callback);
+    },
+    function(err, winnerAds) {
+      if (err) { console.log(err); winnerAds = []; }
+      return cb(null, winnerAds);
+    }
+  );
+}
+
+// returns random ads for the given region from the winner's 
+// in rotation set of ads. Will fill to winner's lineitem total
+function getWinnersAds(winner, regionName, callback) {
+  // number of ad slots for this winner
+  var slotLimit = winner.lineItems.length;
+
+  // get all winner's ads from the db
+  db.getUserAds(winner.userId, function(err, ads) {
+    if (err) {
+      console.log(err);
+      return callback(null, []);
     }
 
-    // check if ad is approved
-    if (ad.approved === true && ad.inRotation === true) {
-      return callback(true);
-    }
-    else { callback(false); }
-  },
-  function(results) {
-    // check if there are any ads left
-    if (results.length === 0) {
-      return cb(null, []);
-    }
+    // filter user's ad to be approved, in rotation, and contain this region
+    var filteredAds = _.filter(ads, function(ad) {
+      var valid = false;
 
-    // limit to slot size
-    fillAds(slotLimit, results, function(err, finalAds) {
-      if (err) { return cb(null, []); }
-      return cb(null, finalAds);
+      if (ad.approved === true && ad.inRotation === true) {
+        valid = true;
+      }
+
+      if (valid && _.contains(ad.regions, regionName)) {
+        valid = true;
+      }
+      else { valid = false; }
+
+      return valid;
     });
+
+    // fill the results array with a random selection of winner's ads 
+    // untill slotLimit is reached
+    var results = fillAds(filteredAds, slotLimit);
+    return callback(null, results);
   });
 }
 
@@ -291,11 +313,14 @@ function cleanAd(ad) {
   return ad;
 }
 
-function fillAds(size, ads, callback) {
-   var results = _.sample(ads, size);
-   var fillSize = results.length;
+function fillAds(ads, size) {
+  // error checking ads
+  if (!ads || ads.length === 0) { return []; }
 
-   while (fillSize < size) {
+  var results = _.sample(ads, size); // will only sample to list length
+  var fillSize = results.length;
+
+  while (fillSize < size) {
     // find difference 
     var diffSize = size - fillSize;
 
@@ -303,13 +328,11 @@ function fillAds(size, ads, callback) {
     var moreAds = _.sample(ads, diffSize);
 
     // add to results
-    moreAds.forEach(function(item) {
-      results.push(item);
-    });
+    results = results.concat(moreAds);
 
     // set new fillSize
     fillSize = results.length;
-   }
+  }
 
-   callback(null, results);
+  return results;
 }

@@ -46,17 +46,17 @@ module.exports = {
     {
       name: 'US',
       countries: ['US'],
-      inclusive: true
+      exclusive: false
     },
     {
       name: 'CN',
       countries: ['CN'],
-      inclusive: true
+      exclusive: false
     },
     {
       name: 'RU',
       countries: ['RU'],
-      inclusive: true
+      exclusive: false
     },
     {
       name: 'Global'

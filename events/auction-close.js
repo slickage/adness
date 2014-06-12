@@ -31,9 +31,10 @@ module.exports = {
       var winningSlots = [];
       auctionWithBids.regions.forEach(function(region) {
         // get all the primarySlots from every region
-        winningSlots = winningSlots.concat(region.primarySlots);
+        var slots = _.clone(region.primarySlots, true);
+        winningSlots = winningSlots.concat(slots);
         // keep a list of winners per region
-        region.winners = generateWinners(region.primarySlots);
+        region.winners = _.values(generateWinners(region.primarySlots));
       });
 
       // calculate the winners across all regions and how much each owes
@@ -166,11 +167,20 @@ function handleInvoice(err, results) {
 }
 
 function upsertAdsInRotation(auction) {
+  // clean up auction regions
+  var regions = auction.regions;
+  regions.forEach(function(region) {
+    delete region.winningBids;
+    delete region.primarySlots;
+    delete region.secondarySlots;
+    delete region.slots;
+  });
+
   air = {};
   air.auctionId = auction._id;
   air.adsStart = auction.adsStart;
   air.adsEnd = auction.adsEnd;
-  air.regions = auction.regions;
+  air.regions = regions;
 
   // insert the ads
   db.upsertAdsInRotation(air, function(err, body) {

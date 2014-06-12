@@ -679,20 +679,35 @@ var db = {
     });
   },
   getLatestAdsInRotation: function(cb) {
-    couch.view(config.couchdb.name, 'latestAdsInRotation', function(err, ads) {
-      if (err) { return cb(err, undefined); }
+    var now = new Date().getTime();
+    var params = {startkey: [null], endkey: [now]};
+    couch.view(config.couchdb.name, 'latestAdsInRotation', params, function(err, ads) {
+      var air = {}; // return object
 
-      // limit 1
-      var ad;
-      if (ads.rows.length > 0) {
-        ad = ads.rows[0].value;
-      }
+      // error case
+      if (err) { air = undefined; }
       else {
-        err = { message: "No Ads In Rotation found." };
-        ad = undefined;
+        // limit 1 (latest end time)
+        if (ads.rows.length > 0) {
+          // pull our each value
+          var airs = [];
+          ads.rows.forEach(function(item) {
+            airs.push(item.value);
+          });
+
+          // sort by end time
+          airs = _.sortBy(airs, 'adsEnd');
+          airs.reverse();
+
+          air = airs[0];
+        }
+        else {
+          err = new Error("No Ads In Rotation found.");
+          air = undefined;
+        }
       }
 
-      return cb(err, ad);
+     return cb(err, air);
     });
   },
   getAdsInRotation: function(airId, cb) {
