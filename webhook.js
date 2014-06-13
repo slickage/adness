@@ -16,6 +16,7 @@ module.exports = {
     var receiptId = req.body.token;
     var cachedReceipt;
     var regUser;
+    var alreadyPaid;
 
     async.waterfall([
       // get Receipt from the DB
@@ -33,14 +34,19 @@ module.exports = {
       },
       // update the RegisteredUser
       function(user, cb) {
+        if (user.registered === true) { alreadyPaid = true; }
         regUser = user;
-        updateRegUser(user, cb);
+        updateRegUser(user, alreadyPaid, cb);
       }],
       // heckler admin with payment and invoice info
       function(err, results) {
         if (err) {
           console.log(err);
           return res.send(500, err.message);
+        }
+
+        if (alreadyPaid) {
+          return res.json({ ok: true });
         }
 
         // build registration email for admin template
@@ -187,7 +193,12 @@ function getRegUser(receipt, cb) {
   });
 }
 
-function updateRegUser(user, cb) {
+function updateRegUser(user, alreadyPaid, cb) {
+  // bypass db call if already registered
+  if (alreadyPaid) {
+    return cb(null, undefined);
+  }
+
   user.registered = true;
   delete user.registrationStatus;
   db.insertRegisteredUser(user, cb);
