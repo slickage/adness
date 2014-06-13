@@ -19,9 +19,36 @@ module.exports = function(req, res) {
       else { saved.push(ad); }
     });
 
+    // profile name
+    var profileName = "No User Found";
+    var profileId = "";
+    if (profileUser) {
+      profileName = profileUser.username;
+      profileId = profileUser.userId;
+    }
+    else if (Number(req.params.userId) === Number(req.user.userId)) {
+      profileName = req.user.username;
+      profileId = req.user.userId;
+    }
+
+    // show registration button
+    var showRegButton = false;
+    if (!profileUser && Number(req.params.userId) === req.user.userId) {
+      showRegButton = true;
+    }
+
+    // user is viewing thier own page
+    var isOwnPage = false;
+    if (Number(req.params.userId) === req.user.userId) {
+      isOwnPage = true;
+    }
+
     // render page
     res.render('profile', {
-      profileUser: profileUser,
+      profileName: profileName,
+      profileId: profileId,
+      isOwnPage: isOwnPage,
+      showRegButton: showRegButton,
       inRotation: inRotation,
       approved: approved,
       rejected: rejected,

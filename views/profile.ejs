@@ -12,11 +12,7 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand">
-          <% if (profileUser) { %>
-            <%= profileUser.username %>
-          <% } else {%>
-            No User Found
-          <% } %>
+          <%= profileName %>
         </a>
       </div>
 
@@ -24,14 +20,14 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <% if (profileUser) { %>
-              <a href="https://bitcointalk.org/index.php?action=profile;u=<%= profileUser.userId %>;sa=showPosts">
-                <%= profileUser.username %>'s Posts
+            <% if (profileName && profileId) { %>
+              <a href="https://bitcointalk.org/index.php?action=profile;u=<%= profileId %>;sa=showPosts">
+                <%= profileName %>'s Posts
               </a>
             <% } %>
           </li>
           <li>
-            <% if (profileUser && profileUser.userId === user.userId) { %>
+            <% if (isOwnPage) { %>
               <a href="<%= browsePrefix %>/ads/upload">New Ad</a>
             <% } %>
           </li>
@@ -39,6 +35,23 @@
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
+
+  <% if (showRegButton) { %>
+    <div class="panel panel-warning"> 
+      <div class="panel-heading">
+        <strong>You are not registered with us.</strong>
+      </div>
+      <div class="panel-body">
+        It looks like you're trying to view your own page but you haven't registered with us yet. <br />
+        Please click the button below to register with us. <br /><br />
+        <form action="/registration" method="POST">
+          <button class="btn btn-success">
+            Please Click Here to Register
+          </button>
+        </form>
+      </div>
+    </div>
+  <% } %>
 
   <% if (inRotation.length > 0) { %>
     <div class="panel panel-primary"> 
