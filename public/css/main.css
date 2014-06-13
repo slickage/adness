@@ -14,7 +14,7 @@ hr { border-top: 1px solid #ccc; }
 
 /* header */
 
-#header { margin-bottom: 0; height: 53px; padding-top: 2px;}
+#header { margin-bottom: 0; }
 #mobile-menu-btn { height: 34px; padding-top: 6px; }
 
 @media all and (min-width: 780px) {
@@ -64,7 +64,7 @@ hr { border-top: 1px solid #ccc; }
 .icon-large { font-size: 25px; }
 
 .logo {
-  height: 54px; 
+  height: 50px; 
   text-align: center;
   padding-top: 18px;
   margin: 0; 

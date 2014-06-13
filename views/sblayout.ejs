@@ -79,6 +79,12 @@
 
               <!-- Brand and toggle get grouped for better mobile display -->
               <div class="navbar-header">
+                <% if (user) { %>
+                  <div class="header-logout-message">
+                    <%= serverTime %>
+                  </div>
+                <% } %>
+
                 <!-- pull down login -->
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-login">
                   <span class="sr-only">Toggle navigation</span>
