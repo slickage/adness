@@ -20,8 +20,12 @@ module.exports = function(req, res) {
       auction.end = endTime;
     });
 
+    // serverTime 
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
     res.render('history', {
       auctions: sortedPast,
+      serverTime: serverTime,
       browsePrefix: req.browsePrefix,
       user: req.user
     });

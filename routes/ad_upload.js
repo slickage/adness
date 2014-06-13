@@ -13,6 +13,7 @@ exports = module.exports = function(req, res) {
       ad: models.ad,
       regions: regions,
       browsePrefix: req.browsePrefix,
-      user: req.user});
+      user: req.user
+    });
   });
 };

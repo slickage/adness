@@ -1,4 +1,5 @@
 var registration = require('../registration');
+var moment = require('moment');
 
 exports = module.exports = function(req, res) {
   req.model.load("registeredUser", req);
@@ -6,12 +7,16 @@ exports = module.exports = function(req, res) {
     var view = 'registration';
     var error = '';
 
+    // serverTime 
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
     if (err) {
       console.log(err);
       view = 'registrationError';
       error = err.message;
       return res.render(view, {
         err: error,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user
       });
@@ -22,6 +27,7 @@ exports = module.exports = function(req, res) {
       error = 'This user has already been registered';
       return res.render(view, {
         err: error,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user
       });
@@ -37,6 +43,7 @@ exports = module.exports = function(req, res) {
 
       return res.render(view, {
         err: error,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user
       });

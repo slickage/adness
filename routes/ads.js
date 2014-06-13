@@ -3,6 +3,7 @@ var _ = require('lodash');
 var async = require('async');
 var geoip = require('geoip-lite');
 var config = require('../config');
+var moment = require('moment');
 
 exports = module.exports = {
   newAd: function(req, res) {
@@ -27,8 +28,11 @@ exports = module.exports = {
     req.model.load('ad', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); return res.redirect(req.browsePrefix); }
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('ads', {
         ad: models.ad,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});
     });
@@ -170,8 +174,11 @@ exports = module.exports = {
     req.model.load("submittedAds", req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('submittedAds', {
         ads: models.submittedAds,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});
     });

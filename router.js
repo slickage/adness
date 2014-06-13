@@ -9,6 +9,5 @@ module.exports = {
   history: require('./routes/history'),
   profile: require('./routes/profile'),
   auction: require('./routes/auction'),
-  bid: require('./routes/bid'),
-  qr: require('./routes/qr')
+  bid: require('./routes/bid')
 };

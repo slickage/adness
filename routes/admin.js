@@ -45,14 +45,17 @@ exports = module.exports = function(req, res) {
     // cull regions
     var regions = _.pluck(config.regions, 'name');
 
-    res.render('admin',
-      {
+    // serverTime 
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
+    res.render('admin', {
         auctionsOpen: sortedOpen,
         auctionsClosed: sortedClosed,
         auctionsFuture: sortedFuture,
         auctionsPast: sortedPast,
         infoMessage: infoMessage,
         regions: regions,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user
       }

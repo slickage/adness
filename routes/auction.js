@@ -84,16 +84,20 @@ module.exports = {
         bid.created_at = bidTime + ' (' + moment(bid.created_at).fromNow() + ')';
       });
 
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
       // render view
       res.render('auction', {
         auction: auction,
         bids: bids,
         minutes: minutes,
-        browsePrefix: req.browsePrefix,
-        user: req.user,
         registered: registered,
         regStatus: regStatus,
-        approvedRegions: approvedRegions
+        approvedRegions: approvedRegions,
+        serverTime: serverTime,
+        browsePrefix: req.browsePrefix,
+        user: req.user,
       });
     });
   },
@@ -103,6 +107,8 @@ module.exports = {
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.end(function(err, models) {
+      if (err) console.log(err);
+
       var auction = models.auction;
       var bids = models.bids;
 
@@ -124,10 +130,13 @@ module.exports = {
         }
       });
 
-      if (err) console.log(err);
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
       res.render('auctionEdit', {
         auction: auction,
         regions: regions,
+        serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user
       });

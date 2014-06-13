@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 module.exports = function(req, res) {
   req.model.load("userAds", req);
   req.model.load("profileUser", req);
@@ -43,6 +45,9 @@ module.exports = function(req, res) {
       isOwnPage = true;
     }
 
+    // serverTime 
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+
     // render page
     res.render('profile', {
       profileName: profileName,
@@ -54,6 +59,7 @@ module.exports = function(req, res) {
       rejected: rejected,
       submitted: submitted,
       saved: saved,
+      serverTime: serverTime,
       browsePrefix: req.browsePrefix,
       user: req.user
     });
