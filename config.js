@@ -25,8 +25,8 @@ module.exports = {
     database: process.env.MYSQL_DATABASE || 'smf'
   },
   couchdb: {
-    url: 'http://localhost:5984',
-    name: 'adness'
+    url: process.env.DB_URL || 'http://localhost:5984',
+    name: process.env.DB_NAME || 'adness'
   },
   baron: {
     url: process.env.BARON_URL || 'http://localhost:5000',
