@@ -451,7 +451,7 @@
     $.ajax({
       url: "<%= browsePrefix %>/auctions/" + auctionId, 
       type: "DELETE",
-      success: function(data) { console.log("end"); location.reload(); },
+      success: function(data) { location.reload(); },
       error: function(err) { alert("There was an issue deleting this auction."); console.log(err); } 
     });
   }

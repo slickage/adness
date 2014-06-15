@@ -93,6 +93,7 @@ site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteA
 // admin web routes
 site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
+site.post('/admin/auctions/recalculate/:auctionId', ensureAuthenticated, router.auction.recalculateAuction);
 site.get('/admin', ensureAuthenticated, router.admin);
 // normal public web routes
 site.get('/', router.index);

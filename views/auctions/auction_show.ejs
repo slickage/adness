@@ -59,7 +59,7 @@
         </em>
         <br>
         <%= Number(region.slots) + 2 %> are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
-        <br /><br />
+        <br />
 
         <% if (user && auction.open) { %>
           <% if (registered && (approvedRegions.indexOf(region.name) > -1)) { %>
@@ -96,20 +96,46 @@
           <% } %>
         <% } %>
 
-        <% region.primarySlots.forEach(function(slot) { %>
-          <div class="slot slot_text">
-            <div class="row">
-              <div class="col-sm-3">1 Ad Slot</div>
-              <div class="col-sm-6">
-                Bidder: 
-                <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
-                  <%= slot.user.username %>
-                </a>
+        <% if (user && user.admin) { %>
+          <% region.primarySlots.forEach(function(slot) { %>
+            <div class="slot slot_text">
+              <div class="row">
+                <div class="col-sm-4 truncate">
+                  Bidder: 
+                  <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
+                    <%= slot.user.username %>
+                  </a>
+                </div>
+                <div class="col-sm-4 truncate">
+                  Bid ID: <%= slot._id %>
+                </div>
+                <div class="col-sm-2"><%= slot.price %> BTC</div>
+                <div class="col-sm-2">
+                  <button class="btn btn-danger btn-xs" onclick="loadDelete('<%= slot._id %>');">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
               </div>
-              <div class="col-sm-3"><%= slot.price %> BTC</div>
             </div>
-          </div>
-        <% }) %>
+          <% }) %>
+        <% } else { %>
+          <% region.primarySlots.forEach(function(slot) { %>
+            <div class="slot slot_text">
+              <div class="row">
+                <div class="col-sm-5 truncate">
+                  Bidder: 
+                  <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
+                    <%= slot.user.username %>
+                  </a>
+                </div>
+                <div class="col-sm-5 truncate">
+                  Bid Id: <%= slot._id %>
+                </div>
+                <div class="col-sm-2"><%= slot.price %> BTC</div>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
 
         <% if (region.secondarySlots.length > 0) { %>
           <br>
@@ -123,14 +149,16 @@
           <% region.secondarySlots.forEach(function(slot) { %>
             <div class="slot slot_text">
               <div class="row">
-                <div class="col-sm-3">Ad Slot</div>
-                <div class="col-sm-6">
+                <div class="col-sm-5 truncate">
                   Bidder: 
                   <a href="<%= browsePrefix %>/users/<%= slot.user.userId %>">
                     <%= slot.user.username %>
                   </a>
                 </div>
-                <div class="col-sm-3"><%= slot.price %> BTC</div>
+                <div class="col-sm-5 truncate">
+                  Bid Id: <%= slot._id %>
+                </div>
+                <div class="col-sm-2"><%= slot.price %> BTC</div>
               </div>
             </div>
           <% }) %>
@@ -145,3 +173,83 @@
     </div>
   </div>
 </div>
+
+<% if (user && user.admin && !auction.open) { %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <strong>Admin Auction Tools</strong>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-sm-6 row-text-sm">
+          Re-Calculate Auction?
+        </div>
+        <div class="col-sm-6">
+          <div class="pull-right">
+            <button class="btn btn-default btn-sm" onclick="recalculateAuction('<%= auction._id %>');">
+              <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<div id="deleteBidModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Delete Bid?</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="deleteBidId">
+        <p>Are you sure you want to delete this Bid?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-danger" onclick="deleteBid(event);">Delete</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+  function deleteBid(ev) {
+    var bidId = $("#deleteBidId").val();
+    ev.preventDefault();
+    $.ajax({
+      url: "<%= browsePrefix %>/bids/" + bidId, 
+      type: "DELETE",
+      success: function(data) { location.reload(); },
+      error: function(err) {
+       alert("There was an issue deleting this bid.");
+       console.log(err);
+      }
+    });
+  }
+
+  function recalculateAuction(auctionId) {
+    $.ajax({
+      url: "/admin/auctions/recalculate/" + auctionId, 
+      type: "POST",
+      success: function(data) { 
+        alert("Auction has been re-calculated.");
+        location.reload();
+      },
+      error: function(err) {
+       alert("There was an issue recalculating this auction.");
+       console.log(err);
+      }
+    });
+  }
+
+  function loadDelete(bidId) {
+    $('#deleteBidId').val(bidId);
+    $('#deleteBidModal').modal('show');
+  }
+</script>

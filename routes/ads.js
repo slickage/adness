@@ -80,7 +80,7 @@ exports = module.exports = {
         ad.user = req.user; // add current user
         db.deleteAd(ad, function(err, body) {
           if (err) { console.log(err); }
-          res.end();
+          res.json({ ok: true });
         });
       }
     });

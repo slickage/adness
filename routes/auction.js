@@ -3,6 +3,7 @@ var _ = require('lodash');
 var moment = require('moment');
 var config = require('../config');
 var probability = require('../auction_probability');
+var auctionEnd = require('../events/auction-close');
 
 module.exports = {
   showAuction: function(req, res) {
@@ -251,6 +252,38 @@ module.exports = {
       if (err) { console.log(err); }
       req.flash('info', "Auction " + body.id + " Deleted.");
       res.end();
+    });
+  },
+  recalculateAuction: function(req,res) {
+    // enabling auctions is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+    req.model.load('auction', req);
+    req.model.end(function(err, models) {
+      var httpStatus = 200;
+      var message;
+
+      if (err) { console.log(err); message = err.message; httpStatus = 500; }
+
+      var auction;
+      if (httpStatus === 200) {
+        // make sure auction is closed
+        auction = models.auction;
+        if (auction.open) {
+          message = "Auction is still open.";
+          console.log(message);
+          httpStatus = 500;
+        }
+      }
+
+      if (httpStatus === 200) {
+        // call re-calculate auction
+        auctionEnd.recalculateAuction(auction, function(err, results) {
+          if (err) { console.log(err); message = err.message; httpStatus = 500; }
+          else { message = {ok: true}; }
+          return res.send(httpStatus, message);
+        });
+      }
+      else { return res.send(httpStatus, message); }
     });
   }
 };

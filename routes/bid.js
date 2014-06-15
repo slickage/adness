@@ -39,7 +39,7 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteBid(req.params.bidId, function(err, body) {
       if (err) { console.log(err); }
-      res.redirect('/admin');
+      res.json({ ok: true });
     });
   }
 };

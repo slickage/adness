@@ -159,6 +159,9 @@ function retryInvoice(queuedInvoice, cb) {
       else if (invoiceType === "auction") {
         auctionClose.completeInvoice(null, results);
       }
+      else if (invoiceType === "auctionModified"){
+        auctionClose.completeModifiedInvoice(null, results);
+      }
       else {
         console.log("QueuedInvoice with unknown type found.");
       }

@@ -106,7 +106,9 @@ hr { border-top: 1px solid #ccc; }
 .bidding { padding: 15px 0; }
 .bid_button { padding-top: 19px; }
 .slot_listing { margin-top: 15px;}
-
+.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-text-sm { padding-top: 6px; }
+ 
 /* -- Auction Details Page ----------------------------- */
 
 .slot_details_right {

@@ -1,0 +1,22 @@
+<h1>Congratulations <%= user.username %>!</h1>
+<strong>You've won <%= user.lineItems.length %> more ad slot(s) in auction: <%= auctionId %>!</strong>
+
+<hr>
+
+<div style="width: 90%; margin: auto;">
+  You are being contacted again because more slots became availble and you were next on the list of potential auction winners. 
+
+  Please promptly pay for the extra slot(s) you've won. We've provided a link below to a second invoice for just the extra slots.
+  <br><br>
+  <a href="<%= invoiceUrl %>/invoices/<%= invoiceId %>">
+    Click here to view your invoice.
+  </a>
+  <br><br>
+  Please ensure that the ads you want on the forum are in rotation. Ads submitted and approved but not marked "in rotation" will not be shown on the forum. Once your payment clears, ads marked "In Rotation" in your profile page will be used on the forum. 
+</div>
+
+<br><br>
+Thank you for participating in this auction. 
+<br><br>
+
+<em>This is a automated email. Please do not reply to this email.</em>
