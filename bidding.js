@@ -10,6 +10,7 @@ module.exports = function(slots, bids) {
   };
   var slotsFilled = 0; // slot (filling loop) counter
   var secondarySlotsFilled = 0; // secondary filling loop
+  var primaryOverflow = 0;
 
   // if no bids, return nothing
   if (bids.length < 1) { return retVal; }
@@ -39,12 +40,28 @@ module.exports = function(slots, bids) {
       counter++;
     }
 
-    // remove highest bid
-    bids.splice(0, 1);
+    if (slotsFilled > slots){
+      primaryOverflow = slotsFilled - slots;
+    }
+    else {
+      // remove highest bid
+      bids.splice(0, 1);
+    }
   }
 
-    // if no bids, return nothing
+  // if no bids, return nothing
   if (bids.length < 1) { return retVal; }
+
+  // pre-add overflow
+  var overflowCounter = 0;
+  var overflowBid = bids[0];
+  while (retVal.secondarySlots.length < slots &&
+         overflowCounter < primaryOverflow) {
+    retVal.secondarySlots.push(overflowBid);
+    overflowCounter++;
+    secondarySlotsFilled++;
+  }
+  bids.splice(0, 1);
 
   // secondary filling loop
   while (secondarySlotsFilled < slots) {
