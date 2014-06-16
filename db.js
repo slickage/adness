@@ -261,6 +261,9 @@ var db = {
           bids.push(rawBids.value);
         });
 
+        // remove non-valid bids (inplace)
+        _.remove(bids, function(bid) { return bid.valid === false; });
+
         // for each region, run biddingAlg and append
         auction.regions.forEach(function(region) {
           // grab only the bids for this region
@@ -340,7 +343,8 @@ var db = {
             slots: slots,
             region: body.region,
             user: bidUser,
-            auctionId: body.auctionId
+            auctionId: body.auctionId,
+            valid: true
           };
           couch.insert(bid, cb);
         }
@@ -421,10 +425,12 @@ var db = {
           return cb({ message: 'Id is not for a bid.'}, undefined );
         }
 
+        body.valid = false;
+
         // this should be an admin function so we don't need to
         // check that the user is the same
 
-        couch.destroy(bidId, body._rev, cb);
+        couch.insert(body, cb);
       }
       else { cb(err, undefined); }
     });

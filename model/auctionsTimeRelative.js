@@ -1,5 +1,4 @@
 var db = require(__dirname + '/../db');
-var biddingAlg = require('../bidding');
 var async = require('async');
 
 module.exports = function(req, cb) {

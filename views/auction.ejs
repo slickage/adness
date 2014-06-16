@@ -36,7 +36,11 @@
           <div class="slot">
             <div class="row">
               <div class="col-sm-12">
-                ID: <strong><%= bids[i]._id %></strong><br>
+                ID: <strong><%= bids[i]._id %></strong>
+                <% if (bids[i].valid === false) { %>
+                  <span class="text-danger"><strong>INVALIDATED</strong></span>
+                <% } %>
+                <br>
                 Date/Time: <span class="date"><%= bids[i].created_at %></span>
               </div>
             </div>
