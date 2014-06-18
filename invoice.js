@@ -15,7 +15,7 @@ function createAuctionInvoice(auctionId, user, webhook) {
     lineItem.amount = Number(user.lineItems[i].price);
     invoice.line_items.push(lineItem);
   }
-  invoice.access_token = config.baron.key;
+  invoice.api_key = config.baron.key;
   invoice.webhooks = {};
   // leave webhook token out at this point, it'll be generated later
   invoice.webhooks.paid = {};
@@ -32,7 +32,7 @@ function createRegistrationInvoice(user, webhook) {
     quantity: 1,
     amount: 0.25,
   }];
-  invoice.access_token = config.baron.key;
+  invoice.api_key = config.baron.key;
   invoice.webhooks = {};
   // leave webhook token out at this point, it'll be generated later
   invoice.webhooks.paid = {};
