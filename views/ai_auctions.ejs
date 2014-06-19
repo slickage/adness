@@ -1,0 +1,51 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-12">
+
+  <!-- admin navigation bar -->
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <strong>Auction Invoices</strong>
+        </a>
+      </div>
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="panel panel-default"> 
+    <div class="panel-heading">
+      <b>Finished Auctions </b><em>(Sorted by End Time)</em>
+    </div>
+    <div class="panel-body">
+      <% for (var i = 0; i < auctionsPast.length; i++) { %>
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Auction: </span>
+            <a href="/admin/invoices/<%= auctionsPast[i]._id %>">
+              <%= auctionsPast[i]._id %>
+            </a>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Start: </span>
+            <span><%= auctionsPast[i].start %></span>
+            <br>
+            <span class="auction_header">End: </span>
+            <span><%= auctionsPast[i].end %></span>
+          </div>
+
+          <div class="col-sm-6">
+            <span class="auction_header">Ads Start: </span>
+            <span><%= auctionsPast[i].adsStart %></span>
+            <br>
+            <span class="auction_header">Ads End: </span>
+            <span><%= auctionsPast[i].adsEnd %></span>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+</div>

@@ -785,6 +785,17 @@ var db = {
       }
       else { return cb(err, undefined); }
     });
+  },
+  getAuctionInvoices: function(auctionId, cb) {
+    var params = {startkey: [auctionId], endkey: [auctionId]};
+    couch.view(config.couchdb.name, 'getAuctionInvoices', params, function(err, body) {
+      if (!err) {
+        var invoices = [];
+        body.rows.forEach(function(doc) { invoices.push(doc.value); });
+        return cb(null, invoices);
+      }
+      else { return cb(err, undefined); }
+    });
   }
 };
 

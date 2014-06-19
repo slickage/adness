@@ -71,3 +71,11 @@ ddoc.views.getQueuedInvoices = {
     }
   }
 };
+
+ddoc.views.getAuctionInvoices = {
+  map: function(doc) {
+    if (doc.type === 'receipt') {
+      emit([doc.metadata.auctionId], doc);
+    }
+  }
+};

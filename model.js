@@ -9,3 +9,4 @@ MC.model('userAds', require('./model/userAds'));
 MC.model('submittedAds', require('./model/submittedAds'));
 MC.model('registeredUser', require('./model/registeredUser'));
 MC.model('profileUser', require('./model/profileUser'));
+MC.model('auction_invoices', require('./model/ai_invoices'));

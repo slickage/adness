@@ -1,0 +1,77 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-12">
+
+  <!-- admin navigation bar -->
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <strong>Invoices for Auction: <%= auctionId %></strong>
+        </a>
+      </div>
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <% invoices.forEach(function(receipt) { %>
+    <% var user = receipt.metadata.user %>
+    <% var invoice = receipt.invoice %>
+
+    <% if (receipt.invoiceStatus === 'new') { %>
+    <div class="panel panel-default">
+    <% } else if (receipt.invoiceStatus === 'sent') { %>
+    <div class="panel panel-info">
+    <% } else { %>
+    <div class="panel panel-success"> 
+    <% } %>
+
+      <div class="panel-heading">
+        <b>Invoice: <%= receipt.invoice.id %></b>
+      </div>
+      <div class="panel-body">
+        <div class="row auction_listing">
+
+          <div class="col-sm-12">
+            <span class="auction_header">Status: 
+            <% if (receipt.invoiceStatus === 'new') { %>
+            <span class="text-default"><%= receipt.invoiceStatus %></span>
+            <% } else if (receipt.invoiceStatus === 'sent') { %>
+            <span class="text-info"><%= receipt.invoiceStatus %></span>
+            <% } else { %>
+            <span class="text-success"><%= receipt.invoiceStatus %></span>
+            <% } %>
+            </span>
+            <br />
+
+            <span class="auction_header">
+              User: 
+              <a href="/sb/users/<%= user.userId %>"><%= user.username %></a>
+            </span><br />
+            <span class="auction_header">
+              Email: 
+              <a href="mailto:<%= user.email %>"><%= user.email %></a>
+            </span><br />
+            <br />
+
+            <table class="table table-striped table-hover table-bordered">
+              <% user.lineItems.forEach(function(lineItem) { %>
+                <tr>
+                  <td>Bid ID: <%= lineItem.bidId %></td>
+                  <td>Bid Price: <%= lineItem.price %></td>
+                  <td>Bid Region: <%= lineItem.region %></td>
+                </tr>
+              <% }); %>
+
+            </table>
+  
+            <div class="col-sm-offset-6 col-sm-6 text-right">
+              <span class="auction_header">Total: <%= user.payment %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  <% }); %>
+
+</div>

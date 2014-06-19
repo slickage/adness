@@ -9,5 +9,6 @@ module.exports = {
   history: require('./routes/history'),
   profile: require('./routes/profile'),
   auction: require('./routes/auction'),
-  bid: require('./routes/bid')
+  bid: require('./routes/bid'),
+  auction_invoices: require('./routes/auction_invoices')
 };
