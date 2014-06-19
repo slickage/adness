@@ -169,7 +169,11 @@ function generateWinners(primarySlots) {
   primarySlots.forEach(function(bid) {
     if (users[bid.user.userId]) {
       // add a payment instance
-      var lineItem = { price: Number(bid.price), region: bid.region };
+      var lineItem = {
+        bidId: bid._id,
+        price: Number(bid.price),
+        region: bid.region
+      };
       users[bid.user.userId].lineItems.push(lineItem);
       // tally up total payment
       var payment = Number(users[bid.user.userId].payment) + Number(bid.price);
@@ -179,7 +183,11 @@ function generateWinners(primarySlots) {
     else {
       bid.user.payment = Number(bid.price);
       bid.user.lineItems = [];
-      var firstLineItem = { price: bid.user.payment, region: bid.region };
+      var firstLineItem = {
+        bidId: bid._id,
+        price: bid.user.payment,
+        region: bid.region
+      };
       bid.user.lineItems.push(firstLineItem);
       users[bid.user.userId] = bid.user;
     }

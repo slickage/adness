@@ -25,18 +25,36 @@ module.exports = {
       },
       // validate status call 
       function(receipt, cb) {
-        validateCall(receipt, cb);
+        if (receipt.ivoiceStatus === 'paid') {
+          alreadyPaid = true;
+          return cb(null, receipt);
+        }
+        else { validateCall(receipt, cb); }
+      },
+      // update receipt's invoiceStatus to "paid"
+      function(receipt, cb) {
+        if (alreadyPaid) { return cb(null, receipt); }
+        else {
+          receipt.invoiceStatus = "paid";
+          updateReceipt(receipt, cb);
+        }
       },
       // get the RegisteredUser using the Receipt
       function(receipt, cb) {
         cachedReceipt = receipt;
-        getRegUser(receipt, cb);
+
+        if (alreadyPaid) { return cb(null, undefined); }
+        else {
+          getRegUser(receipt, cb);
+        }
       },
       // update the RegisteredUser
       function(user, cb) {
-        if (user.registered === true) { alreadyPaid = true; }
-        regUser = user;
-        updateRegUser(user, alreadyPaid, cb);
+        if (alreadyPaid) { return cb(null, undefined); }
+        else {
+          regUser = user;
+          updateRegUser(user, alreadyPaid, cb);
+        }
       }],
       // heckler admin with payment and invoice info
       function(err, results) {
@@ -88,6 +106,8 @@ module.exports = {
     // get receipt id from the post body
     var receiptId = req.body.token;
     var auctionId = req.params.auctionId;
+    var alreadyPaid;
+
     async.waterfall([
       // get Receipt from the DB
       function(cb) {
@@ -95,11 +115,27 @@ module.exports = {
       },
       // validate status call 
       function(receipt, cb) {
-        validateCall(receipt, cb);
+        if (receipt.invoiceStatus === "paid") {
+          alreadyPaid = true;
+          return cb(null, receipt);
+        }
+        else { validateCall(receipt, cb); }
+      },
+      // update receipt's invoiceStatus to "paid"
+      function(receipt, cb) {
+        if (alreadyPaid) { return cb(null, receipt); }
+        else {
+          receipt.invoiceStatus = "paid";
+          updateReceipt(receipt, cb);
+        }
       }],
       // heckler admin with payment and invoice info
       function(err, receipt) {
         if (err) { return res.send(500, err.message); }
+
+        if (alreadyPaid) {
+          return res.json({ ok: true });
+        }
         
         // secondary vaildation
         if (receipt.metadata.auctionId !== auctionId) {
@@ -181,24 +217,26 @@ function validateCall(receipt, cb) {
 
 function getReceipt(receiptId, cb) {
   db.getReceipt(receiptId, function(err, receipt) {
-    if (err) { cb(err, undefined); }
-    cb(null, receipt);
+    if (err) { return cb(err, undefined); }
+    return cb(null, receipt);
+  });
+}
+
+function updateReceipt(receipt, cb) {
+  db.updateReceipt(receipt, function(err, body) {
+    if (err) { return cb(err, undefined); }
+    return cb(null, receipt);
   });
 }
 
 function getRegUser(receipt, cb) {
   db.getRegisteredUser(receipt.metadata.userId, function(err, user) {
-    if (err) { cb(err, undefined); }
-    cb(null, user);
+    if (err) { return cb(err, undefined); }
+    return cb(null, user);
   });
 }
 
 function updateRegUser(user, alreadyPaid, cb) {
-  // bypass db call if already registered
-  if (alreadyPaid) {
-    return cb(null, undefined);
-  }
-
   user.registered = true;
   delete user.registrationStatus;
   db.insertRegisteredUser(user, cb);

@@ -613,6 +613,7 @@ var db = {
     var receipt = {
       metadata: newReceipt.metadata,
       invoiceType: newReceipt.invoiceType,
+      invoiceStatus: "new",
       invoice: newReceipt.invoice || {},
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
@@ -645,6 +646,7 @@ var db = {
         // update the rest of the values
         oldReceipt.metadata = newReceipt.metadata || oldReceipt.metadata;
         oldReceipt.invoiceType = newReceipt.invoiceType || oldReceipt.invoiceType;
+        oldReceipt.invoiceStatus = newReceipt.invoiceStatus || oldReceipt.invoiceStatus;
         oldReceipt.invoice = newReceipt.invoice || oldReceipt.invoice;
 
         // update receipt

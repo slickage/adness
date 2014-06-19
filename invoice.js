@@ -90,16 +90,24 @@ function generateInvoice(invoice, receipt, queue, cb) {
 
         return cb(err, undefined);
       }
-      else { saveInvoice(receipt, body, cb); }
+      else { saveInvoice(receipt, invoice, body, queue, cb); }
     }
   );
 }
 
-function saveInvoice(receipt, body, cb) {
+function saveInvoice(receipt, originalInvoice, body, queue, cb) {
   // parse body into json (invoice)
   var invoice;
   try { invoice = JSON.parse(body); }
   catch (error) {
+    if (queue) {
+      console.log("Encountered an Error, Queuing Invoice...");
+      var newInvoice = { invoice: invoice, receipt: receipt };
+      db.newQueuedInvoice(newInvoice, function(err, body) {
+        if (err) console.log(err);
+      });
+    }
+
     errorMsg = "Could not generate an invoice, received response: ";
     errorMsg += body + "\n";
     errorMsg += error.message;
@@ -110,12 +118,14 @@ function saveInvoice(receipt, body, cb) {
   console.log("Invoice " + invoice.id + " created for Receipt: " + receipt._id);
 
   // update receipt with new invoice
-  receipt.invoice = invoice;
+  originalInvoice.id = invoice.id;
+  receipt.invoice = originalInvoice;
+  receipt.invoiceStatus = "sent",
   db.updateReceipt(receipt, function(err, body) {
     if (err) { return cb(err, undefined); }
     console.log("Updated Receipt " + receipt._id + " with Invoice ID " + receipt.invoice.id);
     var results = { receipt: receipt, invoice: invoice };
-    cb(null, results);
+    return cb(null, results);
   });
 }
 
