@@ -12,6 +12,11 @@ module.exports = {
   notifyAuction: function (auction) {
     console.log("Starting Auction Close Event...");
 
+    // calculate expiration time for invoices
+    var roundValue = config.rounds.round1;
+    var expiration = new Date().getTime() + roundValue.timeOffset;
+    var discount = roundValue.discount;
+
     // get all the bids for this auction
     db.getBidsPerAuction(auction._id, function(err, bids) {
       if (err) { console.log(err);  return; }
@@ -37,17 +42,24 @@ module.exports = {
 
         // notify each winner for this region
         region.winners.forEach(function(winner) {
-          notifyWinner(winner, auction._id);
+          notifyWinner(winner, expiration, discount, auction._id);
         });
       });
 
       // cull all the approved auctions from the winners
       upsertAdsInRotation(auctionWithBids);
+
+      // create new recalculation object
+      expiration = expiration + 1000 * 60; // one minute grace period
+      var recalculation = {
+        auctionId: auction._id,
+        round: 1,
+        expiration: expiration
+      };
+      db.newRecalculation(recalculation, function(err, results) {
+        if (err) { console.log(err); }
+      });
     });
-  },
-  notifySingleWinner: function (winner, auctionId) {
-    // function needs to be setup like this due to loss of scope in notifyAuction
-    notifyWinner(winner, auctionId);
   },
   completeInvoice: function (err, results) {
     // function needs to be setup like this due to loss of scope in notifyAuction
@@ -57,13 +69,15 @@ module.exports = {
     // function needs to be setup like this due to loss of scope in notifyAuction
     handleModifiedInvoice(err, results);
   },
-  recalculateAuction: function(auction, cb) {
+  // assumes that recalculation has been incremented and expiration updated
+  recalculateAuction: function(auction, recalculation, cb) {
     console.log("Re-Calculating Auction Winners...");
 
     // error check inputs
-    if (!auction) { return cb(new Error("Auction not found."), undefined); }
+    if (!auction) { return cb(new Error("Auction not found.")); }
+    if (!recalculation) { return cb(new Error("Recalculation not found")); }
 
-    // calculate winners for each region of thew new region
+    // calculate winners for each region of the new recalculation
     var auctionWinners;
     auction.regions.forEach(function(region) {
       region.winners = _.values(generateWinners(region.primarySlots));
@@ -73,12 +87,12 @@ module.exports = {
     var airId = auction._id + "-air";
     db.getAdsInRotation(airId, function(err, air) {
       if (err) { return cb(err, undefined); }
-      resolveRegions(auction, air.regions, cb);
+      resolveRegions(auction, recalculation, air.regions, cb);
     });
   }
 };
 
-function resolveRegions(auction, airRegions, cb) {
+function resolveRegions(auction, recalculation, airRegions, cb) {
   auction.regions.forEach(function(auctionRegion) {
     // get the matching region from air
     var airRegion = _.find(airRegions, { name: auctionRegion.name });
@@ -122,8 +136,8 @@ function resolveRegions(auction, airRegions, cb) {
           console.log(auctionWinner);
           console.log("Has Less Slots than before.");
           var lessError = "User: " + auctionWinner.username;
-          lessError += " has less slots than before. This seems wrong.";
-          return cb(new Error(lessError), undefined);
+          lessError += " has less slots than before.";
+          // return cb(new Error(lessError), undefined);
         }
         // more case
         else if (!differenceFound && auctionWinnerSlots.length > 0) {
@@ -138,7 +152,7 @@ function resolveRegions(auction, airRegions, cb) {
           console.log(auctionWinner);
           console.log("Has Less and More Slots than before.");
           var moreError = "User: " + auctionWinner.username;
-          moreError += " has less slots than before. This seems wrong.";
+          moreError += " has less and more slots than before.";
           return cb(new Error(moreError), undefined);
         }
         // else - same slots case
@@ -146,15 +160,38 @@ function resolveRegions(auction, airRegions, cb) {
       // or else notify them if they don't exist yet
       else { newWinners.push(auctionWinner); }
 
+      // calculate discount for this round
+      var round = recalculation.round;
+      var roundValue = config.rounds["round" + round];
+      var discount = roundValue.discount;
+
+      // calculate expiration for this recalculation
+      var expiration = recalculation.expiration;
+      var halfOffset = roundValue.timeOffset / 2;
+      var now = new Date().getTime();
+      if (now > expiration - halfOffset) {
+        // get next round offset
+        if ( (round + 1) <= config.rounds.maxRound) {
+          round = round + 1;
+          var nextOffset = config.rounds["round" + round].timeOffset;
+          expiration = expiration + nextOffset;
+        }
+      }
+
       // notifiy the new winners
       newWinners.forEach(function(winner) {
-        notifyWinner(winner, auction._id);
+        notifyWinner(winner, expiration, discount, auction._id);
       });
 
       // notify the modified winners
       modifiedWinners.forEach(function(winner) {
-        notifyModifiedWinner(winner, auction._id);
+        notifyModifiedWinner(winner, expiration, discount, auction._id);
       });
+
+      var message = "Finished Recalculating Auction Slots For: ";
+      message += auctionWinner.username;
+      message += " in Region: " + auctionRegion.name;
+      console.log(message);
     });
   });
   
@@ -208,11 +245,11 @@ function generateBidders(bids) {
   return bidders;
 }
 
-function notifyWinner(winner, auctionId) {
+function notifyWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won.");
 
   var webhook = config.site.url + '/hooks/auctions/' + auctionId;
-  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, webhook);
+  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
   var data = {
     user: winner,
     auctionId: auctionId,
@@ -220,11 +257,11 @@ function notifyWinner(winner, auctionId) {
   invoice.createInvoice(data, "auction", invoiceForm, handleInvoice);
 }
 
-function notifyModifiedWinner(winner, auctionId) {
+function notifyModifiedWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won more slots.");
 
   var webhook = config.site.url + '/hooks/auctions/' + auctionId;
-  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, webhook);
+  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
   var data = {
     user: winner,
     auctionId: auctionId,
@@ -266,13 +303,17 @@ function handleInvoice(err, results) {
   var auctionId = results.receipt.metadata.auctionId;
   var winner = results.receipt.metadata.user;
   var invoiceId = results.invoice.id;
+  var expiration = results.receipt.invoice.expiration;
+  expiration = new Date(expiration);
+  expiration = expiration.toUTCString();
 
   // build email template
   var data = {
     auctionId: auctionId,
     user: winner,
     invoiceId: invoiceId,
-    invoiceUrl: config.baron.url
+    invoiceUrl: config.baron.url,
+    expiration: expiration
   };
   var str = fs.readFileSync(winnerTemplate, 'utf8');
   var html = ejs.render(str, data);
@@ -293,13 +334,17 @@ function handleModifiedInvoice(err, results) {
   var auctionId = results.receipt.metadata.auctionId;
   var winner = results.receipt.metadata.user;
   var invoiceId = results.invoice.id;
+  var expiration = results.receipt.invoice.expiration;
+  expiration = new Date(expiration);
+  expiration = expiration.toUTCString();
 
   // build email template
   var data = {
     auctionId: auctionId,
     user: winner,
     invoiceId: invoiceId,
-    invoiceUrl: config.baron.url
+    invoiceUrl: config.baron.url,
+    expiration: expiration
   };
   var str = fs.readFileSync(winnerModifiedTemplate, 'utf8');
   var html = ejs.render(str, data);

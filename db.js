@@ -262,7 +262,9 @@ var db = {
         });
 
         // remove non-valid bids (inplace)
-        _.remove(bids, function(bid) { return bid.valid === false; });
+        _.remove(bids, function(bid) {
+          return bid.invalid === true || bid.lost === true;
+        });
 
         // for each region, run biddingAlg and append
         auction.regions.forEach(function(region) {
@@ -293,6 +295,22 @@ var db = {
         cb(null, body);
       }
       else { cb(err, undefined); }
+    });
+  },
+  getUserBidsPerAuction: function(auctionId, userId, cb) {
+    var params = {startkey: [auctionId, userId], endkey: [auctionId, userId]};
+    var view = 'getUserBidsPerAuction';
+    couch.view(config.couchdb.name, view, params, function(err, body) {
+      if (err) { console.log(err); return cb(err, undefined); }
+
+      if (body) {
+        var bids = [];
+        body.rows.forEach(function(bid) {
+          bids.push(bid.value);
+        });
+
+        return cb(null, bids);
+      }
     });
   },
   newBid: function(body, cb) {
@@ -333,7 +351,10 @@ var db = {
 
           // validate slot number max size
           var slots = Number(body.slots);
-          if (slots > auction.slots) { slots = auction.slots; }
+          var auctionRegion = _.find(auction.regions, function(region) {
+            return region.name === bidRegion;
+          });
+          if (slots > auctionRegion.slots) { slots = auctionRegion.slots; }
 
           // auction is open so make the bid
           var bid = {
@@ -343,8 +364,7 @@ var db = {
             slots: slots,
             region: body.region,
             user: bidUser,
-            auctionId: body.auctionId,
-            valid: true
+            auctionId: body.auctionId
           };
           couch.insert(bid, cb);
         }
@@ -401,7 +421,10 @@ var db = {
               if (bid.price) body.price = Number(bid.price);
               if (bid.slots) {
                 var slots = Number(bid.slots);
-                if (slots > auction.slots) { slots = auction.slots; }
+                var auctionRegion = _.find(auction.regions, function(region) {
+                  return region.name === bidRegion;
+                });
+                if (slots > auctionRegion.slots) { slots = auctionRegion.slots; }
                 body.slots = slots;
               }
               couch.insert(body, cb);
@@ -416,7 +439,32 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  forceUpdateBidStatus: function(bid, cb) {
+    // !!!this should be an admin level only operation!!!
+    // this will not take into account auction status 
+
+    // ensure that the bid exists first
+    couch.get(bid._id, null, function(err, oldBid) {
+      if (err) { console.log(err); return cb(err, oldBid); }
+
+      if (oldBid) {
+        // ensure what we got is a bid
+        if (oldBid.type !== 'bid') {
+          return cb({ message: 'Id is not for a bid.'}, undefined );
+        }
+
+        // only update wonSlots, valid, void, and lost
+        if (bid.wonSlots) oldBid.wonSlots = bid.wonSlots;
+        if (bid.invalid) oldBid.invalid = bid.invalid; // admin invalidated
+        if (bid.lost) oldBid.lost = bid.lost;    // don't count at all
+        if (bid.void) oldBid.void = bid.void;    // only count wonSlots
+        couch.insert(oldBid, cb);
+      }
+    });
+  },
   deleteBid: function(bidId, cb) {
+    // !!!this should be an admin level only operation!!!
+
     // ensure that the auction exists first
     couch.get(bidId, null, function(err, body) {
       if (!err) {
@@ -425,11 +473,7 @@ var db = {
           return cb({ message: 'Id is not for a bid.'}, undefined );
         }
 
-        body.valid = false;
-
-        // this should be an admin function so we don't need to
-        // check that the user is the same
-
+        body.invalid = true;
         couch.insert(body, cb);
       }
       else { cb(err, undefined); }
@@ -793,6 +837,81 @@ var db = {
         var invoices = [];
         body.rows.forEach(function(doc) { invoices.push(doc.value); });
         return cb(null, invoices);
+      }
+      else { return cb(err, undefined); }
+    });
+  },
+  newRecalculation: function(recalculation, cb) {
+    var newRecalculation = {
+      auctionId: recalculation.auctionId,
+      round: recalculation.round,
+      expiration: recalculation.expiration,
+      finished: false,
+      created_at: new Date().getTime(),
+      modified_at: new Date().getTime(),
+      type: 'recalculation'
+    };
+    couch.insert(newRecalculation, function(err, body) {
+      if (err) { console.log(err); }
+      
+      if (body) {
+        recalculation._id = body.id;
+        timer.addRecalculation(recalculation);
+      }
+      return cb(err, body);
+    });
+  },
+  getRecalculation: function(calcId, cb) {
+    couch.get(calcId, null, function(err, body) {
+      if (!err) {
+        if (body.type !== 'recalculation') {
+          return cb({ message: 'Id is not for an Recalculation.'}, undefined );
+        }
+        return cb(null, body);
+      }
+      else { return cb(err, undefined); }
+    });
+  },
+  getRecalculations: function(cb) {
+    couch.view(config.couchdb.name, 'getRecalculations', function(err, body) {
+      if (!err) {
+        var recalculations = [];
+        body.rows.forEach(function(doc) { recalculations.push(doc.value); });
+        cb(null, recalculations);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  updateRecalculation: function(recalculation, cb) {
+    // ensure that the receipt exists first
+    couch.get(recalculation._id, null, function(err, oldRecalculation) {
+      if (!err) {
+        // make sure we're getting an receipt
+        if (oldRecalculation.type !== 'recalculation') {
+          return cb({ message: 'Id is not for an Recalculation.'}, undefined );
+        }
+
+        // update modified_at
+        oldRecalculation.modified_at = new Date().getTime();
+        // update the rest of the values
+        oldRecalculation.round = recalculation.round || oldRecalculation.round;
+        oldRecalculation.expiration = recalculation.expiration || oldRecalculation.expiration;
+        oldRecalculation.finished = recalculation.finished || oldRecalculation.finished;
+
+        // update receipt
+        couch.insert(oldRecalculation, function(err, body) {
+          if (err) { console.log(err); }
+          
+          if (body) {
+            if (oldRecalculation.finished) {
+              timer.deleteRecalculation(oldRecalculation);
+            }
+            else {
+              timer.updateRecalculation(oldRecalculation);
+            }
+          }
+          return cb(err, body);
+        });
       }
       else { return cb(err, undefined); }
     });

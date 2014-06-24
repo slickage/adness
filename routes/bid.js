@@ -37,6 +37,12 @@ module.exports = {
   deleteBid: function(req, res) {
     // deleting bids is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+
+    // TODO: invalidate invoice if available
+
+    // TODO: send user email
+
+    // update bid status
     db.deleteBid(req.params.bidId, function(err, body) {
       if (err) { console.log(err); }
       res.json({ ok: true });

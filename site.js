@@ -151,21 +151,51 @@ site.post('/hooks/registration', webhook.registration);
 site.post('/hooks/auctions/:auctionId', webhook.winner);
 
 // Node resque setup (For Auction Closing)
-var worker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){
-  worker.workerCleanup(); // optional: cleanup old improperly shutdown workers
-  worker.start();
+var auctionWorker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){
+  auctionWorker.workerCleanup(); // optional: cleanup old improperly shutdown workers
+  auctionWorker.start();
 });
 
-worker.on('start',           function(){ console.log("worker started"); });
-worker.on('end',             function(){ console.log("worker ended"); });
-worker.on('cleaning_worker', function(worker, pid){ console.log("cleaning old worker " + worker); });
-worker.on('job',             function(queue, job){ console.log("working job " + queue + " " + JSON.stringify(job)); });
-worker.on('success',         function(queue, job, result){ console.log("job success " + queue + " " + JSON.stringify(job) + " >> " + result); });
-worker.on('error',           function(queue, job, error){ console.log("job failed " + queue + " " + JSON.stringify(job) + " >> " + error); });
+var recalcWorker = new NR.worker({connection: connectionDetails, queues: ['recalculation']}, jobs, function(){
+  recalcWorker.workerCleanup(); // optional: cleanup old improperly shutdown workers
+  recalcWorker.start();
+});
+
+auctionWorker.on('start', function(){ console.log("auctionWorker started"); });
+auctionWorker.on('end', function(){ console.log("auctionWorker ended"); });
+auctionWorker.on('cleaning_worker', function(auctionWorker, pid){
+  console.log("cleaning old auctionWorker " + auctionWorker);
+});
+auctionWorker.on('job', function(queue, job){
+  console.log("working job " + queue);
+});
+auctionWorker.on('success', function(queue, job, result){
+  console.log("job success " + queue + " >> " + result);
+});
+auctionWorker.on('error', function(queue, job, error){
+  console.log("job failed " + queue + " >> " + error);
+});
+
+recalcWorker.on('start', function(){ console.log("recalcWorker started"); });
+recalcWorker.on('end', function(){ console.log("recalcWorker ended"); });
+recalcWorker.on('cleaning_worker', function(recalcWorker, pid){
+  console.log("cleaning old recalcWorker " + recalcWorker);
+});
+recalcWorker.on('job', function(queue, job){
+  console.log("working job " + queue);
+});
+recalcWorker.on('success', function(queue, job, result){
+  console.log("job success " + queue + " >> " + result);
+});
+recalcWorker.on('error', function(queue, job, error){
+  console.log("job failed " + queue + " >> " + error);
+});
 
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){
-  queue.enqueue('auction', 'auction-closing',  []);
+  queue.enqueue('auction', 'auction_closing',  []);
+  queue.enqueue('recalculation', 'recalculation', []);
 });
+
 
 // Queued Invoice creation
 // Each iteration is only run after the last iteration has stopped.

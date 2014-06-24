@@ -78,6 +78,8 @@ module.exports = {
 
       // remove first item because it's the auction
       models.bids.splice(0, 1);
+      // sort bids by time
+      bids = _.sortBy(bids, function(bid) { return bid.created_at; });
 
       // update creation time for bids
       bids.forEach(function(bid) {
@@ -259,31 +261,51 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
-      var httpStatus = 200;
-      var message;
-
       if (err) { console.log(err); message = err.message; httpStatus = 500; }
 
-      var auction;
-      if (httpStatus === 200) {
-        // make sure auction is closed
-        auction = models.auction;
-        if (auction.open) {
-          message = "Auction is still open.";
-          console.log(message);
-          httpStatus = 500;
-        }
+      var httpStatus = 200;
+      var message;
+      var auction = models.auction;
+
+      // make sure auction is closed
+      if (auction && auction.open) {
+        message += "Auction is still open.";
+        console.log(message);
+        httpStatus = 500;
       }
 
-      if (httpStatus === 200) {
+      // figure out the current recalcultion round
+      db.getRecalculations(function(err, results) {
+        if (err) {
+          console.log(err);
+          httpStatus = 500;
+        }
+
+        // find recalculation for this auction
+        var recalculation = _.find(results, function(result) {
+          return auction && auction._id === result.auctionId;
+        });
+
+        // if no recalculation found, run with max round params
+        if (!recalculation) {
+          recalculation = {};
+          recalculation.auctionId = auction._id;
+          recalculation.round = config.rounds.maxRounds;
+          var now = new Date().getTime();
+          var lastRound = config.rounds["round" + recalculation.round];
+          recalculation.expiration = now + lastRound;
+        }
+
         // call re-calculate auction
-        auctionEnd.recalculateAuction(auction, function(err, results) {
-          if (err) { console.log(err); message = err.message; httpStatus = 500; }
+        auctionEnd.recalculateAuction(auction, recalculation, function(err, results) {
+          if (err) {
+            console.log(err);
+            httpStatus = 500;
+          }
           else { message = {ok: true}; }
           return res.send(httpStatus, message);
         });
-      }
-      else { return res.send(httpStatus, message); }
+      });
     });
   }
 };

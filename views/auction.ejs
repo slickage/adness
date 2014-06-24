@@ -37,7 +37,7 @@
             <div class="row">
               <div class="col-sm-12">
                 ID: <strong><%= bids[i]._id %></strong>
-                <% if (bids[i].valid === false) { %>
+                <% if (bids[i].invalid === true) { %>
                   <span class="text-danger"><strong>INVALIDATED</strong></span>
                 <% } %>
                 <br>

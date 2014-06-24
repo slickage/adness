@@ -79,3 +79,19 @@ ddoc.views.getAuctionInvoices = {
     }
   }
 };
+
+ddoc.views.getRecalculations = {
+  map: function(doc) {
+    if (doc.type === 'recalculation') {
+      emit(doc._id, doc);
+    }
+  }
+};
+
+ddoc.views.getUserBidsPerAuction = {
+  map: function(doc) {
+    if (doc.type === 'bid') {
+      emit([doc.auctionId, doc.user.userId], doc);
+    }
+  }
+};

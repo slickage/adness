@@ -61,5 +61,14 @@ module.exports = {
     {
       name: 'Global'
     },
-  ]
+  ],
+  rounds: {
+    maxRounds: 6,
+    round1: { timeOffset: 1000 * 60 * 60 * 24, discount: 0 },
+    round2: { timeOffset: 1000 * 60 * 60 * 12, discount: 0.075 },
+    round3: { timeOffset: 1000 * 60 * 60 * 6, discount: 0.15 },
+    round4: { timeOffset: 1000 * 60 * 60 * 3, discount: 0.30 },
+    round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
+    round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
+  }
 };

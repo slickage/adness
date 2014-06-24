@@ -1,3 +1,4 @@
 module.exports = {
-  "auction-closing": { perform: require('./auction-closing') }
+  "auction_closing": { perform: require('./auction_closing') },
+  "recalculation": { perform: require('./auction_recalculation') }
 };

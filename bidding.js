@@ -26,16 +26,26 @@ module.exports = function(slots, bids) {
     // else break out and return what we have
     else { break; }
 
+    // adjust slots if bid is void
+    var bidSlots = 0;
+    if (highestBid.void && highestBid.wonSlots) {
+      bidSlots = highestBid.wonSlots;
+    }
+    else if (highestBid.void && !highestBid.wonSlots) {
+      bidSlots = 0;
+    }
+    else { bidSlots = highestBid.slots; }
+
     // add this bid to the list of winning bids
     retVal.winningBids.push(highestBid);
 
     // find the number of slots this bid fulfills
-    slotsFilled += highestBid.slots;
+    slotsFilled += bidSlots;
 
     // fill the slots with the winning bid
     var counter = 0;
     while (retVal.primarySlots.length < slots &&
-           counter < highestBid.slots) {
+           counter < bidSlots) {
       retVal.primarySlots.push(highestBid);
       counter++;
     }
@@ -74,13 +84,23 @@ module.exports = function(slots, bids) {
     // else break out and return what we have
     else { break; }
 
+    // adjust slots if bid is void
+    var secBidSlots = 0;
+    if (secondaryHighestBid.void && secondaryHighestBid.wonSlots) {
+      secBidSlots = secondaryHighestBid.wonSlots;
+    }
+    else if (secondaryHighestBid.void && !secondaryHighestBid.wonSlots) {
+      secBidSlots = 0;
+    }
+    else { secBidSlots = secondaryHighestBid.slots; }
+
     // find the number of slots this bid fulfills
-    secondarySlotsFilled += secondaryHighestBid.slots;
+    secondarySlotsFilled += secBidSlots;
 
     // fill the slots with the winning bid
     var secondaryCounter = 0;
     while (retVal.secondarySlots.length < slots &&
-           secondaryCounter < secondaryHighestBid.slots) {
+           secondaryCounter < secBidSlots) {
       retVal.secondarySlots.push(secondaryHighestBid);
       secondaryCounter++;
     }

@@ -3,16 +3,19 @@ var config = require('./config');
 var request = require('request');
 var async = require('async');
 
-function createAuctionInvoice(auctionId, user, webhook) {
+function createAuctionInvoice(auctionId, user, expiration, discount, webhook) {
   var invoice = {};
   invoice.currency = "BTC";
+  invoice.expiration = expiration;
   invoice.min_confirmations = Number(config.bitcoin.numberOfConfs);
   invoice.line_items = [];
   for (var i = 0; i < user.lineItems.length; i++) {
     var lineItem = {};
     lineItem.description = "Auction " + auctionId + " Ad Slot for " + user.lineItems[i].region;
     lineItem.quantity = 1;
-    lineItem.amount = Number(user.lineItems[i].price);
+    var originalAmount = Number(user.lineItems[i].price);
+    var discountedAmount = originalAmount - (originalAmount * discount);
+    lineItem.amount = discountedAmount.toFixed(4);
     invoice.line_items.push(lineItem);
   }
   invoice.api_key = config.baron.key;
@@ -104,14 +107,14 @@ function saveInvoice(receipt, originalInvoice, body, queue, cb) {
       console.log("Encountered an Error, Queuing Invoice...");
       var newInvoice = { invoice: invoice, receipt: receipt };
       db.newQueuedInvoice(newInvoice, function(err, body) {
-        if (err) console.log(err);
+        if (err) { console.log(err); }
       });
     }
 
     errorMsg = "Could not generate an invoice, received response: ";
     errorMsg += body + "\n";
     errorMsg += error.message;
-    var invoiceError = new Error(errorMsg );
+    var invoiceError = new Error(errorMsg);
     return cb(invoiceError, undefined);
   }
 
@@ -120,7 +123,7 @@ function saveInvoice(receipt, originalInvoice, body, queue, cb) {
   // update receipt with new invoice
   originalInvoice.id = invoice.id;
   receipt.invoice = originalInvoice;
-  receipt.invoiceStatus = "sent",
+  receipt.invoiceStatus = "sent";
   db.updateReceipt(receipt, function(err, body) {
     if (err) { return cb(err, undefined); }
     console.log("Updated Receipt " + receipt._id + " with Invoice ID " + receipt.invoice.id);
