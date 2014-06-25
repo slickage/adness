@@ -206,7 +206,9 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="deleteBidId">
-        <p>Are you sure you want to delete this Bid?</p>
+        <p>Are you sure you want to invalidate this Bid?</p>
+        <p>Invalidating this bid will also invalidate all bids from this user for this auction region. It will also try to void all invoices for all bids invalidated.</p>
+        <p>If the bidder has already paid an invoice that this process will try to invalidate, refunds may have to be provided manually.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -225,7 +227,15 @@
     $.ajax({
       url: "<%= browsePrefix %>/bids/" + bidId, 
       type: "DELETE",
-      success: function(data) { location.reload(); },
+      success: function(data) {
+        $('#deleteBidModal').modal('hide');
+        var message = "Here is a list of bids and invoices affected: \n";
+        data.forEach(function(datum) {
+          message += datum + '\n';
+        });
+        alert(message);
+        location.reload();
+      },
       error: function(err) {
        alert("There was an issue deleting this bid.");
        console.log(err);

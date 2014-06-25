@@ -88,10 +88,18 @@ ddoc.views.getRecalculations = {
   }
 };
 
-ddoc.views.getUserBidsPerAuction = {
+ddoc.views.getUserBidsPerRegion = {
   map: function(doc) {
     if (doc.type === 'bid') {
-      emit([doc.auctionId, doc.user.userId], doc);
+      emit([doc.auctionId, doc.region, doc.user.userId], doc);
+    }
+  }
+};
+
+ddoc.views.getUserInvoices = {
+  map: function(doc) {
+    if (doc.type === 'receipt') {
+      emit([doc.metadata.auctionId, doc.metadata.user.userId], doc);
     }
   }
 };

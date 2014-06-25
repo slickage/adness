@@ -297,9 +297,9 @@ var db = {
       else { cb(err, undefined); }
     });
   },
-  getUserBidsPerAuction: function(auctionId, userId, cb) {
-    var params = {startkey: [auctionId, userId], endkey: [auctionId, userId]};
-    var view = 'getUserBidsPerAuction';
+  getUserBidsPerRegion: function(auctionId, region, userId, cb) {
+    var params = {startkey: [auctionId, region, userId], endkey: [auctionId, region, userId]};
+    var view = 'getUserBidsPerRegion';
     couch.view(config.couchdb.name, view, params, function(err, body) {
       if (err) { console.log(err); return cb(err, undefined); }
 
@@ -832,7 +832,20 @@ var db = {
   },
   getAuctionInvoices: function(auctionId, cb) {
     var params = {startkey: [auctionId], endkey: [auctionId]};
-    couch.view(config.couchdb.name, 'getAuctionInvoices', params, function(err, body) {
+    var view = 'getAuctionInvoices';
+    couch.view(config.couchdb.name, view, params, function(err, body) {
+      if (!err) {
+        var invoices = [];
+        body.rows.forEach(function(doc) { invoices.push(doc.value); });
+        return cb(null, invoices);
+      }
+      else { return cb(err, undefined); }
+    });
+  },
+  getUserInvoices: function(auctionId, userId, cb) {
+    var params = {startkey: [auctionId, userId], endkey: [auctionId, userId]};
+    var view = "getUserInvoices";
+    couch.view(config.couchdb.name, view, params, function(err, body) {
       if (!err) {
         var invoices = [];
         body.rows.forEach(function(doc) { invoices.push(doc.value); });

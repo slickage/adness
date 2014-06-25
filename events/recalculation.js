@@ -176,7 +176,7 @@ function getInvoiceStatus(invoiceId, cb) {
   // check status of invoice against baron
   request.get(
     { uri: config.baron.internalUrl + '/api/invoices/' + invoiceId },
-    function(err, responce, body) {
+    function(err, response, body) {
       if (err) { return cb(err, undefined); }
       else {
         var parsedBody;
@@ -216,7 +216,11 @@ function bidsFromLineItems(lineItems, userId, paid) {
     }
     else {
       // create new bid
-      var newBid = { bidId: slot.bidId, userId: userId };
+      var newBid = {
+        bidId: slot.bidId,
+        userId: userId,
+        region: slot.region
+      };
       // assign bid status by paid var
       if (paid) { newBid.wonSlots = 1; }
       else { newBid.void = true; }
@@ -246,7 +250,7 @@ function collateBids(bids, newBids) {
       if (bid.void) { oldBid.void = bid.void; }
     }
     else {
-      var newBid = { bidId: bid.bidId };
+      var newBid = { bidId: bid.bidId, region: bid.region };
       // add wonSlots if exists
       if (bid.wonSlots) { newBid.wonSlots = bid.wonSlots; }
       // add void if exists
@@ -269,7 +273,7 @@ function resolveBid(auctionId, bid, cb) {
   db.forceUpdateBidStatus(newBid, function(forceErr, results) {
     // if bid is void, make all user's bids void
     if (results && bid.void === true) {
-      voidUserBids(auctionId, bid.userId, function(err) {
+      voidUserBidsPerRegion(auctionId, bid.region, bid.userId, function(err) {
         return cb(err);
       });
     }
@@ -277,15 +281,14 @@ function resolveBid(auctionId, bid, cb) {
   });
 }
 
-function voidUserBids(auctionId, userId, cb) {
+function voidUserBidsPerRegion(auctionId, region, userId, cb) {
   // get all bids for this auction for this user
-  db.getUserBidsPerAuction(auctionId, userId, function(err, userbids) {
+  db.getUserBidsPerRegion(auctionId, region, userId, function(err, userbids) {
     if (err) console.log(err);
     if (userbids) {
       async.eachSeries(
         userbids,
         function(userbid, callback) {
-          if (err) console.log(err);
           // check if bid is void already
           if (userbid.void) { return callback(null); }
           // otherwise update this userbid

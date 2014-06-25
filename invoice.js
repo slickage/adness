@@ -81,7 +81,7 @@ function generateInvoice(invoice, receipt, queue, cb) {
       method: "POST",
       form: invoice
     },
-    function(err, responce, body) {
+    function(err, response, body) {
       if (err) {
         if (queue) {
           console.log("Encountered an Error, Queuing Invoice...");
