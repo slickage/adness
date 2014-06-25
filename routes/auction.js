@@ -241,6 +241,26 @@ module.exports = {
         if (req.body.regions) auction.regions = req.body.regions;
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
+
+          if (body) {
+            // update air object 
+            var air = {
+              auctionId: auction._id,
+              adsStart: auction.adsStart,
+              adsEnd: auction.adsEnd
+            };
+            db.getAdsInRotation(auction._id + "-air", function(err, result) {
+              if (result) {
+                db.upsertAdsInRotation(air, function(err, results) {
+                  var message = "Updated AIR object for auction: ";
+                  message += auction._id;
+                  console.log(message);
+                });
+              }
+            });
+          }
+
+          // return 
           req.flash('info', "Auction " + body.id + " Updated.");
           res.end();
         });
