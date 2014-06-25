@@ -54,10 +54,12 @@
             </div>
             <form action="<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>" method="post">
 
-              CSS (treat as if you were between two &lt;style&gt; tags);
+              CSS: <br />
+              <em>- Write as if you were between &lt;style&gt; tags</em><br>
+              <em>- Use a unique prefix for all classes, no IDs</em>
               <textarea name="css" id="upload-css" rows="3"><% if(ad && ad.html) { %><%- ad.css %><% } %></textarea>
 
-              <br><br>
+              <br>
               HTML:
               <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
 
