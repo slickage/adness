@@ -506,6 +506,7 @@ var db = {
 
     var ad = {
       html: html,
+      css: body.css,
       username: body.user.username,
       userId: body.user.userId,
       regions: adRegions,
@@ -576,6 +577,8 @@ var db = {
         if (body.approved !== true && body.submitted !== true) {
           if (ad.html) body.html = validate.html(ad.html);
         }
+
+        if (ad.css) { body.css = ad.css; }
 
         if (ad.regions) {
           // cull regions

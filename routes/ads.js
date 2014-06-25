@@ -19,6 +19,11 @@ exports = module.exports = {
       req.body.regions = regions;
     }
 
+    // don't allow ads with no regions
+    if (req.body.regions.length === 0) {
+      return res.redirect(req.browsePrefix);
+    }
+
     db.newAd(req.body, function(err, body, header) {
       if (err) { console.log(err); }
       res.redirect(req.browsePrefix);
@@ -58,7 +63,13 @@ exports = module.exports = {
           req.body.regions = regions;
         }
 
+        // don't allow ads with no regions
+        if (req.body.regions.length === 0) {
+          return res.redirect(req.browsePrefix);
+        }
+
         if (req.body.html) ad.html = req.body.html;
+        if (req.body.css) ad.css = req.body.css;
         if (req.body.regions) ad.regions = req.body.regions;
         if (req.body.approved) ad.approved = req.body.approved;
         if (req.body.submitted) ad.submitted = req.body.submitted;
