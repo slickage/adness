@@ -58,6 +58,35 @@ Install these dependencies as per your OS:
   },
   bitcoin: {
     numberOfConfs: process.env.CONFS || 2
+  },
+  regions: [
+    {
+      name: 'US',
+      countries: ['US'],
+      exclusive: false
+    },
+    {
+      name: 'CN',
+      countries: ['CN'],
+      exclusive: false
+    },
+    {
+      name: 'RU',
+      countries: ['RU'],
+      exclusive: false
+    },
+    {
+      name: 'Global'
+    },
+  ],
+  rounds: {
+    maxRounds: 6,
+    round1: { timeOffset: 1000 * 60 * 60 * 24, discount: 0 },
+    round2: { timeOffset: 1000 * 60 * 60 * 12, discount: 0.075 },
+    round3: { timeOffset: 1000 * 60 * 60 * 6, discount: 0.15 },
+    round4: { timeOffset: 1000 * 60 * 60 * 3, discount: 0.30 },
+    round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
+    round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
   }
 ```
 * port: The port to run this server on
@@ -73,6 +102,8 @@ Install these dependencies as per your OS:
 * admin: The administrators emails for registration and payment notification
 * site: The URL of this server
 * bitcoin: The number of confirmations before a payment is considered paid
+* regions: The geographical regions that an auction/ad/bid can contain
+* rounds: The number of and configurations for each recalculation round
 
 **NOTES:**  
 * Properties in config.js can be overriden using a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file and [foreman](https://github.com/ddollar/foreman).
@@ -98,49 +129,49 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 
 ## Public
 
-#### Views
+#### Views (GET)
 ```
-/sb - index route
+/sb - Index route
 /sb/rules - Auction Rules
 /sb/history - Auction History
 ```
 
 ## Auction
 
-#### Views
+#### Views (GET)
 ```
-/sb/auctions/:auctionId - view a specific auction
+/sb/auctions/:auctionId - View a specific auction
 ```
 
 #### POST Routes
 ```
-/sb/auctions/enable/:auctionId - enable a specific auction (Admin access only)
-/sb/auctions/disable/:auctionId - disable a specific auction (Admin access only)
+/sb/auctions/enable/:auctionId - Enable a specific auction (Admin access only)
+/sb/auctions/disable/:auctionId - Disable a specific auction (Admin access only)
 /sb/auctions/edit - Edit a specific auction (Admin access only)
 /sb/auctions/ - Create a new auction (Admin access only)
 ```
 
 #### DELETE Routes
 ```
-/sb/auctions/:auctionId - delete a specific auction
+/sb/auctions/:auctionId - Delete a specific auction
 ```
 
 ## Bids
 
 #### POST Routes
 ```
-/sb/bids/ - create a new bid 
-/sb/bids/edit - edit a bid (Admin access only)
+/sb/bids/ - Create a new bid 
+/sb/bids/edit - Edit a bid (Admin access only)
 ```
 
 #### DELETE Routes
 ```
-/sb/bids/:bidId - delete a bid
+/sb/bids/:bidId - Delete a bid
 ```
 
 ## Ads
 
-#### Views
+#### Views (GET)
 ```
 /sb/uses/:userId - All ads for a specific user
 /sb/ads/upload - Ad Creation view
@@ -151,18 +182,18 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 
 #### POST Routes
 ```
-/sb/ads/:adId/approve - approve a user's ad (admin access only)
-/sb/ads/:adId/reject - reject a user's ad (admin access only)
-/sb/ads/:adId/delete - delete a user's ad
-/sb/ads/:adId/inRotation - add a user's ad to the auction's list of ads (for winners only)
-/sb/ads/:adId/outRotation - remove a user's ad from the auction's list of ads (for winners only)
-/sb/ads/:adId - update an ad
-/sb/ads/ - create a new ad
+/sb/ads/:adId/approve - Approve a user's ad (admin access only)
+/sb/ads/:adId/reject - Reject a user's ad (admin access only)
+/sb/ads/:adId/delete - Delete a user's ad
+/sb/ads/:adId/inRotation - Add a user's ad to the auction's list of ads (for winners only)
+/sb/ads/:adId/outRotation - Remove a user's ad from the auction's list of ads (for winners only)
+/sb/ads/:adId - Update an ad
+/sb/ads/ - Create a new ad
 ```
 
 #### DELETE Routes
 ```
-/sb/ads/:adId - delete a user's ad
+/sb/ads/:adId - Delete a user's ad
 
 ```
 
@@ -170,8 +201,11 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 
 #### Views
 ```
-/admin/ads/submitted - view all submitted ads from all users (admin access only)
-/admin/auctions/edit/:auctionId - edit a user's auction (admin access only)
+/admin/invoices/:auctionId - View all invoices for a particular auction
+/admin/invoices - View all closed auctions - used to choose an auction's invoices to view.
+/admin/ads/submitted - View all submitted ads from all users (admin access only)
+/admin/auctions/edit/:auctionId - Edit a user's auction (admin access only)
+/admin/auctions/recalculate/:auctionId - Manually trigger an auction recalculation (Does not invalidate invoices or bids, just auction slot recalculation)
 /admin - CMS page for auctions (admin access only)
 ```
 
@@ -180,24 +214,38 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 # Object Documentation
 
 ## Auctions
-Auctions have a start/end/trueEnd time, number of ad slots, and an enabled flag that represent a vehicle for the set of bids from the community.
+Auctions have a start/end/trueEnd time, regions, and an enabled flag that represent a vehicle for the set of bids from the community.
 
 ```
 start (datetime)
 end (datetime)
+adsStart (datetime)
+adsEnd (datetime)
 trueEnd (datetime)
-slots (number)
+regions (array of strings)
 enabled (bool)
+description (string)
 ```
-##### Times
-The start/end/trueEnd times is the period in which an auction is exposed to the public and bidding can take place. The end time is a general close of auction time at which point the auction could close at any point up to 30 minutes after this stated time. The trueEnd time is the actual time the auction will close but is hidden away from user to prevent auction sniping.
+##### Start/End
+The start/end/trueEnd datetimes are the boundaries of a period in which an auction is exposed to the public and bidding can take place. The end time is a general close of auction time at which point the auction could close at any point up to 30 minutes after this stated time. The trueEnd time is the actual time the auction will close but is hidden away from user to prevent auction sniping.
 
-##### Slots
-The slots property indicates the number of slots available for this auction. 
+##### AdsStart/AdsEnd
+The adsStart/adsEnd datetimes are the boundaries of a period in which the ads that have been auctioned are display on the forum. These times must start after the end time of the auction itself. Optimally, the start of the ads period should be at least two days after the end of an auction. This is to allow time for the auction recalculation process to complete in full. 
+
+##### Regions
+Each region is a string enumeration that should match one of the values defined in the configs.js file. An auction can have 1 or more regions tied to it and each region will have it own slots and bids.   
+A region object is defined as:   
+```
+name (string)
+slots (number)
+```
 
 ##### Enabled
 This property indicates whether the auction should be displayed to the public regardless of auction start/end/trueEnd times. This is so the admin has a fail safe way to stop an auction 
 if needed. 
+
+##### Description
+An extra text area where the admin can leave some extra information about this particular auction. 
 
 #### Mutability of an Auction
 As an auction opens and bidding takes place, the auction object itself is modified through the bidding algorithm. Each time an auction is viewed after a bid is placed, the algorithm determines two things, the current set of bid that are considered "winning" and the particular bids that fill the number of slots listed in this auction. 
@@ -212,29 +260,65 @@ Bids belong to a particular auction and can only be placed in auctions that are 
 created_at (datetime)
 price (number)
 slots (number)
+region (string)
 user (object)
 auctionId (id)
 ```
 
-A bid stores the user that placed the bid, the price they are willing to pay for each of their slots and the number of slots they want to bid on. The auctionId property ties the bid to a particular auction. 
+A bid stores the user that placed the bid, the price they are willing to pay for each of their slots and the number of slots they want to bid on. The auctionId property ties the bid to a particular auction. The region property ties this bid to a particular region of auction referenced by the auctionId.
+
+Bids themselves also have a series of states in which they can be in. These states are used by the system to declare whether the bidder has paid for this bid on time or not.  
+The list of states for a bid are:  
+```
+void (bidder has not paid the invoice for this bid on time)
+invalid (an admin has manually invalidated this bid)  
+wonSlots (the number of bids this bidder has paid for)  
+lost (this bid has not won any slot)  
+```
+
+The lost state is only assigned at the end of the recalculation process and is applied to only those bids that have not won any slots at any point in time.  
 
 ## Ads
-Each user can create ads and store them on the site. These ads are used after the user has won a slot, or many slots in the auction. A single ad can be in many different states: saved, submitted, approved, rejected, and in rotation.   
-
+Each user can create ads and store them on the site. These ads are used after the user has won a slot, or many slots in the auction. A single ad can be in many different states: saved, submitted, approved, rejected, and in rotation.  
 ```
-html (string)  
-username (string)  
-userId (number)  
-blacklistedCN (array of strings)  
-created_at (datetime)  
-modified_at (datetime)  
-approved (boolean)  
-submitted (boolean)  
-inRotation (boolean)  
-```  
+html (string)
+css (string)
+username (string)
+userId (number)
+region (array of strings)
+created_at (datetime)
+modified_at (datetime)
+approved (boolean)
+submitted (boolean)
+inRotation (boolean)
+```
 
-HTML is stripped for any malicious content using Google Caja. User's name and ID are taken down to provide ownership of the ad. BlacklistedCN is an array of countries where this ad should not be shown (currently only US and CN are supported). Approved, submitted, and inRotation are all booleans that describe the state in which this ad is considered to be in. If all boolean flags are set to false, the ad is assumed to be in a saved state. The Approved boolean flag can only be set by an admin. 
+HTML is stripped for any malicious content using Google Caja. CSS is not sanitize but relies on the admin's best judgement before approving an ad. User's name and ID are taken down to provide ownership of the ad. Regions is an array of countries where this ad should be shown and are string enumerations that are tied into the config.js file. Approved, submitted, and inRotation are all booleans that describe the state in which this ad is considered to be in. If all boolean flags are set to false, the ad is assumed to be in a saved state. The Approved boolean flag can only be set by an admin. 
 
+## Receipts (Invoices)
+**This is not a publicly viewable object but is created and maintained on the backend.**  
+It basically maintains the state of an invoice sent to user for the ad slots that they have won.  
+The format of this object is as follows:  
+```
+created_at: (datetime)
+modified_at: (datetime)
+invoice: (invoice object as per Baron)
+invoiceStatus: (string)
+invoiceType: (string)
+metadata: (object)
+```
+
+The invoiceStatus defines the current status of the invoice based on webhooks called by Baron. The invoiceType is an internal enumeration that just declares what this invoice is for. This is used to call the proper callback if an invoice is queued for later processing. 
+
+All invoices have the ability to be queued if the system cannot reach Baron. It's saved as a object in the database and a background process continually monitors the "queue" for any invoices that were not processed. 
+
+## Recalculation
+**This is not a publicly viewable object but is created and maintained on the backend.**  
+After an auction finishes and invoices are sent to all winners, an auction recalculation is schedule as per the variables set in the config.js file. The default settings schedule the recalculations to be fired 24, 12, 6, 3, 1.5, and 1.5 hours after the auction closes, progressively. This should add up to 6 recalculation rounds that all end after around 48 hours from the end of the auction. Each recalculation round also discounts the new winners based on the value set for each round. Each progressive round has a higher and higher discount but can be changed in the configurations. 
+
+During each recalculation, all the invoices sent out are checked for payment. If payment is made, the bids listed in the invoices are updated with their proper states. Having the bids updated, a recalculation of all the auction slots is made, and if there are new winners or previous winners with more slots, new invoices are sent out for those slots. 
+
+Each invoices sent out is set with an expiration time that matches when the length of time before next recalculation is set to begin. 
 
 # API 
 There are additional API routes that are exposed but will be covered in a wiki page at a later point in time.
