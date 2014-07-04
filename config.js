@@ -29,7 +29,7 @@ module.exports = {
     name: process.env.DB_NAME || 'adness'
   },
   baron: {
-    url: process.env.BARON_URL || 'http://localhost:5000',
+    url: process.env.BARON_URL || 'http://baron.example.com',
     internalUrl: process.env.BARON_INTERNAL_URL || 'http://localhost:5000',
     key: process.env.BARON_API_KEY || ''
   },
@@ -37,7 +37,8 @@ module.exports = {
     emails: process.env.ADMIN_EMAILS || ['admin@bitcointalk.org'],
   },
   site: {
-    url: process.env.SITE_URL || 'http://localhost:8080'
+    url: process.env.SITE_URL || 'http://example.com',
+    internalUrl: process.env.SITE_INTERNAL_URL || 'http://localhost:3000'
   },
   bitcoin: {
     numberOfConfs: process.env.CONFS || 2

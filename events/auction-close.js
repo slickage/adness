@@ -248,7 +248,7 @@ function generateBidders(bids) {
 function notifyWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won.");
 
-  var webhook = config.site.url + '/hooks/auctions/' + auctionId;
+  var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
   var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
   var data = {
     user: winner,
@@ -260,7 +260,7 @@ function notifyWinner(winner, expiration, discount, auctionId) {
 function notifyModifiedWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won more slots.");
 
-  var webhook = config.site.url + '/hooks/auctions/' + auctionId;
+  var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
   var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
   var data = {
     user: winner,

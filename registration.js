@@ -12,7 +12,7 @@ module.exports = {
     if (!user) { return cb({message: 'no user found.'}, undefined); }
 
     // build an invoice for the registration fee
-    var webhook = config.site.url + "/hooks/registration";
+    var webhook = config.site.internalUrl + "/hooks/registration";
     var invoiceForm = invoice.createRegistrationInvoice(user, webhook);
     var data = {
       userId: user.userId,
