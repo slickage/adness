@@ -52,13 +52,19 @@
     <!-- Auction Regions -->
     <div class="row">
       <% auction.regions.forEach(function(region) { %>
-        <hr />
-        <strong><%= region.name %> Winning Bids</strong><br />
+        <br /><br />
+        <strong><%= region.name %> Bids</strong><br />
+        <%= Number(region.slots) %> slots are for auction.<br />
         <em>
-          Advertising slots probability: <%= region.probability %> or <%= region.chances %>
+          Advertising slots probability: 
+          <% if (Array.isArray(region.probability)) { %>
+            <% for (var i = 0; i < region.probability.length; i++) { %>
+              <br /><%= region.probability[i] %> or <%= region.chances[i] %>
+            <% } %>
+          <% } else { %>
+            <%= region.probability %> or <%= region.chances %>
+          <% } %>
         </em>
-        <br>
-        <%= Number(region.slots) + 2 %> are auctioned off. One is the factoid slot. One goes to PIA for hosting the forum.
         <br />
 
         <% region.primarySlots.forEach(function(slot) { %>
@@ -107,7 +113,7 @@
 
         <% if (region.primarySlots.length === 0) { %>
           <div class="slot slot_text">
-            No Current Winners
+            No Current Bidders
           </div>
         <% } %>
       <% }) %>

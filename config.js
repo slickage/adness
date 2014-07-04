@@ -71,5 +71,8 @@ module.exports = {
     round4: { timeOffset: 1000 * 60 * 60 * 3, discount: 0.30 },
     round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
     round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
+  },
+  ads: {
+    reservedSlots: process.env.RESERVED_SLOTS || 2
   }
 };
