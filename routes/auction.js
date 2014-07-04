@@ -90,6 +90,10 @@ module.exports = {
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
 
+      // add target="_blank" to auction description
+      var targetBlank = '<a target="_blank"';
+      auction.description = auction.description.replace('<a', targetBlank);
+
       // render view
       res.render('auction', {
         auction: auction,

@@ -34,6 +34,10 @@ module.exports = function(req, res) {
       
       // auction probabilities
       probability.probability(auction);
+
+      // add target="_blank" to auction description
+      var targetBlank = '<a target="_blank"';
+      auction.description = auction.description.replace('<a', targetBlank);
     });
 
     // serverTime 
