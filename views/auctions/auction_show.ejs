@@ -53,8 +53,9 @@
     <div class="row">
       <% auction.regions.forEach(function(region) { %>
         <br /><br />
-        <strong><%= region.name %> Winning Bids</strong><br />
+        <strong><%= region.name %> Bids</strong><br />
         <%= Number(region.slots) %> slots are for auction.<br />
+        <%= Number(reservedSlots) %> universal reserved slots.<br />
         <em>
           Advertising slots probability: 
           <% if (Array.isArray(region.probability)) { %>
@@ -172,7 +173,7 @@
 
         <% if (region.primarySlots.length === 0) { %>
           <div class="slot slot_text">
-            No Current Winners
+            No Current Bidders
           </div>
         <% } %>
       <% }) %>

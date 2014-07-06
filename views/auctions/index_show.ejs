@@ -55,6 +55,7 @@
         <br /><br />
         <strong><%= region.name %> Bids</strong><br />
         <%= Number(region.slots) %> slots are for auction.<br />
+        <%= Number(reservedSlots) %> universal reserved slots.<br />
         <em>
           Advertising slots probability: 
           <% if (Array.isArray(region.probability)) { %>

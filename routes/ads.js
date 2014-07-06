@@ -232,6 +232,12 @@ function getRandomAds(country, limit, callback) {
       function(err, results) {
         if (err) { console.log(err); results = []; }
 
+        // results are ads for every winner for all matching regions
+        // the number of ads per winner is in accordance to the number of
+        // slots they've won for this region. 
+
+        // Inject the reserved ads at this point. 
+
         // random select ads until limit is reached and callback
         results = fillAds(results, limit);
 

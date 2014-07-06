@@ -94,6 +94,9 @@ module.exports = {
       var targetBlank = '<a target="_blank"';
       auction.description = auction.description.replace('<a', targetBlank);
 
+      // number of reservedSlots
+      var reservedSlots = config.ads.reservedSlots;
+
       // render view
       res.render('auction', {
         auction: auction,
@@ -102,6 +105,7 @@ module.exports = {
         registered: registered,
         regStatus: regStatus,
         approvedRegions: approvedRegions,
+        reservedSlots: reservedSlots,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user,
