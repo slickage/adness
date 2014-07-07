@@ -10,5 +10,6 @@ module.exports = {
   profile: require('./routes/profile'),
   auction: require('./routes/auction'),
   bid: require('./routes/bid'),
-  auction_invoices: require('./routes/auction_invoices')
+  auction_invoices: require('./routes/auction_invoices'),
+  reserved_ads: require('./routes/reserved_ads')
 };

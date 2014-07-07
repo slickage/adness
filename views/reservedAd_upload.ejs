@@ -21,29 +21,10 @@
 
     <!-- Main Content -->
     <div class="upload-header text-center">
-      <h1>Bitcoin Talk Ad Uploader</h1>
+      <h1>Reserved Ad Uploader</h1>
       <% if (ad) { %>
         Editing Ad: <%= ad._id %>
       <% } %>
-      <noscript>
-        <br>
-        We've noticed you're not using JavaScript.<br>
-        This page may not work at its best without JavaScript.<br>
-
-        <strong>Things you're missing out on: </strong><br>
-        <ul style="width: 300px; margin: auto;">
-          <li>
-            Saving your ads before submitting.
-          </li>
-          <li>
-            Preview your ad before submitting.
-          </li>
-          <li>
-            Syntax Highlighting in the text area.
-          </li>
-        </ul>
-        But you can still submit ads. 
-      </noscript>
     </div>
 
     <div class="container-fluid bootstrap-fluid-fix">
@@ -52,45 +33,30 @@
             <div style="padding-bottom: 20px;">
               Add your Ad HTML/CSS below:
             </div>
-            <form action="<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>" method="post">
 
-              CSS: <br />
-              <em>- Write as if you were between &lt;style&gt; tags</em><br>
-              <em>- Use a unique prefix for all classes, no IDs</em>
-              <textarea name="css" id="upload-css" rows="3"><% if(ad && ad.html) { %><%- ad.css %><% } %></textarea>
+            CSS: <br />
+            <em>- Write as if you were between &lt;style&gt; tags</em><br>
+            <em>- Use a unique prefix for all classes, no IDs</em>
+            <textarea name="css" id="upload-css" rows="3"><% if(ad && ad.html) { %><%- ad.css %><% } %></textarea>
 
-              <br>
-              HTML:
-              <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+            <br>
 
-              <br>
-              
-              Please choose the regions you want your ad to display in. 
-              <% regions.forEach(function(region) { %>
-                <div class="checkbox">
-                  <label>
-                    <input id="<%= region %>" name="<%= region %>" type="checkbox" <% if (ad && ad.regions && ad.regions.indexOf(region) > -1) { %>checked<% } %> class="region"><%= region %>
-                  </label>
-                </div>
-              <% }) %>
-              <noscript>
-                <input type="hidden" name="submitted" id="submitted" value="true">
-                <br>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </noscript>
-            </form>
+            HTML:
+            <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+
+            <br>
+            
+            Please choose the regions you want your ad to display in. 
+            <% regions.forEach(function(region) { %>
+              <div class="checkbox">
+                <label>
+                  <input id="<%= region %>" name="<%= region %>" type="checkbox" <% if (ad && ad.regions && ad.regions.indexOf(region) > -1) { %>checked<% } %> class="region"><%= region %>
+                </label>
+              </div>
+            <% }) %>
+
         </div>
       </div>
-
-      <noscript>
-        <div class="row text-center">
-          <strong>
-          Since you're not using JS, 
-          ignore eveything under this line
-        </strong>
-        </div>
-        <hr>
-      </noscript>
 
       <div id="preview-container" class="row review-section">
         <div class="col-sm-offset-3 col-sm-6 well">
@@ -104,10 +70,10 @@
 
           <div class="btn-group btn-group-justified review-buttons">
             <div class="btn-group">
-              <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
+              <button class="btn btn-default pull-right" onclick="submitForReview(false);">Add But don't Use</button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-success pull-right" onclick="submitForReview(true);">Submit for Review</button>
+              <button class="btn btn-success pull-right" onclick="submitForReview(true);">Add and use right away</button>
             </div>
           </div>
         </div>
@@ -187,7 +153,7 @@
         preview.innerHTML = parsedHtml;
       }
 
-      function submitForReview(submit) {
+      function submitForReview(in_use) {
         var html = $("#preview").html();
         var css = cssCodeMirror.getValue();;
 
@@ -202,20 +168,20 @@
         }
 
         var data = {
-          submitted: submit,
+          in_use: in_use,
           css: css,
           html: html,
           regions: regions
         }
 
-        var url = "<%= browsePrefix %>/ads<% if(ad) { %>/<%= ad._id %><% } %>";
+        var url = "/admin/ads/reserved/<% if(ad) { %><%= ad._id %><% } %>";
 
         $.ajax({
           type: "POST", 
           url: url, 
           data: data,
           success: function(data) {
-            window.location="<%=browsePrefix%>/users/<%= user.userId %>";
+            window.location = "/admin/ads/reserved";
           } 
         });
       }

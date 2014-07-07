@@ -195,26 +195,32 @@ exports = module.exports = {
     });
   },
   random: function(req, res) {
-    // ip -> country code (country)
-    var ip = req.query.ip;
-    var geo = geoip.lookup(ip);
-    var country = "";
-    if (geo) { country = geo.country; }
+    req.model.load('reservedAds', req);
+    req.model.end(function(err, models) {
+  
+      var reservedAds = models.reservedAds;
 
-    // number Of Ads to return (limit)
-    var limit = req.query.limit;
-    if (!limit || limit == '0' ) { limit = 1; }
+      // ip -> country code (country)
+      var ip = req.query.ip;
+      var geo = geoip.lookup(ip);
+      var country = "";
+      if (geo) { country = geo.country; }
 
-    // get ads based on region and limit
-    // should always return an array even if it is empty or error
-    getRandomAds(country, limit, function(err, ads) {
-      if (err) { console.log(err); }
-      return res.json(ads);
+      // number Of Ads to return (limit)
+      var limit = req.query.limit;
+      if (!limit || limit == '0' ) { limit = 1; }
+
+      // get ads based on region and limit
+      // should always return an array even if it is empty or error
+      getRandomAds(country, limit, reservedAds, function(err, ads) {
+        if (err) { console.log(err); }
+        return res.json(ads);
+      });
     });
   }
 };
 
-function getRandomAds(country, limit, callback) {
+function getRandomAds(country, limit, reservedAds, callback) {
   // get adsInRotation object
   db.getLatestAdsInRotation(function(err, air) {
     var error;
@@ -225,6 +231,14 @@ function getRandomAds(country, limit, callback) {
 
     // get all regions that match this country code
     var matchingRegions = findMatchingRegions(country, air.regions);
+
+    // filter reservedAds in use
+    var inUseAds = _.filter(reservedAds, function(ad) {
+      return ad.in_use === true;
+    });
+
+    // get all reservedAds that match this country
+    var matchingAds = findMatchingReservedAds(country, inUseAds);
 
     // for each matching region, 
     // get all the ads from the winners
@@ -237,6 +251,7 @@ function getRandomAds(country, limit, callback) {
         // slots they've won for this region. 
 
         // Inject the reserved ads at this point. 
+        results = results.concat(matchingAds);
 
         // random select ads until limit is reached and callback
         results = fillAds(results, limit);
@@ -273,6 +288,37 @@ function findMatchingRegions(country, regions) {
     }
   });
   return matchingRegions;
+}
+
+function findMatchingReservedAds(country, ads) {
+  var matchingAds = [];
+
+  // for each ad get it's regions
+  ads.forEach(function(ad) {
+    var regionMatched = _.find(ad.regions, function(region) {
+      // get the same region from config
+      var configRegion = _.find(config.regions, { name: region });
+      var countriesList = configRegion.countries;
+      var exclusive = configRegion.exclusive;
+
+      // add any global region
+      if (!countriesList) { return true; }
+
+      // if there's a countries list and an exclusive boolean
+      if (countriesList && exclusive) {
+        if (!_.contains(countriesList, country)) { return true; }
+      }
+      else if (countriesList) {
+        if (_.contains(countriesList, country)) { return true; }
+      }
+      else { return false; }
+    });
+
+
+    if (regionMatched) { matchingAds.push(ad); }
+  });
+
+  return matchingAds;
 }
 
 // returns all the ads for a region
@@ -328,9 +374,11 @@ function getWinnersAds(winner, regionName, callback) {
 function cleanAd(ad) {
   delete ad._id;
   delete ad._rev;
+  delete ad.username;
   delete ad.userId;
   delete ad.type;
   delete ad.approved;
+  delete ad.in_use;
   delete ad.submitted;
   delete ad.inRotation;
   delete ad.rejected;

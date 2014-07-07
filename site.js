@@ -93,6 +93,14 @@ site.del(config.sbPrefix + '/ads/:adId', ensureAuthenticated, router.ads.deleteA
 // admin web routes
 site.get('/admin/invoices/:auctionId', ensureAuthenticated, router.auction_invoices.invoices);
 site.get('/admin/invoices', ensureAuthenticated, router.auction_invoices.auctions);
+
+site.get('/admin/ads/reserved', ensureAuthenticated, router.reserved_ads.showAds);
+site.get('/admin/ads/reserved/new', ensureAuthenticated, router.reserved_ads.newAd);
+site.get('/admin/ads/reserved/:reservedAdId/edit', ensureAuthenticated, router.reserved_ads.editAd);
+site.post('/admin/ads/reserved', ensureAuthenticated, router.reserved_ads.createAd);
+site.post('/admin/ads/reserved/:reservedAdId', ensureAuthenticated, router.reserved_ads.updateAd);
+site.del('/admin/ads/reserved/:reservedAdId', ensureAuthenticated, router.reserved_ads.deleteAd);
+
 site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.post('/admin/auctions/recalculate/:auctionId', ensureAuthenticated, router.auction.recalculateAuction);

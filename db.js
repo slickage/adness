@@ -734,8 +734,8 @@ var db = {
     });
   },
   getLatestAdsInRotation: function(cb) {
-    var now = new Date().getTime();
-    var params = {startkey: [null], endkey: [now]};
+    var now = Number(new Date().getTime());
+    var params = {startkey: [0], endkey: [now]};
     couch.view(config.couchdb.name, 'latestAdsInRotation', params, function(err, ads) {
       var air = {}; // return object
 
@@ -928,6 +928,131 @@ var db = {
           }
           return cb(err, body);
         });
+      }
+      else { return cb(err, undefined); }
+    });
+  },
+  newReservedAd: function(reservedAd, cb) {
+    // validate html
+    var html = validate.html(reservedAd.html);
+
+    // cull regions
+    var regions = _.pluck(config.regions, 'name');
+
+    // validate bid region against auction regions
+    var adRegions = reservedAd.regions;
+    adRegions.forEach(function(region) {
+      if (!_.contains(regions, region)) {
+        var errorMessage = 'Ad does not contain a valid region for auction';
+        return cb(new Error(errorMessage), undefined);
+      }
+    });
+
+    // in use
+    if (reservedAd.in_use) {
+      if (reservedAd.in_use.toLowerCase() === 'true') {
+        reservedAd.in_use = true;
+      }
+      else reservedAd.in_use = false;
+    }
+
+    var ad = {
+      html: html,
+      css: reservedAd.css,
+      username: reservedAd.user.username,
+      userId: reservedAd.user.userId,
+      regions: adRegions,
+      created_at: new Date().getTime(),
+      modified_at: new Date().getTime(),
+      type: 'reserved_ad',
+      in_use: reservedAd.in_use
+    };
+    couch.insert(ad, cb);
+  },
+  getReservedAd: function(reservedAdId, cb) {
+    couch.get(reservedAdId, null, function(err, body) {
+      if (!err) {
+        if (body.type !== 'reserved_ad') {
+          return cb({ message: 'Id is not for an reserved ad.'}, undefined );
+        }
+        cb(null, body);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  getReservedAds: function(cb) {
+    var view = 'getReservedAds';
+    couch.view(config.couchdb.name, view, function(err, body) {
+      if (!err) {
+        var reservedAds = [];
+        body.rows.forEach(function(doc) { reservedAds.push(doc.value); });
+        cb(null, reservedAds);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  updateReservedAd: function(reservedAd, cb) {
+    // ensure that the ad exists first
+    couch.get(reservedAd._id, null, function(err, body) {
+      if (err) {
+        console.log("This reserved ad does not exist.");
+        return cb(err, undefined);
+      }
+
+      if (body) {
+        // make sure we're getting an reservedAd
+        if (body.type !== 'reserved_ad') {
+          var typeErrorMessage = 'Id is not for an reserved ad.';
+          return cb(new Error(typeErrorMessage), undefined );
+        }
+
+        // update html if not approved or submitted
+        if (reservedAd.html) body.html = validate.html(reservedAd.html);
+
+        // css
+        if (reservedAd.css) { body.css = reservedAd.css; }
+
+        // regions
+        if (reservedAd.regions) {
+          // cull regions
+          var regions = _.pluck(config.regions, 'name');
+
+          // validate bid region against auction regions
+          var adRegions = reservedAd.regions;
+          adRegions.forEach(function(region) {
+            if (!_.contains(regions, region)) {
+              var errorMessage = 'Ad does not contain a valid region for auction';
+              return cb(new Error(errorMessage), undefined);
+            }
+          });
+
+          body.regions = adRegions;
+        }
+
+        // update modified_at
+        body.modified_at = new Date().getTime();
+
+        // in use
+        if (reservedAd.in_use) {
+          if (reservedAd.in_use.toLowerCase() === 'true') body.in_use = true;
+          else body.in_use = false;
+        }
+
+        // update ad
+        couch.insert(body, cb);
+      }
+    });
+  },
+  deleteReservedAd: function(reservedAdId, cb) {
+    // ensure that the ad exists first
+    couch.get(reservedAdId, null, function(err, body) {
+      if (!err) {
+        // make sure we're getting a bid
+        if (body.type !== 'reserved_ad') {
+          return cb({ message: 'Id is not for an reserved ad.'}, undefined );
+        }
+
+        couch.destroy(body._id, body._rev, cb);
       }
       else { return cb(err, undefined); }
     });

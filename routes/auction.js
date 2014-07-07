@@ -13,6 +13,7 @@ module.exports = {
     req.model.load('bids', req);
     req.model.load('registeredUser', req);
     req.model.load('userAds', req);
+    req.model.load('reservedAds', req);
     req.model.end(function(err, models) {
       if (err) {
         console.log(err);
@@ -56,8 +57,9 @@ module.exports = {
         region.latestPrice = latestPrice;
       });
 
-      // auction probabilities 
-      probability.probability(auction);
+      // number of reservedSlots and auction probabilities
+      var reservedAds = models.reservedAds || [];
+      probability.probability(auction, reservedAds);
 
       // update start and end time 
       var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
@@ -94,9 +96,6 @@ module.exports = {
       var targetBlank = '<a target="_blank"';
       auction.description = auction.description.replace('<a', targetBlank);
 
-      // number of reservedSlots
-      var reservedSlots = config.ads.reservedSlots;
-
       // render view
       res.render('auction', {
         auction: auction,
@@ -105,7 +104,6 @@ module.exports = {
         registered: registered,
         regStatus: regStatus,
         approvedRegions: approvedRegions,
-        reservedSlots: reservedSlots,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user,
@@ -254,8 +252,8 @@ module.exports = {
             // update air object 
             var air = {
               auctionId: auction._id,
-              adsStart: auction.adsStart,
-              adsEnd: auction.adsEnd
+              adsStart: Number(auction.adsStart),
+              adsEnd: Number(auction.adsEnd)
             };
             db.getAdsInRotation(auction._id + "-air", function(err, result) {
               if (result) {

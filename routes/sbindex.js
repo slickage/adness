@@ -5,6 +5,7 @@ var config = require('../config');
 
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
+  req.model.load('reservedAds', req);
   req.model.end(function(err, models) {
     if (err) console.log(err);
 
@@ -16,8 +17,8 @@ module.exports = function(req, res) {
       return auction.start;
     });
 
-    // update auction start and end times
     sortedOpen.forEach(function(auction) {
+      // update auction start and end times
       var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       startTime += ' (' + moment(auction.start).fromNow() +')';
@@ -31,9 +32,10 @@ module.exports = function(req, res) {
       adsEndTime += ' (' + moment(auction.adsEnd).fromNow() + ')';
       auction.adsStart = adsStartTime;
       auction.adsEnd = adsEndTime;
-      
-      // auction probabilities
-      probability.probability(auction);
+
+      // number of reservedSlots and auction probabilities
+      var reservedAds = models.reservedAds || [];
+      probability.probability(auction, reservedAds);
 
       // add target="_blank" to auction description
       var targetBlank = '<a target="_blank"';
@@ -43,13 +45,9 @@ module.exports = function(req, res) {
     // serverTime 
     var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
 
-    // number of reservedSlots
-    var reservedSlots = config.ads.reservedSlots;
-
     res.render('sbindex', {
       auctionsOpen: sortedOpen,
       minutes: minutes,
-      reservedSlots: reservedSlots,
       serverTime: serverTime,
       browsePrefix: req.browsePrefix,
       user: req.user

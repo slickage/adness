@@ -103,3 +103,11 @@ ddoc.views.getUserInvoices = {
     }
   }
 };
+
+ddoc.views.getReservedAds = {
+  map: function(doc) {
+    if (doc.type === 'reserved_ad') {
+      emit([doc._id], doc);
+    }
+  }
+};

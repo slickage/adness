@@ -10,3 +10,5 @@ MC.model('submittedAds', require('./model/submittedAds'));
 MC.model('registeredUser', require('./model/registeredUser'));
 MC.model('profileUser', require('./model/profileUser'));
 MC.model('auction_invoices', require('./model/ai_invoices'));
+MC.model('reservedAd', require('./model/reservedAd'));
+MC.model('reservedAds', require('./model/reservedAds'));

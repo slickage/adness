@@ -55,7 +55,13 @@
         <br /><br />
         <strong><%= region.name %> Bids</strong><br />
         <%= Number(region.slots) %> slots are for auction.<br />
-        <%= Number(reservedSlots) %> universal reserved slots.<br />
+        <%= Number(region.reservedSlots) %> universal reserved slots.<br />
+        <% if (region.globalSlots) { %>
+          <%= Number(region.globalSlots) %> global slots.<br />
+        <% } %>
+        <% if (region.otherSlots && region.otherSlots > 0) { %>
+          <%= Number(region.otherSlots) %> slots from other global regions. <br />
+        <% } %>
         <em>
           Advertising slots probability: 
           <% if (Array.isArray(region.probability)) { %>

@@ -1,0 +1,103 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-12">
+
+  <!-- navigation bar -->
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <strong>Reserved Ads</strong>
+        </a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="/admin/ads/reserved/new">New Reserved Ads</a>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <% ads.forEach(function(ad) { %>
+    <% if (ad.in_use === true) { %>
+      <div class="panel panel-success">
+    <% } else { %>
+      <div class="panel panel-danger"> 
+    <% } %>
+      <div class="panel-heading">
+        Ad: <%= ad._id %>
+      </div>
+
+      <div class="panel-body">
+        
+        <div class="row cardTitle">
+          <h4>
+            Regions: <%= ad.regions %>
+          </h4>
+          <h4> 
+            In Use: <%= ad.in_use %>
+          </h4>
+        </div>
+        
+        <div class="row cardSpacing">
+          <strong>Ad HTML: </strong><br>
+          <%= ad.html %>
+          <br><br>
+          <strong> Ad CSS: </strong><br>
+          <%= ad.css %>
+        </div>
+
+        <hr>
+
+        <div class="row cardSpacing">
+          <strong>Ad Preview (without css applied): </strong><br>
+          <%- ad.html %>
+        </div>
+
+      </div>
+      <div class="panel-footer clearfix">
+        <div class="pull-right" style="padding-left: 15px;">
+          <a href="/admin/ads/reserved/<%= ad._id %>/edit" class="btn btn-primary">
+            Edit
+          </a>
+        </div>
+        <div class="pull-right" style="padding-left: 15px;">
+          <button class="btn btn-danger" onclick="deleteAd('<%= ad._id %>');">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+
+</div>
+
+<!-- custom scripts -->
+<script>
+  function deleteAd(id) {
+    var url = "/admin/ads/reserved/" + id;
+
+    $.ajax({
+      type: "DELETE", 
+      url: url,
+      success: function(data) {
+        window.location = "/admin/ads/reserved";
+      },
+      error: function() {
+        var message = "There was a problem trying to delete this ad.\n";
+        message += data;
+        alert(message);
+      }
+    });
+  }
+</script>
