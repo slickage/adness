@@ -14,5 +14,6 @@ module.exports = {
   auction: require('./routes/auction'),
   bid: require('./routes/bid'),
   auction_invoices: require('./routes/auction_invoices'),
-  reserved_ads: require('./routes/reserved_ads')
+  reserved_ads: require('./routes/reserved_ads'),
+  factoids: require('./routes/factoids')
 };

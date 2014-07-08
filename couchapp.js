@@ -114,3 +114,11 @@ ddoc.views.getReservedAds = {
     }
   }
 };
+
+ddoc.views.getFactoids = {
+  map: function(doc) {
+    if (doc.type === 'factoids') {
+      emit(doc._id, doc);
+    }
+  }
+};

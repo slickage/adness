@@ -989,9 +989,9 @@ var db = {
       if (!err) {
         var reservedAds = [];
         body.rows.forEach(function(doc) { reservedAds.push(doc.value); });
-        cb(null, reservedAds);
+        return cb(null, reservedAds);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   updateReservedAd: function(reservedAd, cb) {
@@ -1058,6 +1058,57 @@ var db = {
         couch.destroy(body._id, body._rev, cb);
       }
       else { return cb(err, undefined); }
+    });
+  },
+  upsertFactoid: function(newFactoids, cb) {
+    var key = "";
+    if (newFactoids._id) { key = newFactoids._id; }
+    couch.get(key, null, function(err, body) {
+      var factoids = {};
+      // factoid doesn't exist already
+      if (!body._id) {
+        factoids.html = validate.html(newFactoids.html);
+        factoids.css = newFactoids.css;
+        factoids.list = newFactoids.list;
+        factoids.created_at = new Date().getTime();
+        factoids.modified_at = new Date().getTime();
+        factoids.type = "factoids";
+      }
+      else {
+        factoids = body;
+        if (newFactoids.html) factoids.html = validate.html(newFactoids.html);
+        if (newFactoids.css) factoids.css = newFactoids.css;
+        if (newFactoids.list) factoids.list = newFactoids.list;
+        factoids.modified_at = new Date().getTime();
+      }
+
+      couch.insert(factoids, cb);
+    });
+  },
+  getFactoids: function(cb) {
+    var view = 'getFactoids';
+    couch.view(config.couchdb.name, view, function(err, factoids) {
+      var facts = []; // return object
+
+      // error case
+      if (err) { facts = undefined; }
+      else {
+        // limit 1 (latest end time)
+        if (factoids.rows.length > 0) {
+          // pull our each value
+          factoids.rows.forEach(function(item) {
+            facts.push(item.value);
+          });
+
+          facts = facts[0];
+        }
+        else {
+          err = new Error("No Factoids found.");
+          facts = undefined;
+        }
+      }
+
+     return cb(err, facts);
     });
   }
 };

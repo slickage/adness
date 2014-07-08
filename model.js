@@ -15,3 +15,5 @@ MC.model('profileUser', require('./model/profileUser'));
 MC.model('auction_invoices', require('./model/ai_invoices'));
 MC.model('reservedAd', require('./model/reservedAd'));
 MC.model('reservedAds', require('./model/reservedAds'));
+MC.model('factoids', require('./model/factoids'));
+MC.model('randomFactoid', require('./model/randomFactoid'));

@@ -104,6 +104,9 @@ site.post('/admin/ads/reserved', ensureAuthenticated, router.reserved_ads.create
 site.post('/admin/ads/reserved/:reservedAdId', ensureAuthenticated, router.reserved_ads.updateAd);
 site.del('/admin/ads/reserved/:reservedAdId', ensureAuthenticated, router.reserved_ads.deleteAd);
 
+site.get('/admin/ads/factoids', ensureAuthenticated, router.factoids.showFacts);
+site.post('/admin/ads/factoids', ensureAuthenticated, router.factoids.updateFacts);
+
 site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.post('/admin/auctions/recalculate/:auctionId', ensureAuthenticated, router.auction.recalculateAuction);

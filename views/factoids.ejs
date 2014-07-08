@@ -1,0 +1,187 @@
+<% layout('sblayout') %>
+<div class="content-page col-sm-12">
+
+  <!-- navigation bar -->
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <strong>Factoids</strong>
+        </a>
+      </div>
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+      
+      <div class="row cardSpacing">
+        <strong>Factoid CSS:</strong>
+        <textarea name="css" id="css" class="form-control" autofocus="autofocus"><% if (factoids.css){ %><%= factoids.css %><% } %></textarea>
+        
+        <br />
+    
+        <strong>Factoid HTML:</strong><br />
+        <em>
+          Put "&lt;%- text %&gt;" in the HTML where you want the factoid to appear, or just enter "&lt;%- text %&gt;" 
+        </em>
+        <textarea name="html" id="html" class="form-control" autofocus="autofocus"><% if (factoids.html){ %><%= factoids.html %><% } %></textarea>
+      </div>
+
+      <br /><hr /><br />
+
+      <div class="row cardSpacing">
+        <strong>Current Factoids:</strong><br />
+        <table id="factTable" class="table table-striped table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>Fact</th>
+              <th>User</th>
+              <th>Controls</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (factoids.list && factoids.list.length > 0) { %>
+              <% factoids.list.forEach(function(fact) { %>
+                <tr>
+                  <td><%- fact.text %></td>
+                  <td><%= fact.user %></td>
+                  <td>
+                    <button class="btn btn-xs btn-danger" onclick="removeFact(this);">
+                      <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td>No Current Facts</td><td></td><td></td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row cardSpacing">
+        <strong>Add New Factoids:</strong>
+        <textarea name="newFact" id="newFact" class="form-control" autofocus="autofocus"></textarea>
+        <br>
+        <button class="btn btn-success" onclick="addFact();">
+          Add Facts
+        </button>
+      </div>
+
+    </div>
+
+    <div class="panel-footer clearfix">
+      <div class="pull-right" style="padding-left: 15px;">
+        <button class="btn btn-danger" onclick="updateFacts();">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- custom scripts -->
+<script>
+  function addFact() {
+    // get textarea text
+    var factElement = document.getElementById('newFact');
+    var newFacts = factElement.value;
+    
+    // separate each fact by newline
+    var factArray = newFacts.split('\n');
+
+    // clear table if contents is only No Current Facts
+    $('#factTable tbody tr').each(function(index, value) {
+      var fact = $(this).find('td:nth-child(1)').text();
+      // remove "No Current Facts"
+      if (fact === 'No Current Facts') { $(this).remove(); }
+    });
+
+    // add each fact 
+    factArray.forEach(function(fact) {
+      // add each one to the table
+      var html = '<tr><td>';
+      html += fact;
+      html += '</td><td>';
+      html += '<%= user.username %>';
+      html += '</td>';
+      html += '<td>';
+      html += '<button class="btn btn-xs btn-danger" onclick="removeFact(this);">';
+      html += '<span class="glyphicon glyphicon-remove"></span></button></td>';
+      html += '</tr>';
+      $('#factTable tbody').append(html);
+    });
+
+    // clear input
+    factElement.value = '';
+  }
+
+  function removeFact(element) {
+    var parentRow = $(element).closest('tr');
+    parentRow.remove();
+  }
+
+  function updateFacts() {
+    var url = "/admin/ads/factoids";
+
+    // get html 
+    var rawHtml = document.getElementById('html').value;
+    function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+    function idX(id) { return id }
+    var html = html_sanitize(rawHtml, urlX, idX);
+    // validate html for text include
+    var textIndex = html.indexOf('%- text %');
+    if (textIndex < 0) {
+      var error = "HTML does not have a &lt;%- text %&gt; in it.";
+      error = error.replace("&lt;", "<").replace("&gt;", ">");
+      alert(error);
+      return;
+    }
+
+    // get css
+    var css = document.getElementById('css').value;
+
+    // get all the facts
+    var list = [];
+    $('#factTable tbody tr').each(function(index, value) {
+      var fact = $(this).find('td:nth-child(1)').text();
+      var user = $(this).find('td:nth-child(2)').text();
+
+      // build region json object
+      var factoid = { text: fact, user: user };
+      list.push(factoid);
+    });
+
+    // build data object
+    var data = {
+      html: html,
+      css: css,
+      list: list
+    }
+
+    // send request
+    $.ajax({
+      type: "POST", 
+      url: url,
+      data: data,
+      success: function(data) {
+        window.location = "/admin/ads/factoids";
+      },
+      error: function() {
+        var message = "There was a problem updating factoids.\n";
+        message += data;
+        alert(message);
+      }
+    });
+  }
+</script>

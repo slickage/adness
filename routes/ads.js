@@ -199,9 +199,11 @@ exports = module.exports = {
   },
   random: function(req, res) {
     req.model.load('reservedAds', req);
+    req.model.load('randomFactoid', req);
     req.model.end(function(err, models) {
-  
+
       var reservedAds = models.reservedAds;
+      var fact = models.randomFactoid;
 
       // ip -> country code (country)
       var ip = req.query.ip;
@@ -215,7 +217,7 @@ exports = module.exports = {
 
       // get ads based on region and limit
       // should always return an array even if it is empty or error
-      getRandomAds(country, limit, reservedAds, function(err, ads) {
+      getRandomAds(country, limit, reservedAds, fact, function(err, ads) {
         if (err) { console.log(err); }
         return res.json(ads);
       });
@@ -223,7 +225,7 @@ exports = module.exports = {
   }
 };
 
-function getRandomAds(country, limit, reservedAds, callback) {
+function getRandomAds(country, limit, reservedAds, factoid, callback) {
   // get adsInRotation object
   db.getLatestAdsInRotation(function(err, air) {
     var error;
@@ -255,6 +257,9 @@ function getRandomAds(country, limit, reservedAds, callback) {
 
         // Inject the reserved ads at this point. 
         results = results.concat(matchingAds);
+
+        // Inject random factoid there
+        results = results.concat(factoid);
 
         // random select ads until limit is reached and callback
         results = fillAds(results, limit);
