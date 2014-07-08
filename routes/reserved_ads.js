@@ -32,6 +32,9 @@ module.exports = {
     });
   },
   newAd: function(req, res) {
+    // admin check
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+
     // cull regions
     var regions = _.pluck(config.regions, 'name');
 
@@ -47,6 +50,8 @@ module.exports = {
     });
   },
   editAd: function(req, res) {
+    // admin check
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('reservedAd', req);
     req.model.end(function(err, models) {
       if (err) {
@@ -74,6 +79,9 @@ module.exports = {
     });
   },
   createAd: function(req, res) {
+    // admin check
+    if (!req.user.admin) { return res.send(500, "No Soup For You!."); }
+
     req.body.user = req.user;
 
     // don't allow ads with no regions
@@ -87,6 +95,8 @@ module.exports = {
     });
   },
   updateAd: function(req, res) {
+    // admin check
+    if (!req.user.admin) { return res.send(500, "No Soup For You!.");  }
     req.model.load('reservedAd', req);
     req.model.end(function(err, models) {
       if (err) {
@@ -113,6 +123,8 @@ module.exports = {
     });
   },
   deleteAd: function(req, res) {
+    // admin check
+    if (!req.user.admin) { return res.send(500, "No Soup For You!.");  }
     req.model.load('reservedAd', req);
     req.model.end(function(err, models) {
       if (err) {

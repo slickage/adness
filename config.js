@@ -10,6 +10,7 @@ var parseAdmins = function(adminsStr) {
 };
 
 var parseBool = function(value) {
+  if (!value) { return false; }
   if (typeof value === 'string') {
     if (value.toLowerCase() === 'true') { return true; }
     else if (value.toLowerCase() === '1') { return true; }
