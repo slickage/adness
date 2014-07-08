@@ -6,15 +6,28 @@ var parseAdmins = function(adminsStr) {
   return admins;
 };
 
+var parseBool = function(value) {
+  if (typeof value === 'string') {
+    if (value.toLowerCase() === 'true') { return true; }
+    else if (value.toLowerCase() === '1') { return true; }
+    else { return false; }
+  }
+  else if (typeof value === 'number') {
+    if (Number(value) > 0) { return true; }
+    else { return false; }
+  }
+  else return Boolean(value);
+}
+
 module.exports = {
-  port: process.env.PORT || 8080,
+  port: Number(process.env.PORT) || 8080,
   admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org',
-  antiSnipeMinutes: process.env.ANTISNIPE_MINUTES || 30,
+  antiSnipeMinutes: Number(process.env.ANTISNIPE_MINUTES) || 30,
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
-    port: process.env.REDIS_PORT || 6379
+    port: Number(process.env.REDIS_PORT) || 6379
   },
   secret: 'secret string for adness 1234!',
   mysql: {
@@ -41,7 +54,7 @@ module.exports = {
     internalUrl: process.env.SITE_INTERNAL_URL || 'http://localhost:3000'
   },
   bitcoin: {
-    numberOfConfs: process.env.CONFS || 2
+    numberOfConfs: Number(process.env.CONFS) || 2
   },
   regions: [
     {
@@ -71,5 +84,6 @@ module.exports = {
     round4: { timeOffset: 1000 * 60 * 60 * 3, discount: 0.30 },
     round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
     round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
-  }
+  },
+  debugMode: parseBool(process.env.DEBUG_MODE) || false
 };
