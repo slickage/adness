@@ -88,5 +88,11 @@ module.exports = {
     round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
     round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
   },
+  fakeAuth: {
+    enabled: parseBool(process.env.FAKEAUTH) || false,
+    userId: Number(process.env.FAKEAUTH_USERID) || 1,
+    email: process.env.FAKEAUTH_EMAIL || 'user@example.com',
+    admin: parseBool(process.env.FAKEAUTH_ADMIN) || true
+  },
   debugMode: parseBool(process.env.DEBUG_MODE) || false
 };

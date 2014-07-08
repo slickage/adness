@@ -87,7 +87,14 @@ Install these dependencies as per your OS:
     round4: { timeOffset: 1000 * 60 * 60 * 3, discount: 0.30 },
     round5: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.60},
     round6: { timeOffset: 1000 * 60 * 60 * 1.5, discount: 0.80 }
-  }
+  },
+  fakeAuth: {
+    enabled: parseBool(process.env.FAKEAUTH) || false,
+    userId: Number(process.env.FAKEAUTH_USERID) || 1,
+    email: process.env.FAKEAUTH_EMAIL || 'user@example.com',
+    admin: parseBool(process.env.FAKEAUTH_ADMIN) || true
+  },
+  debugMode: parseBool(process.env.DEBUG_MODE) || false
 ```
 * port: The port to run this server on
 * admins: The list of administrators by user ids
@@ -104,6 +111,8 @@ Install these dependencies as per your OS:
 * bitcoin: The number of confirmations before a payment is considered paid
 * regions: The geographical regions that an auction/ad/bid can contain
 * rounds: The number of and configurations for each recalculation round
+* fakeAuth: bypass SMF Auth with a fake user for easy local testing
+* debugMode: enable if you want the noisy, colored express GET/POST messages
 
 **NOTES:**  
 * Properties in config.js can be overriden using a [.env](http://ddollar.github.io/foreman/#ENVIRONMENT) file and [foreman](https://github.com/ddollar/foreman).

@@ -3,7 +3,8 @@
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    smfAuth = require('./integration/smf-auth');
+    smfAuth = require('./integration/smf-auth'),
+    config = require('./config');
 
 var users = {};
 // Passport session setup.
@@ -24,18 +25,30 @@ passport.deserializeUser(function(id, done) {
 passport.use(new LocalStrategy(
   function(username, password, done) {
     process.nextTick(function () {
-      smfAuth.authenticate(username, password, function(err, user) {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          return done(null, false);
-        }
-        else {
-          users[user.username] = user;
-          return done(null, user);
-        }
-      });
+      if (config.fakeAuth.enabled) {
+        console.log(config.fakeAuth);
+        users[username] = {
+          username: username,
+          userId: config.fakeAuth.userId,
+          email: config.fakeAuth.email,
+          admin: config.fakeAuth.admin
+        };
+        return done(null, users[username]);
+      }
+      else {
+        smfAuth.authenticate(username, password, function(err, user) {
+          if (err) {
+            return done(err);
+          }
+          if (!user) {
+            return done(null, false);
+          }
+          else {
+            users[user.username] = user;
+            return done(null, user);
+          }
+        });
+      }
     });
   }
 ));
