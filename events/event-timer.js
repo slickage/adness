@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var auctionEnd = require('./auction-close');
 var recalc = require('./recalculation');
 

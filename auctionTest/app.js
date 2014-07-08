@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var charlatan = require('charlatan');
 var request = require('request');
 var fs = require('fs');
@@ -88,7 +91,7 @@ function testAuction() {
 
 function randomUser() {
 	var max = users.length - 1;
-	var min = 0
+	var min = 0;
 	var userChoice = Math.floor(Math.random() * (max - min + 1)) + min;
 	return users[userChoice];
 }

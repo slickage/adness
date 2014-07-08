@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var db = require(__dirname + '/../db');
 var _ = require('lodash');
 var async = require('async');

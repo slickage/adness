@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var registration = require('../registration');
 var moment = require('moment');
 

@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     smfAuth = require('./integration/smf-auth');

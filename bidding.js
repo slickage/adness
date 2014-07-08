@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 // slot is the number of slots to fill
 // bids is all the bids from one auction, already sorted by bid price
 

@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var moment = require('moment');
 
 module.exports = function(req, res) {

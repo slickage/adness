@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var db = require('./db');
 var config = require('./config');
 var request = require('request');
@@ -111,7 +114,7 @@ function saveInvoice(receipt, originalInvoice, body, queue, cb) {
       });
     }
 
-    errorMsg = "Could not generate an invoice, received response: ";
+    var errorMsg = "Could not generate an invoice, received response: ";
     errorMsg += body + "\n";
     errorMsg += error.message;
     var invoiceError = new Error(errorMsg);

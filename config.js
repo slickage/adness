@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var parseAdmins = function(adminsStr) {
   var admins;
   if (adminsStr) {
@@ -17,7 +20,7 @@ var parseBool = function(value) {
     else { return false; }
   }
   else return Boolean(value);
-}
+};
 
 module.exports = {
   port: Number(process.env.PORT) || 8080,

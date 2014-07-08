@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couchapp = require('couchapp');
@@ -67,7 +70,7 @@ var seed = function() {
   comingStart.setMonth(comingStart.getMonth() + 4);
   comingEnd.setMonth(comingEnd.getMonth() + 4);
   comingEnd.setHours(comingEnd.getHours() + 4);
-  var timeDifference = (1000 * 60 * 30);
+  timeDifference = (1000 * 60 * 30);
   var comingTrueEnd = Math.floor(Math.random() * (timeDifference+1));
   comingTrueEnd = comingEnd.getTime() + comingTrueEnd;
 
@@ -87,7 +90,7 @@ var seed = function() {
   pastStart.setMonth(pastStart.getMonth() - 4);
   pastEnd.setMonth(pastEnd.getMonth() - 4);
   pastEnd.setHours(pastEnd.getHours() + 4);
-  var timeDifference = (1000 * 60 * 30);
+  timeDifference = (1000 * 60 * 30);
   var pastTrueEnd = Math.floor(Math.random() * (timeDifference+1));
   pastTrueEnd = pastEnd.getTime() + pastTrueEnd;
 
@@ -109,8 +112,8 @@ var seed = function() {
 
   // recurring auctions
   var times = 0;
-  var start = new Date();
-  var end = new Date(start.getTime() + (1000 * 60 * 5));
+  start = new Date();
+  end = new Date(start.getTime() + (1000 * 60 * 5));
   while (times < 50) {
     start.setTime(start.getTime() + (1000 * 60 * 5));
     end.setTime(end.getTime() + (1000 * 60 * 5));
@@ -129,4 +132,4 @@ var seed = function() {
 
 
   console.log('Seeding data to: ' + config.couchdb.url);
-}
+};

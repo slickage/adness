@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var express = require('express'),
     site = express(),
     passport = require('./passport'),

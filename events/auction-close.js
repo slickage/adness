@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var db = require(__dirname + '/../db');
 var _ = require('lodash');
 var config = require('../config');
@@ -369,7 +372,7 @@ function upsertAdsInRotation(auction) {
     delete region.slots;
   });
 
-  air = {};
+  var air = {};
   air.auctionId = auction._id;
   air.adsStart = auction.adsStart;
   air.adsEnd = auction.adsEnd;

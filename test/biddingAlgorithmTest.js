@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var bidding = require('../bidding');
 
 var bidTest = function() {

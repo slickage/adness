@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var auctionEnd = require('./auction-close');
 var config = require('../config');
 var db = require('../db');
@@ -182,7 +185,7 @@ function getInvoiceStatus(invoiceId, cb) {
         var parsedBody;
         try { parsedBody = JSON.parse(body); }
         catch (error) {
-          errorMsg = "Could not parse response, received response: ";
+          var errorMsg = "Could not parse response, received response: ";
           errorMsg += body + "\n";
           errorMsg += error.message;
           var validateError = new Error(errorMsg );

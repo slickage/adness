@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var mysql = require('mysql');
 var shacrypt = require('shacrypt');
 var _ = require('lodash');
@@ -36,12 +39,12 @@ module.exports = {
             if (rows && rows.length === 2 && rows[0] && rows[0].length === 1) {
               // rows[0][0] is the first row from mysql query
               var userRow = rows[0][0];
-              var idMember = userRow['ID_MEMBER'];
+              var idMember = userRow.ID_MEMBER;
               var isAdmin = _.contains(config.admins, idMember.toString());
               var user = {
                 username: username,
-                userId: userRow['ID_MEMBER'],
-                email: userRow['emailAddress'],
+                userId: userRow.ID_MEMBER,
+                email: userRow.emailAddress,
                 admin: isAdmin
               };
               cb(null, user);

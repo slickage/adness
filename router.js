@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 module.exports = {
   index: require('./routes/index'),
   sbindex: require('./routes/sbindex'),

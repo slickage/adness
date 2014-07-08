@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var db = require('./db');
 var invoice = require('./invoice');
 var config = require('./config');

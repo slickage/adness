@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var config = require('./config');
 var nano = require('nano')(config.couchdb.url);
 var couchapp = require('couchapp');

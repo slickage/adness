@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var sanitize = require('google-caja').sanitize;
 var _ = require('lodash');
 var config = require('./config');

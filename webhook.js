@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var db = require('./db');
 var async = require('async');
 var config = require('./config');
@@ -195,7 +198,7 @@ function validateCall(receipt, cb) {
         // parse body into json (status object)
         var parsedBody = JSON.parse(body);
         // get the invoice status
-        is_paid = parsedBody.is_paid;
+        var is_paid = parsedBody.is_paid;
         if (is_paid && is_paid === true) {
           return cb(null, receipt);
         }
@@ -205,7 +208,7 @@ function validateCall(receipt, cb) {
         }
       }
       catch (error) {
-        errorMsg = "Could not validate webhook call, received response: ";
+        var errorMsg = "Could not validate webhook call, received response: ";
         errorMsg += body + "\n";
         errorMsg += error.message;
         var validateError = new Error(errorMsg );
