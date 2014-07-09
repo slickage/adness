@@ -36,5 +36,5 @@ function buildSite() {
   var site = require('./site');
   console.log('Config: ' + JSON.stringify(config));
   site.listen(config.port);
-  console.log('Listening on port: ' + config.port);
+  console.log('Listening at: http://0.0.0.0:' + config.port);
 }
