@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "async": "~0.2.10",
-    "baron": "slickage/baron",
     "bitcoin": "~2.0.1",
     "charlatan": "~0.1.9",
     "connect-assets": "~2.5.3",
