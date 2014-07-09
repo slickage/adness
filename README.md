@@ -24,7 +24,8 @@ Install these dependencies as per your OS:
 
 # Configuration
 ```
-  port: process.env.PORT || 8080,  
+  port: process.env.PORT || 8080,
+  trustProxy: process.env.TRUST_PROXY || false,
   admins: parseAdmins(process.env.ADMINS) || ['012345'],  
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'no-reply@test.co',
@@ -97,6 +98,7 @@ Install these dependencies as per your OS:
   debugMode: parseBool(process.env.DEBUG_MODE) || false
 ```
 * port: The port to run this server on
+* trustProxy: Set to `true` if behind a reverse proxy
 * admins: The list of administrators by user ids
 * sbPrefix: the prefix for noscript pages (currently the only view available)
 * senderEmail: The email that will show up in the from field for all outgoing emails

@@ -25,6 +25,7 @@ var parseBool = function(value) {
 
 module.exports = {
   port: Number(process.env.PORT) || 8080,
+  trustProxy: process.env.TRUST_PROXY || false,
   admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org',

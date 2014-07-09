@@ -43,6 +43,7 @@ site.use(browsePrefix);
 site.use(express.methodOverride());
 site.use(express.json());
 site.use(express.urlencoded());
+if (config.trustProxy) { site.enable('trust proxy'); } // Trust X-Forwarded-For
 site.use(express.session({
   store: new RedisStore({
     host: config.redis.host,
