@@ -380,7 +380,6 @@ function getWinnersAds(winner, regionName, callback) {
 }
 
 function cleanAd(ad) {
-  delete ad._id;
   delete ad._rev;
   delete ad.username;
   delete ad.userId;
