@@ -10,14 +10,14 @@ var bidTest = function() {
   // need to test for sorting by same price
 
   // test data
-  slots = 8;
-  bids = [
+  var slots = 8;
+  var bids = [
     {
       created_at: new Date().getTime(),
       type: 'bid',
       price: 3,
       slots: 3,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 1
     },
@@ -26,7 +26,7 @@ var bidTest = function() {
       type: 'bid',
       price: 3,
       slots: 4,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 2
     },
@@ -35,7 +35,7 @@ var bidTest = function() {
       type: 'bid',
       price: 2.8,
       slots: 7,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 3
     },
@@ -44,7 +44,7 @@ var bidTest = function() {
       type: 'bid',
       price: 2.5,
       slots: 2,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 4
     },
@@ -53,7 +53,7 @@ var bidTest = function() {
       type: 'bid',
       price: 2,
       slots: 8,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 5
     },
@@ -62,7 +62,7 @@ var bidTest = function() {
       type: 'bid',
       price: 1,
       slots: 3,
-      user: "testuser",
+      user: 'testuser',
       auctionId: 1,
       bidId: 6
     }
