@@ -26,14 +26,9 @@ module.exports = {
         // check if username is email
         if (login.indexOf("@") > 0) {
           getUsernameFromEmail(connection, login, function(err, results) {
-            if (err) {
-              connection.release();
-              return cb(err, undefined);
-            }
-            else {
-              username = results;
-              callPassOkAll(connection, username, password, cb);
-            }
+            if (results) { username = results; }
+            else { username = login; }
+            callPassOkAll(connection, username, password, cb);
           });
         }
         else {
