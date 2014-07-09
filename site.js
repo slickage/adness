@@ -21,7 +21,8 @@ var express = require('express'),
     rateLimiter = require('rate-limiter'),
     flash = require('connect-flash'),
     invoice = require('./invoice'),
-    async = require('async');
+    async = require('async'),
+    moment = require('moment');
 
 // rate limiter for login
 var rlRules = [
@@ -163,6 +164,37 @@ site.get('/logout', function(req, res){
 // WEB HOOKS
 site.post('/hooks/registration', webhook.registration);
 site.post('/hooks/auctions/:auctionId', webhook.winner);
+
+// 404 Handling, must be after mounting all routes
+site.use(function(req, res) {
+  res.status(404);
+  if (req.accepts('html')) {
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+    res.render('error', {
+      errorMsg: '404 Not Found',
+      serverTime: serverTime,
+      browsePrefix: req.browsePrefix,
+      user: req.user
+    });
+  }
+  else if (req.accepts('json')) {
+    res.send({ error: 'Not found' });
+  }
+  else {
+    res.type('text').send('Not found');
+  }
+});
+
+// Catch all for any other errors
+site.use(function(err, req, res) {
+  res.status(err.status || 500);
+  var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+  res.render('error', { errorMsg: err.message || 'Internal Server Error',
+    serverTime: serverTime,
+    browsePrefix: req.browsePrefix,
+    user: req.user
+  });
+});
 
 // Node resque setup (For Auction Closing)
 var auctionWorker = new NR.worker({connection: connectionDetails, queues: ['auction']}, jobs, function(){

@@ -175,3 +175,6 @@ hr { border-top: 1px solid #ccc; }
   color: #428bca;
   font-size: 18px;
   line-height: 20px; }
+
+/* -- Error Page ------------------------------------------ */
+.error_indent { margin-left:20px; }
