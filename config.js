@@ -23,6 +23,18 @@ var parseBool = function(value) {
   else return Boolean(value);
 };
 
+var validateSessionSecret = function(secret) {
+  if (!secret) {
+    console.log('Please set a SESSION_SECRET in your env vars');
+    process.exit(1);
+  }
+  if (secret === 'secret string for adness 1234!') {
+    console.log('Do not use the default SESSION_SECRET');
+    process.exit(1);
+  }
+  else { return secret; }
+};
+
 module.exports = {
   port: Number(process.env.PORT) || 8080,
   trustProxy: process.env.TRUST_PROXY || false,
@@ -34,7 +46,7 @@ module.exports = {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: Number(process.env.REDIS_PORT) || 6379
   },
-  secret: 'secret string for adness 1234!',
+  sessionSecret: validateSessionSecret(process.env.SESSION_SECRET) || 'secret string for adness 1234!',
   mysql: {
     host: process.env.MYSQL_HOST || 'localhost',
     port: Number(process.env.MYSQL_PORT) || 3306,

@@ -37,7 +37,7 @@ site.use(require('./middleware/model-loader'));
 site.use(require('connect-assets')());
 site.use(express.favicon());
 if (config.debugMode) { site.use(express.logger('dev')); }
-site.use(express.cookieParser(config.couchdb.name));
+site.use(express.cookieParser());
 site.use(express.bodyParser());
 site.use(browsePrefix);
 site.use(express.methodOverride());
@@ -47,12 +47,13 @@ if (config.trustProxy) { site.enable('trust proxy'); } // Trust X-Forwarded-For
 site.use(express.session({
   store: new RedisStore({
     host: config.redis.host,
-    port: config.redis.port,
+    port: config.redis.port
   }),
   cookie: {
-    secure: false,
+    secure: true,
     maxAge:86400000
-  }
+  },
+  secret: config.sessionSecret
 }));
 site.use(flash());
 site.use(passport.initialize());
