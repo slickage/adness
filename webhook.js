@@ -241,6 +241,7 @@ function getRegUser(receipt, cb) {
 
 function updateRegUser(user, alreadyPaid, cb) {
   user.registered = true;
+  user.discount_remaining = config.registrationFee;
   delete user.registrationStatus;
   db.insertRegisteredUser(user, cb);
 }

@@ -250,26 +250,55 @@ function generateBidders(bids) {
 
 function notifyWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won.");
-
-  var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
-  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
-  var data = {
-    user: winner,
-    auctionId: auctionId,
-  };
-  invoice.createInvoice(data, "auction", invoiceForm, handleInvoice);
+  invoiceUser(winner, expiration, discount, auctionId, "auction", handleInvoice);
 }
 
 function notifyModifiedWinner(winner, expiration, discount, auctionId) {
   console.log("Notifying " + winner.username + " that they've won more slots.");
+  invoiceUser(winner, expiration, discount, auctionId, "auctionModified", handleModifiedInvoice);
+}
 
-  var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
-  var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discount, webhook);
-  var data = {
-    user: winner,
-    auctionId: auctionId,
-  };
-  invoice.createInvoice(data, "auctionModified", invoiceForm, handleModifiedInvoice);
+function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHandle) {
+  // get registeredUser to see if there's any discounts
+  db.getRegisteredUser(winner.userId, function(err, regUser) {
+    if (err) { console.log(err); }
+
+    if (regUser) {
+      // compile discounts
+      var discounts = [];
+      // reg discount
+      if (regUser.discount_remaining > 0) {
+        var regDiscount = {
+          description: 'Registration Discount',
+          amount: Number(regUser.discount_remaining)
+        };
+        discounts.push(regDiscount);
+      }
+      // given discount
+      if (discount > 0) {
+        var recalcDiscount = {
+          description: 'Recalculation Discount',
+          percentage: discount
+        };
+        discounts.push(recalcDiscount);
+      }
+
+      // set regUser discount to zero
+      regUser.discount_remaining = 0;
+      db.insertRegisteredUser(regUser, function(err, results) {
+        if (err) { console.log(err); }
+        if (results) { console.log('Discount used for: ' + regUser.username); }
+      });
+
+      var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
+      var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discounts, webhook);
+      var data = {
+        user: winner,
+        auctionId: auctionId
+      };
+      invoice.createInvoice(data, invoiceType, invoiceForm, cbHandle);
+    }
+  });
 }
 
 function notifyBidder(user, auctionId) {

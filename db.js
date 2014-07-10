@@ -711,6 +711,7 @@ var db = {
       userId: user.userId,
       email: user.email,
       registrationStatus: user.registrationStatus,
+      discount_remaining: user.discount_remaining,
       registered: user.registered,
       modified_at: new Date().getTime(),
       type: 'registeredUser'

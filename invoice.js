@@ -6,7 +6,7 @@ var config = require('./config');
 var request = require('request');
 var async = require('async');
 
-function createAuctionInvoice(auctionId, user, expiration, discount, webhook) {
+function createAuctionInvoice(auctionId, user, expiration, discounts, webhook) {
   var invoice = {};
   invoice.currency = "BTC";
   invoice.expiration = expiration;
@@ -16,11 +16,10 @@ function createAuctionInvoice(auctionId, user, expiration, discount, webhook) {
     var lineItem = {};
     lineItem.description = "Auction " + auctionId + " Ad Slot for " + user.lineItems[i].region;
     lineItem.quantity = 1;
-    var originalAmount = Number(user.lineItems[i].price);
-    var discountedAmount = originalAmount - (originalAmount * discount);
-    lineItem.amount = discountedAmount.toFixed(4);
+    lineItem.amount = Number(user.lineItems[i].price);
     invoice.line_items.push(lineItem);
   }
+  invoice.discounts = discounts;
   invoice.api_key = config.baron.key;
   invoice.webhooks = {};
   // leave webhook token out at this point, it'll be generated later
@@ -36,7 +35,7 @@ function createRegistrationInvoice(user, webhook) {
   invoice.line_items = [{
     description: user.username + " Auction Registration Fee",
     quantity: 1,
-    amount: 0.25,
+    amount: config.registrationFee,
   }];
   invoice.api_key = config.baron.key;
   invoice.webhooks = {};
