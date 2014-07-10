@@ -823,10 +823,8 @@ var db = {
     });
   },
   deleteQueuedInvoice: function(invoiceId, cb) {
-    // ensure that the ad exists first
     couch.get(invoiceId, null, function(err, body) {
       if (!err) {
-        // make sure we're getting a bid
         if (body.type !== 'queuedInvoice') {
           return cb({ message: 'Id is not for an QueuedInvoice.'}, undefined );
         }

@@ -162,7 +162,7 @@ function retryInvoice(queuedInvoice, cb) {
   var receipt = queuedInvoice.receipt;
   receipt.queuedInvoiceId = queuedInvoice._id;
   generateInvoice(invoice, receipt, false, function(err, results) {
-    if (err) { console.log(err); }
+    if (err) { console.log('retryInvoice: ' + err); }
     else {
       var invoiceType = results.receipt.invoiceType;
       var queuedInvoiceId = results.receipt.queuedInvoiceId;
@@ -184,7 +184,7 @@ function retryInvoice(queuedInvoice, cb) {
 
       // delete queuedInvoice
       db.deleteQueuedInvoice(queuedInvoiceId, function(err, body) {
-        if (err) console.log(err);
+        if (err) console.log('deleteQueuedInvoice: ' + JSON.stringify(err));
       });
     }
 
