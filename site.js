@@ -29,6 +29,13 @@ var rlRules = [
   ['login', 'all', 10, 60, true]
 ];
 
+// development only
+var cookieSession = { secure: true, maxAge:86400000 };
+if ('development' == site.get('env')) {
+  cookieSession.secure = false;
+  site.use(express.errorHandler());
+}
+
 // Express config on all environments
 site.engine('ejs', engine);
 site.set('views', path.join(__dirname, 'views'));
@@ -49,10 +56,7 @@ site.use(express.session({
     host: config.redis.host,
     port: config.redis.port
   }),
-  cookie: {
-    secure: true,
-    maxAge:86400000
-  },
+  cookie: cookieSession,
   secret: config.sessionSecret
 }));
 site.use(flash());
@@ -61,11 +65,6 @@ site.use(passport.session());
 site.use(rateLimiter.expressMiddleware(rlRules));
 site.use(site.router);
 site.use(express.static(path.join(__dirname, 'public')));
-
-// development only
-if ('development' == site.get('env')) {
-  site.use(express.errorHandler());
-}
 
 // VIEWS - StarBurst general routes
 site.get(config.sbPrefix, router.sbindex);
