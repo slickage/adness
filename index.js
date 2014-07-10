@@ -7,11 +7,14 @@ var couchapp = require('couchapp');
 var ddoc = require('./couchapp');
 var dbname = config.couchdb.name;
 var async = require('async');
+// Increment when model changes in an incompatible way
+var dbVersion = 1;
 
 // Initialization Sanity Checks
 async.waterfall([
   validateSessionSecret,
   validateDBExist,
+  checkDBVersion,
   ],
   function(err) {
     if (err) {
@@ -64,9 +67,46 @@ function validateDBExist(cb) {
   });
 }
 
+function checkDBVersion(cb) {
+  var couch = nano.use(config.couchdb.name);
+  couch.get('db_version', function(err, dbVersionObj) {
+    if (!err) {
+      if (dbVersionObj.version !== dbVersion) {
+        // Upgrade needed
+        // TODO: Replace with db conversion function
+        var error = new Error('Adness Database Requires Upgrade.');
+        return cb(error);
+      }
+      else {
+        console.log('Adness Database version ' + dbVersionObj.version);
+        return cb();
+      }
+    }
+    else {
+      if (err.reason &&
+          err.reason === 'missing' ||
+          err.reason === 'deleted') {
+        // insert
+        dbVersionObj = {};
+        dbVersionObj._id = 'db_version';
+        dbVersionObj.version = dbVersion;
+        couch.insert(dbVersionObj, function() {
+          console.log('Adness Database version ' + dbVersionObj.version);
+          return cb();
+        });
+      }
+      else {
+        // FATAL other error
+        console.log('checkDbVersion Fatal Error');
+        return cb(err);
+      }
+    }
+  });
+}
+
 function buildSite() {
   var site = require('./site');
-  console.log('Config: ' + JSON.stringify(config));
+  if (config.debugMode) { console.log('Config: ' + JSON.stringify(config)); }
   site.listen(config.port);
   console.log('Listening at: http://0.0.0.0:' + config.port);
 }
