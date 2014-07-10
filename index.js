@@ -6,31 +6,63 @@ var nano = require('nano')(config.couchdb.url);
 var couchapp = require('couchapp');
 var ddoc = require('./couchapp');
 var dbname = config.couchdb.name;
+var async = require('async');
 
-// check for db 
-nano.db.get(dbname, function(err, body) {
-  if (!err) { return buildSite(); }
-
-  // db not found so create it
-  console.log("Creating DB: " + dbname);
-  nano.db.create(dbname, function(err, body) {
+// Initialization Sanity Checks
+async.waterfall([
+  validateSessionSecret,
+  validateDBExist,
+  ],
+  function(err) {
     if (err) {
-      console.log("DB " + dbname + " was not found.");
-      console.log("Could not create DB. Exiting...");
-      return process.exit(1);
+      console.log('Adness Init ' + err);
+      process.exit(1);
     }
-    else {
-      // build couchDB url
-      var db = config.couchdb.url + '/' + dbname;
-      // install db ddoc
-      couchapp.createApp(ddoc, db, function(app) {
-        app.push();
-        // launch site
-        buildSite();
+    else { buildSite(); }
+  }
+);
+
+
+function validateSessionSecret(cb) {
+  var secret = config.sessionSecret;
+  var error = null;
+
+  if (secret === 'secret string for adness 1234!') {
+    var message = 'Do not use the default SESSION_SECRET';
+    error = new Error(message);
+  }
+  
+  return cb(error);
+}
+
+function validateDBExist(cb) {
+  var error = null;
+
+  nano.db.get(dbname, function(err, body) {
+    if (err) {
+      // db not found so create it
+      console.log("DB " + dbname + " was not found. ");
+      console.log("Creating DB: " + dbname);
+      nano.db.create(dbname, function(err, body) {
+        if (err) {
+          var message = "Could not create DB. Exiting...";
+          error = new Error(message);
+          return cb(error);
+        }
+        else {
+          // build couchDB url
+          var db = config.couchdb.url + '/' + dbname;
+          // install db ddoc
+          couchapp.createApp(ddoc, db, function(app) {
+            app.push();
+            return cb();
+          });
+        }
       });
     }
+    else { return cb(); }
   });
-});
+}
 
 function buildSite() {
   var site = require('./site');
