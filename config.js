@@ -23,13 +23,20 @@ var parseBool = function(value) {
   else return Boolean(value);
 };
 
+var parseNumber = function(envVar, defaultVar) {
+  if (!isNaN(parseFloat(envVar)) && isFinite(envVar)) {
+    return Number(envVar);
+  }
+  else { return defaultVar; }
+};
+
 module.exports = {
   port: Number(process.env.PORT) || 8080,
   trustProxy: process.env.TRUST_PROXY || false,
   admins: parseAdmins(process.env.ADMINS) || ['012345'],
   sbPrefix: '/sb',
   senderEmail: process.env.SENDER_EMAIL || 'admin@bitcointalk.org',
-  antiSnipeMinutes: Number(process.env.ANTISNIPE_MINUTES) || 30,
+  antiSnipeMinutes: parseNumber(process.env.ANTISNIPE_MINUTES, 30),
   redis: {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: Number(process.env.REDIS_PORT) || 6379
@@ -59,7 +66,7 @@ module.exports = {
     internalUrl: process.env.SITE_INTERNAL_URL || 'http://localhost:3000'
   },
   bitcoin: {
-    numberOfConfs: Number(process.env.CONFS) || 2
+    numberOfConfs: parseNumber(process.env.CONFS, 2)
   },
   regions: [
     {
@@ -92,9 +99,10 @@ module.exports = {
   },
   fakeAuth: {
     enabled: parseBool(process.env.FAKEAUTH) || false,
-    userId: Number(process.env.FAKEAUTH_USERID) || 1,
+    userId: parseNumber(process.env.FAKEAUTH_USERID, 1),
     email: process.env.FAKEAUTH_EMAIL || 'user@example.com',
     admin: parseBool(process.env.FAKEAUTH_ADMIN) || true
   },
-  debugMode: parseBool(process.env.DEBUG_MODE) || false
+  debugMode: parseBool(process.env.DEBUG_MODE) || false,
+  registrationFee: parseNumber(process.env.REGISTRATION_FEE, 0.25)
 };
