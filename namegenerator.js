@@ -8,7 +8,7 @@ function randomWord(len)
   var lowercase = "abcdefghijklmnopqrstuvwxyz";
   var retval = '';
   for (var i=0; i < len; i++) {
-    retval += lowercase.charAt(Math.floor(Math.random() * lowercase.length));  	
+    retval += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
   }
   return retval;
 }
@@ -21,24 +21,24 @@ var generateRandomName = function() {
   var isRandom = Math.floor((Math.random() * parts) + 1);
   var name = '';
   for (var i=1; i<=parts; i++) {
-  	var add;
-  	if (i === isRandom) {
-  		do {
-  			var randomLength = Math.floor(Math.random() * 11);
-  			if (randomLength < 6) randomLength += 5; // 5 to 10 length
-	  		add = randomWord(randomLength);
-  		}
-  		while (_.contains(reservedWords, add)); // try again if random word is a reserved word
-  	}
-  	else {
-  		add = reservedWords[Math.floor(Math.random() * reservedWords.length)];
-  	}
-  	if (i === 1) {
-  		name += add;
-  	}
-  	else {
-  		name += '_' + add;
-  	}
+    var add;
+    if (i === isRandom) {
+      do {
+        var randomLength = Math.floor(Math.random() * 11);
+        if (randomLength < 6) randomLength += 5; // 5 to 10 length
+        add = randomWord(randomLength);
+      }
+      while (_.contains(reservedWords, add)); // try again if random word is a reserved word
+    }
+    else {
+      add = reservedWords[Math.floor(Math.random() * reservedWords.length)];
+    }
+    if (i === 1) {
+      name += add;
+    }
+    else {
+      name += '_' + add;
+    }
   }
   return name;
 };

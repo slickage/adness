@@ -41,6 +41,8 @@
     "rate-limiter": "slickage/rate-limiter",
     "request": "~2.34.0",
     "restify": "~2.6.1",
+    "rework": "^1.0.0",
+    "rework-walk": "^1.0.0",
     "shacrypt": "0.0.2"
   },
   "devDependencies": {

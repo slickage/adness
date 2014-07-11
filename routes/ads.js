@@ -7,6 +7,9 @@ var async = require('async');
 var geoip = require('geoip-lite');
 var config = require('../config');
 var moment = require('moment');
+var rework = require('rework');
+var walk = require('rework-walk');
+var namegen = require('../namegenerator');
 
 exports = module.exports = {
   newAd: function(req, res) {
@@ -230,8 +233,8 @@ function getRandomAds(country, limit, reservedAds, factoid, callback) {
   db.getLatestAdsInRotation(function(err, air) {
     var error;
     if (err) {
-      error = new Error("There are no ads to display.");
-      return callback(error, []);
+      console.log("There are no user ads to display.");
+      air = { regions: [] };
     }
 
     // get all regions that match this country code
@@ -389,6 +392,21 @@ function cleanAd(ad) {
   delete ad.submitted;
   delete ad.inRotation;
   delete ad.rejected;
+
+  // generate random name
+  var name = namegen.generateRandomName();
+  name = '#' + name;
+
+  // compile and clean csss
+  if (!ad.css) { ad.css = ''; }
+  var css = rework(ad.css)
+      .use(prefixCSS(name))
+      .toString();
+  ad.css = css;
+
+  // append parent div to html
+  ad.html = '<div id="' + name + '">' + ad.html + '</div>';
+
   return ad;
 }
 
@@ -414,4 +432,31 @@ function fillAds(ads, size) {
   }
 
   return results;
+}
+
+function prefixCSS(prefix) {
+  return function(style) {
+    walk(style, function (rule) {
+      if (!rule.selectors) { return; }
+
+      rule.selectors = rule.selectors.map(function (selector) {
+        if (!selector) { return selector; }
+
+        if (selector.match(/^(html|body)/)) {
+          return selector.replace(/^(html|body)/, prefix);
+        }
+
+        if (selector.indexOf('+') > -1 || selector.indexOf('~') > -1) {
+          selector = selector.replace('+', '');
+          selector = selector.replace('~', '');
+          selector = selector.trim();
+        }
+
+        return prefix + ' ' + selector;
+      });
+
+      // flatten selectors
+      rule.selectors = _.flatten(rule.selectors);
+    });
+  };
 }
