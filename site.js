@@ -83,7 +83,7 @@ site.del(config.sbPrefix + '/bids/:bidId', ensureAuthenticated, router.bid.delet
 site.post(config.sbPrefix + '/bids', ensureAuthenticated, router.bid.newBid);
 // ADS
 site.get(config.sbPrefix + '/users/:userId', ensureAuthenticated, router.profile);
-site.get(config.sbPrefix + '/ads/upload', ensureAuthenticated, router.ad_upload);
+site.get(config.sbPrefix + '/ads/editor', ensureAuthenticated, router.ad_upload);
 site.get(config.sbPrefix + '/ads/random', router.ads.random);
 site.get(config.sbPrefix + '/ads/:adId/edit', ensureAuthenticated, router.ad_upload);
 site.get(config.sbPrefix + '/ads/:adId', router.ads.getAd);

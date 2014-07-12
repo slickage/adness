@@ -185,7 +185,7 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 #### Views (GET)
 ```
 /sb/uses/:userId - All ads for a specific user
-/sb/ads/upload - Ad Creation view
+/sb/ads/editor - Ad Creation view
 /sb/ads/random?ip=192.168.1.1&limit=12 - Retrieve a random ad from the last auction
 /sb/ads/:adId/edit - Ad Edit view (same as Ad Creation view but preloaded with specific Ad info)
 /sb/ads/:adId - view a specific ad
