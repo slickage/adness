@@ -109,7 +109,7 @@ site.del('/admin/ads/reserved/:reservedAdId', ensureAuthenticated, router.reserv
 site.get('/admin/ads/factoids', ensureAuthenticated, router.factoids.showFacts);
 site.post('/admin/ads/factoids', ensureAuthenticated, router.factoids.updateFacts);
 
-site.get('/admin/ads/submitted', ensureAuthenticated, router.ads.submittedAds);
+site.get('/admin/ads/review', ensureAuthenticated, router.ads.submittedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.post('/admin/auctions/recalculate/:auctionId', ensureAuthenticated, router.auction.recalculateAuction);
 site.get('/admin', ensureAuthenticated, router.admin);
@@ -139,7 +139,7 @@ site.post(apiPrefix + '/bids/edit', ensureAuthenticated, apiRouter.updateBid);
 site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
 site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
 // ADS
-site.get(apiPrefix + '/ads/submitted', ensureAuthenticated, apiRouter.submittedAds);
+site.get(apiPrefix + '/ads/review', ensureAuthenticated, apiRouter.submittedAds);
 site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
 site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);

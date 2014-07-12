@@ -214,7 +214,7 @@ Views and routes may be specific to whether a user is logged in or not. Some of 
 ```
 /admin/invoices/:auctionId - View all invoices for a particular auction
 /admin/invoices - View all closed auctions - used to choose an auction's invoices to view.
-/admin/ads/submitted - View all submitted ads from all users (admin access only)
+/admin/ads/review - Review all submitted ads from all users (admin access only)
 /admin/auctions/edit/:auctionId - Edit a user's auction (admin access only)
 /admin/auctions/recalculate/:auctionId - Manually trigger an auction recalculation (Does not invalidate invoices or bids, just auction slot recalculation)
 /admin - CMS page for auctions (admin access only)
