@@ -87,6 +87,11 @@ module.exports = {
     {
       name: 'Global'
     },
+    {
+      name: 'Global Non-US',
+      countries: ['US'],
+      exclusive: true
+    }
   ],
   rounds: {
     maxRounds: 6,
