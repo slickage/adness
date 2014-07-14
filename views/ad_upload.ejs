@@ -23,7 +23,8 @@
     <div class="upload-header text-center">
       <h1>Bitcoin Talk Ad Editor</h1>
       <% if (ad) { %>
-        Editing Ad: <%= ad._id %>
+        Editing Ad: <%= ad._id %> by <a href="https://bitcointalk.org/index.php?action=profile;u=<%= ad.userId %>"><%= ad.username %></a><br />
+        </div>
       <% } %>
       <noscript>
         <br>
