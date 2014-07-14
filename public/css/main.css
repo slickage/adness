@@ -88,6 +88,7 @@ hr { border-top: 1px solid #ccc; }
 
 .cardBody { margin: 0 15px; }
 .cardHeader { font-size: 20px; word-wrap: break-word; }
+.cardHeaderRight { float:right; display:inline-block; }
 .cardSpacing {margin: 10px 0; }
 .cardTitle { margin: 0; }
 

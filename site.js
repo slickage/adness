@@ -110,6 +110,8 @@ site.get('/admin/ads/factoids', ensureAuthenticated, router.factoids.showFacts);
 site.post('/admin/ads/factoids', ensureAuthenticated, router.factoids.updateFacts);
 
 site.get('/admin/ads/review', ensureAuthenticated, router.ads.submittedAds);
+site.get('/admin/ads/approved', ensureAuthenticated, router.ads.approvedAds);
+site.get('/admin/ads/rejected', ensureAuthenticated, router.ads.rejectedAds);
 site.get('/admin/auctions/edit/:auctionId', ensureAuthenticated, router.auction.editAuction);
 site.post('/admin/auctions/recalculate/:auctionId', ensureAuthenticated, router.auction.recalculateAuction);
 site.get('/admin', ensureAuthenticated, router.admin);

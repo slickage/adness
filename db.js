@@ -558,6 +558,30 @@ var db = {
       else { cb(err, undefined); }
     });
   },
+  getApprovedAds: function(cb) {
+    couch.view(config.couchdb.name, 'approvedAds', function(err, body) {
+      if (!err) {
+        var ads = [];
+        body.rows.forEach(function(ad) {
+          ads.push(ad.value);
+        });
+        cb(null, ads);
+      }
+      else { cb(err, undefined); }
+    });
+  },
+  getRejectedAds: function(cb) {
+    couch.view(config.couchdb.name, 'rejectedAds', function(err, body) {
+      if (!err) {
+        var ads = [];
+        body.rows.forEach(function(ad) {
+          ads.push(ad.value);
+        });
+        cb(null, ads);
+      }
+      else { cb(err, undefined); }
+    });
+  },
   updateAd: function(ad, cb) {
     // ensure that the ad exists first
     couch.get(ad._id, null, function(err, body) {

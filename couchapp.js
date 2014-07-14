@@ -14,10 +14,10 @@ module.exports = ddoc;
 
 ddoc.views.auctionBids = {
   map: function(doc) {
-    if(doc.type == "auction") {
+    if(doc.type === 'auction') {
       emit([doc._id, 0, 0, 0], doc);
     }
-    else if (doc.type == "bid") {
+    else if (doc.type === 'bid') {
       // the third key is the bid price. 
       // we multiply the third key by -1 to make it sort that descending. 
       // this should always work because prices can never be negative or zero.
@@ -29,7 +29,7 @@ ddoc.views.auctionBids = {
 
 ddoc.views.auctions = {
   map: function(doc) {
-    if(doc.type == "auction") {
+    if(doc.type === 'auction') {
       emit(doc._id, doc);
     }
   }
@@ -37,7 +37,7 @@ ddoc.views.auctions = {
 
 ddoc.views.registeredUser = {
   map: function(doc) {
-    if(doc.type == "registeredUser") {
+    if(doc.type === 'registeredUser') {
       emit(doc.userId, doc);
     }
   }
@@ -45,7 +45,23 @@ ddoc.views.registeredUser = {
 
 ddoc.views.submittedAds = {
   map: function(doc) {
-    if(doc.type == "ad" && doc.submitted === true) {
+    if(doc.type === 'ad' && doc.submitted === true) {
+      emit([doc.created_at], doc);
+    }
+  }
+};
+
+ddoc.views.rejectedAds = {
+  map: function(doc) {
+    if(doc.type === 'ad' && doc.rejected === true) {
+      emit([doc.created_at], doc);
+    }
+  }
+};
+
+ddoc.views.approvedAds = {
+  map: function(doc) {
+    if(doc.type === 'ad' && doc.approved === true) {
       emit([doc.created_at], doc);
     }
   }
@@ -53,7 +69,7 @@ ddoc.views.submittedAds = {
 
 ddoc.views.userAds = {
   map: function(doc) {
-    if(doc.type == "ad") {
+    if(doc.type === 'ad') {
       emit([doc.userId, doc.created_at], doc);
     }
   }
@@ -61,7 +77,7 @@ ddoc.views.userAds = {
 
 ddoc.views.latestAdsInRotation = {
   map: function(doc) {
-    if(doc.type == 'adsInRotation') {
+    if(doc.type === 'adsInRotation') {
       emit([doc.adsStart], doc);
     }
   }

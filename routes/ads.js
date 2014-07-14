@@ -178,7 +178,7 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
         ad.inRotation = false;
-        db.updateAd(ad, function(err, body) {
+        db.updateAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/ads/' + ad._id);
         });
@@ -188,13 +188,43 @@ exports = module.exports = {
   submittedAds: function(req, res) {
     // rejecting ads is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    req.model.load("submittedAds", req);
+    req.model.load('submittedAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('submittedAds', {
         ads: models.submittedAds,
+        serverTime: serverTime,
+        browsePrefix: req.browsePrefix,
+        user: req.user});
+    });
+  },
+  approvedAds: function(req, res) {
+    // rejecting ads is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+    req.model.load('approvedAds', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); }
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      res.render('approvedAds', {
+        ads: models.approvedAds,
+        serverTime: serverTime,
+        browsePrefix: req.browsePrefix,
+        user: req.user});
+    });
+  },
+  rejectedAds: function(req, res) {
+    // rejecting ads is an admin only function
+    if (!req.user.admin) { return res.redirect(req.browsePrefix); }
+    req.model.load('rejectedAds', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); }
+      // serverTime 
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      res.render('rejectedAds', {
+        ads: models.rejectedAds,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});

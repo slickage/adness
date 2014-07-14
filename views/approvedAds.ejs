@@ -1,7 +1,6 @@
 <% layout('sblayout') %>
 <div class="content-page col-sm-12">
   
-  <!-- admin navigation bar -->
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
@@ -13,7 +12,7 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#">
-          <strong>Needs Review</strong>
+          <strong>Approved Ads</strong>
         </a>
       </div>
 
@@ -46,7 +45,7 @@
   <% if (ads.length > 0) { %>
     <% ads.forEach(function(ad) { %>
   
-      <div class="panel panel-warning"> 
+      <div class="panel panel-success"> 
         <div class="panel-heading">
           <div class="row">
             <div class="col-sm-6">
