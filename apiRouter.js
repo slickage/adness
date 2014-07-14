@@ -228,6 +228,20 @@ module.exports = {
       if (err) { console.log(err); res.json(err); }
       else { res.json({ ad: models.submittedAds }); }
     });
+  },
+  approvedAds: function(req, res) {
+    req.model.load('approvedAds', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json({ ad: models.approvedAds }); }
+    });
+  },
+  rejectedAds: function(req, res) {
+    req.model.load('rejectedAds', req);
+    req.model.end(function(err, models) {
+      if (err) { console.log(err); res.json(err); }
+      else { res.json({ ad: models.rejectedAds }); }
+    });
   }
 };
 

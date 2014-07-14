@@ -142,6 +142,8 @@ site.post(apiPrefix + '/bids', ensureAuthenticated, apiRouter.newBid);
 site.del(apiPrefix + '/bids/:bidId', ensureAuthenticated, apiRouter.deleteBid);
 // ADS
 site.get(apiPrefix + '/ads/review', ensureAuthenticated, apiRouter.submittedAds);
+site.get(apiPrefix + '/ads/approved', ensureAuthenticated, apiRouter.approvedAds);
+site.get(apiPrefix + '/ads/rejected', ensureAuthenticated, apiRouter.rejectedAds);
 site.get(apiPrefix + '/ads/:adId', apiRouter.getAd);
 site.post(apiPrefix + '/ads/:adId', ensureAuthenticated, apiRouter.updateAd);
 site.post(apiPrefix + '/ads', ensureAuthenticated, apiRouter.newAd);
