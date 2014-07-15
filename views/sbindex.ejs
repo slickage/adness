@@ -2,13 +2,13 @@
 
 <% if (auctionsOpen.length > 0) { %>
 
-<div class="content-page col-sm-offset-1 col-sm-10">
+<div class="content-page col-sm-12">
   <% auctionsOpen.forEach(function(auction) { %>
     <% include auctions/index_show %>
   <% }) %>
 <% } else { %>
 
-<div class="content-page col-sm-offset-1 col-sm-10">
+<div class="content-page col-sm-12">
   <h3>
     There are no open auctions today. Check back later.
   </h3>
