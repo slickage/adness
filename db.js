@@ -547,8 +547,8 @@ var db = {
       else { cb(err, undefined); }
     });
   },
-  getSubmittedAds: function(cb) {
-    couch.view(config.couchdb.name, 'submittedAds', function(err, body) {
+  getReviewAds: function(cb) {
+    couch.view(config.couchdb.name, 'reviewAds', function(err, body) {
       if (!err) {
         var ads = [];
         body.rows.forEach(function(ad) {

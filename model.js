@@ -9,7 +9,7 @@ MC.model('bids', require('./model/bids'));
 MC.model('bid', require('./model/bid'));
 MC.model('ad', require('./model/ad'));
 MC.model('userAds', require('./model/userAds'));
-MC.model('submittedAds', require('./model/submittedAds'));
+MC.model('reviewAds', require('./model/reviewAds'));
 MC.model('approvedAds', require('./model/approvedAds'));
 MC.model('rejectedAds', require('./model/rejectedAds'));
 MC.model('registeredUser', require('./model/registeredUser'));

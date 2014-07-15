@@ -187,16 +187,16 @@ exports = module.exports = {
       }
     });
   },
-  submittedAds: function(req, res) {
+  reviewAds: function(req, res) {
     // rejecting ads is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    req.model.load('submittedAds', req);
+    req.model.load('reviewAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      res.render('submittedAds', {
-        ads: models.submittedAds,
+      res.render('reviewAds', {
+        ads: models.reviewAds,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});

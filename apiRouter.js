@@ -222,11 +222,11 @@ module.exports = {
       }
     });
   },
-  submittedAds: function(req, res) {
-    req.model.load('submittedAds', req);
+  reviewAds: function(req, res) {
+    req.model.load('reviewAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json({ ad: models.submittedAds }); }
+      else { res.json({ ad: models.reviewAds }); }
     });
   },
   approvedAds: function(req, res) {
