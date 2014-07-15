@@ -601,8 +601,8 @@ var db = {
           }
         }
 
-        // update html if not approved or submitted
-        if (body.approved !== true && body.submitted !== true) {
+        // update html if not approved and not submitted or user is admin
+        if (ad.user.admin === true || body.approved !== true && body.submitted !== true) {
           if (ad.html) body.html = validate.html(ad.html);
         }
 

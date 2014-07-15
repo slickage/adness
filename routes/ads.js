@@ -77,11 +77,13 @@ exports = module.exports = {
         if (req.body.html) ad.html = req.body.html;
         if (req.body.css) ad.css = req.body.css;
         if (req.body.regions) ad.regions = req.body.regions;
-        if (req.body.approved) ad.approved = req.body.approved;
-        if (req.body.submitted) ad.submitted = req.body.submitted;
-        if (req.body.submitted && req.body.submitted.toLowerCase() === 'true') {
-          ad.rejected = false;
-          ad.approved = false;
+
+        if (!ad.user.admin || ad.user.admin && ad.user.userid === ad.userid) {
+          if (req.body.submitted) ad.submitted = req.body.submitted;
+          if (req.body.submitted && req.body.submitted.toLowerCase() === 'true') {
+            ad.rejected = false;
+            ad.approved = false;
+          }
         }
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); }

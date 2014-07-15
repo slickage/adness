@@ -104,11 +104,15 @@
           <div id="preview"></div>
 
           <div class="btn-group btn-group-justified review-buttons">
+            <% if (!user.admin || user.admin && user.userid === ad.userid) { %>
+              <div class="btn-group">
+                <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
+              </div>
+            <% } %>
             <div class="btn-group">
-              <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
-            </div>
-            <div class="btn-group">
-              <button class="btn btn-success pull-right" onclick="submitForReview(true);">Submit for Review</button>
+              <button class="btn btn-success pull-right" onclick="submitForReview(true);">
+                <% if (user.admin && user.userid !== ad.userid) { %>Update Ad<% } else { %>Submit for Review<% } %>
+              </button>
             </div>
           </div>
         </div>
