@@ -158,6 +158,7 @@ site.get('/failedLogin', function(req, res) {
 site.post('/login',
   passport.authenticate('local', { failureRedirect: '/failedLogin'}),
   function(req, res) {
+    console.log(req.ip + ' ' + req.user.username + ' logged in.');
     res.redirect(config.sbPrefix + '/');
   }
 );
