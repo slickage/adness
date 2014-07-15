@@ -104,7 +104,7 @@
           <div id="preview"></div>
 
           <div class="btn-group btn-group-justified review-buttons">
-            <% if (!user.admin || ad && user.admin && user.userId === ad.userId) { %>
+            <% if (!user.admin || (user.admin && ad && user.userId === ad.userId) || (user.admin && !ad)) { %>
               <div class="btn-group">
                 <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
               </div>
