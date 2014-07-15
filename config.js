@@ -106,7 +106,7 @@ module.exports = {
     enabled: parseBool(process.env.FAKEAUTH) || false,
     userId: parseNumber(process.env.FAKEAUTH_USERID, 1),
     email: process.env.FAKEAUTH_EMAIL || 'user@example.com',
-    admin: parseBool(process.env.FAKEAUTH_ADMIN) || true
+    admin: parseBool(process.env.FAKEAUTH_ADMIN) || false
   },
   debugMode: parseBool(process.env.DEBUG_MODE) || false,
   registrationFee: parseNumber(process.env.REGISTRATION_FEE, 0.25)

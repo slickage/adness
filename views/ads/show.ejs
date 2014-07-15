@@ -8,9 +8,11 @@
           <%= ad._id %>
         </a>
       </span>
-      <span class="cardHeaderRight">
-        <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit"><div class="glyphicon glyphicon-edit"></div> Edit</a>
-      </span>
+      <% if (user.admin === true) { %>
+        <span class="cardHeaderRight">
+          <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit"><div class="glyphicon glyphicon-edit"></div> Edit</a>
+        </span>
+      <% } %>
         <br>
       <h4>
         Regions:
