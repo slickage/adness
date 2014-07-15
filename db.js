@@ -517,6 +517,7 @@ var db = {
       modified_at: new Date().getTime(),
       type: 'ad',
       approved: false,
+      rejected: false,
       submitted: submitted,
       inRotation: false
     };

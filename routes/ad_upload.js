@@ -11,7 +11,6 @@ exports = module.exports = function(req, res) {
 
     // cull regions
     var regions = _.pluck(config.regions, 'name');
-    console.log(JSON.stringify(req.user));
     res.render('ad_upload', {
       ad: models.ad,
       regions: regions,
