@@ -50,15 +50,23 @@ site.use(browsePrefix);
 site.use(express.methodOverride());
 site.use(express.json());
 site.use(express.urlencoded());
-if (config.trustProxy) { site.enable('trust proxy'); } // Trust X-Forwarded-For
-site.use(express.session({
+var sessionOpts = {
   store: new RedisStore({
     host: config.redis.host,
     port: config.redis.port
   }),
   cookie: cookieSession,
   secret: config.sessionSecret
-}));
+};
+if (config.trustProxy) {
+  // Trust X-Forwarded-For
+  site.enable('trust proxy');
+  // Bug Workaround: https://github.com/expressjs/session with express 3.4.8
+  // Documentation claims that if proxy is unset it obtains this option from express's 'trust proxy'
+  // It however failed to save the session cookie in browser incognito mode without proxy = true
+  sessionOpts.proxy = true;
+}
+site.use(express.session(sessionOpts));
 site.use(flash());
 site.use(passport.initialize());
 site.use(passport.session());
