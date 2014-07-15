@@ -38,7 +38,7 @@
     "passport": "~0.1.18",
     "passport-local": "~0.1.6",
     "qr-image": "^1.0.0",
-    "rate-limiter": "slickage/rate-limiter",
+    "rate-limiter": "0.2.0",
     "request": "~2.34.0",
     "restify": "~2.6.1",
     "rework": "^1.0.0",
