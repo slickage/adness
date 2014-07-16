@@ -56,6 +56,7 @@ module.exports = {
           // otherwise find the lowest price
           var bidLength = region.winningBids.length - 1;
           latestPrice = region.winningBids[bidLength].price + 0.05;
+          latestPrice = Number(latestPrice).toFixed(2);
         }
         region.latestPrice = latestPrice;
       });

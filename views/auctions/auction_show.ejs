@@ -88,7 +88,7 @@
 
                 <div class="col-sm-4 slot_text">
                   Bid Per Slot:<br>
-                  <input type="number" name="price" class="form-control" step="0.05" min="0.5" value="<%= region.latestPrice %>">
+                  <input type="number" name="price" class="form-control" step="0.05" min="0.5" value="<%= Number(region.latestPrice).toFixed(2) %>">
                 </div>
 
                 <div class="col-sm-4 slot_text bid_button">
