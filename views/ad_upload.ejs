@@ -43,7 +43,7 @@
 
     <div class="container-fluid bootstrap-fluid-fix">
       <div class="row coding-section">
-        <div class="col-sm-offset-3 col-sm-6 well">
+        <div class="col-sm-offset-1 col-sm-10 well">
             <div style="padding-bottom: 20px;">
               Add your Ad HTML/CSS below:
             </div>
@@ -88,16 +88,20 @@
       </noscript>
 
       <div id="preview-container" class="row review-section">
-        <div class="col-sm-offset-3 col-sm-6 well">
+        <div class="col-sm-offset-1 col-sm-10 well">
           <div id="preview-text" class="row review-section-text">
-            <div class="col-sm-12">
+            <div class="col-sm-12 text-center">
               This is what your add will look like on the page:</br>
             </div>
           </div>
 
-          <div id="preview"></div>
+          <div id="preview" style="font-size: 90%; text-align: center;"></div>
+        </div>
+      </div>
 
-          <div class="btn-group btn-group-justified review-buttons">
+      <div id="preview-container" class="row review-section">
+        <div class="col-sm-offset-3 col-sm-6 well">
+          <div class="btn-group btn-group-justified">
             <% if (!user.admin || (user.admin && ad && user.userId === ad.userId) || (user.admin && !ad)) { %>
               <div class="btn-group">
                 <button class="btn btn-default pull-right" onclick="submitForReview(false);">Save for Later</button>
@@ -111,6 +115,7 @@
           </div>
         </div>
       </div>
+
     </div>
 
     <!--[if lt IE 9]>
