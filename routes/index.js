@@ -99,7 +99,7 @@ function addBidRoutes(site) {
   // edit bid
   site.post(prefix + '/bids/edit', auth, bidRoutes.updateBid);
   // delete bid
-  site.del(prefix + '/bids/:bidId', auth, bidRoutes.deleteBid);
+  site.delete(prefix + '/bids/:bidId', auth, bidRoutes.deleteBid);
   // create bid
   site.post(prefix + '/bids', auth, bidRoutes.newBid);
 }
