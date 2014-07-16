@@ -4,15 +4,9 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
     <link rel="stylesheet" href="/css/bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" href="/scripts/codemirror/lib/codemirror.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="/css/main.css">
-    <!-- endbuild -->
   </head>
   <body>
     <!--[if lt IE 7]>
@@ -119,14 +113,11 @@
       </div>
     </div>
 
-
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
     <script src="/scripts/jquery/jquery-2.1.0.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.js"></script>
     <script src="/scripts/codemirror/lib/codemirror.js"></script>
@@ -134,8 +125,6 @@
     <script src="/scripts/codemirror/mode/xml/xml.js"></script>
     <script src="/scripts/codemirror/mode/javascript/javascript.js"></script>
     <script src="/scripts/caja/html-sanitizer-minified.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
 
     <!-- custom scripts -->
     <script>
@@ -224,6 +213,8 @@
           } 
         });
       }
+
+      $( document ).ready(function() { convert(); });
     </script>
   </body>
 </html>
