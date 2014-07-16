@@ -273,6 +273,13 @@ function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHan
           amount: Number(regUser.discount_remaining)
         };
         discounts.push(regDiscount);
+
+        // set regUser discount to zero
+        regUser.discount_remaining = 0;
+        db.insertRegisteredUser(regUser, function(err, results) {
+          if (err) { console.log(err); }
+          if (results) { console.log('Discount used for: ' + regUser.username); }
+        });
       }
       // given discount
       if (discount > 0) {
@@ -283,14 +290,8 @@ function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHan
         discounts.push(recalcDiscount);
       }
 
-      // set regUser discount to zero
-      regUser.discount_remaining = 0;
-      db.insertRegisteredUser(regUser, function(err, results) {
-        if (err) { console.log(err); }
-        if (results) { console.log('Discount used for: ' + regUser.username); }
-      });
-
       var webhook = config.site.internalUrl + '/hooks/auctions/' + auctionId;
+      var invoice = require('../invoice');
       var invoiceForm = invoice.createAuctionInvoice(auctionId, winner, expiration, discounts, webhook);
       var data = {
         user: winner,
@@ -412,5 +413,3 @@ function upsertAdsInRotation(auction) {
     if (err) { console.log(err); }
   });
 }
-
-var invoice = require('../invoice');
