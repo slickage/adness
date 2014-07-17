@@ -19,7 +19,7 @@ module.exports = {
       var bid = req.body;
       bid.user = req.user; // add current user
       bid.regUser = models.registeredUser;
-      db.newBid(bid, function(err, body, header) {
+      db.newBid(bid, function(err) {
         if (err) { console.log(err); }
         res.redirect(req.browsePrefix + '/auctions/' + bid.auctionId);
       });
@@ -35,10 +35,10 @@ module.exports = {
       else {
         var bid = models.bid;
         bid.user = req.user; // add current user
-        if (req.body.price) bid.price = req.body.price;
-        if (req.body.slots) bid.slots = req.body.slots;
-        if (req.body.region) bid.region = req.body.region;
-        db.updateBid(bid, function(err, body) {
+        if (req.body.price) { bid.price = req.body.price; }
+        if (req.body.slots) { bid.slots = req.body.slots; }
+        if (req.body.region) { bid.region = req.body.region; }
+        db.updateBid(bid, function(err) {
           if(err) { console.log(err); }
           res.redirect(req.browsePrefix);
         });
@@ -92,7 +92,7 @@ function invalidateUserBids(auctionId, region, userId, cb) {
           // otherwise invalidate this bid
           db.deleteBid(userbid._id, callback);
           // add a message about invalidated bid
-          messages.push("Bid: " + userbid._id + " was invalidated.");
+          messages.push('Bid: ' + userbid._id + ' was invalidated.');
         },
         function(allBidErr) { if (allBidErr) { console.log(allBidErr); } }
       );
@@ -127,11 +127,11 @@ function invalidateUserInvoices(auctionId, region, userId, cb) {
           if (err) { console.log(err); }
 
           if (result) {
-            var message = "Invoice: " + invoiceId + " was invalidated.";
+            var message = 'Invoice: ' + invoiceId + ' was invalidated.';
             messages.push(message);
           }
           else {
-            var errMessage = "Invoice: " + invoiceId + " could not be invalidated. It may have been paid already.";
+            var errMessage = 'Invoice: ' + invoiceId + ' could not be invalidated. It may have been paid already.';
             messages.push(errMessage);
           }
 
@@ -150,14 +150,14 @@ function invalidateInvoice(invoiceId, cb) {
   // check status of invoice against baron
   request.post(
     {
-      uri: config.baron.internalUrl + '/invoices/' + invoiceId + "/void",
+      uri: config.baron.internalUrl + '/invoices/' + invoiceId + '/void',
       form: { api_key: config.baron.key }
     },
-    function(err, response, body) {
+    function(err, response) {
       if (err) { return cb(null, false); }
       else {
         var status = response.statusCode;
-        if (status == 200) { return cb(null, true); }
+        if (Number(status) === 200) { return cb(null, true); }
         else { return cb(null, false); }
       }
     }
@@ -176,11 +176,11 @@ function notifyInvalidBidUser(results, auctionId, region, username, email) {
   var html = ejs.render(str, data);
   
   // heckle the winners
-  console.log("Emailing " + username + " with invalidating user template");
+  console.log('Emailing ' + username + ' with invalidating user template');
   heckler.email({
     from: config.senderEmail,
     to: email,
-    subject: "Your bid has been invalidated in auction: " + auctionId,
+    subject: 'Your bid has been invalidated in auction: ' + auctionId,
     html: html
   });
 }

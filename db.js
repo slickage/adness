@@ -8,7 +8,6 @@ var biddingAlg = require('./bidding');
 var validate = require('./validation');
 var _ = require('lodash');
 
-
 var db = {
   newAuction: function(body, cb) {
     // validate times
@@ -82,15 +81,15 @@ var db = {
         }
 
         // copy over on the allowed values into the retrieved auction
-        if (auction.start) body.start = Number(auction.start);
-        if (auction.end) body.end = Number(auction.end);
-        if (auction.adsStart) body.adsStart = Number(auction.adsStart);
-        if (auction.adsEnd) body.adsEnd = Number(auction.adsEnd);
+        if (auction.start) { body.start = Number(auction.start); }
+        if (auction.end) { body.end = Number(auction.end); }
+        if (auction.adsStart) { body.adsStart = Number(auction.adsStart); }
+        if (auction.adsEnd) { body.adsEnd = Number(auction.adsEnd); }
         // handle both boolean and String true/false
-        if (String(auction.enabled).toLowerCase()  === "true") {
+        if (String(auction.enabled).toLowerCase()  === 'true') {
           body.enabled = true;
         }
-        else if (String(auction.enabled).toLowerCase() === "false") {
+        else if (String(auction.enabled).toLowerCase() === 'false') {
           body.enabled = false;
         }
         // update auction
@@ -256,7 +255,7 @@ var db = {
       if (!err) {
         // first object is the auction itself
         // the rest of the array are the bids
-        var openAuction = body.rows.splice(0,1)[0].value;
+        // var openAuction = body.rows.splice(0,1)[0].value;
 
         // parse out the bids
         var bids = [];
@@ -292,8 +291,8 @@ var db = {
   getBid: function(bidId, cb) {
     couch.get(bidId, null, function(err, body) {
       if (!err) {
-        if (body.type !== "bid") {
-          return cb({ message: "Id is not for a bid." }, undefined);
+        if (body.type !== 'bid') {
+          return cb({ message: 'Id is not for a bid.' }, undefined);
         }
         cb(null, body);
       }
@@ -320,7 +319,7 @@ var db = {
     // check that user is registered
     var regUser = body.regUser;
     if (regUser.registered !== true) {
-      var message = "User is not registered.";
+      var message = 'User is not registered.';
       return cb({ message: message }, undefined);
     }
 
@@ -373,7 +372,7 @@ var db = {
         }
         else {
           // auction is not open
-          cb({ message: "Auction is not open." }, undefined);
+          cb({ message: 'Auction is not open.' }, undefined);
         }
       }
       else { cb(err, undefined); }
@@ -391,7 +390,7 @@ var db = {
         // deprecated since only admins could possibly update bids
         // check that this user is the same user as the bid
         // if (body.user.username !== bid.user.username) {
-        //   return cb({ message: "Editing another users bid is not allowed."}, undefined);
+        //   return cb({ message: 'Editing another users bid is not allowed.'}, undefined);
         // }
 
         // check that this is the right bid and revision
@@ -420,8 +419,8 @@ var db = {
                 return cb(new Error(errorMessage), undefined);
               }
 
-              if (bid.region) body.region = bid.region;
-              if (bid.price) body.price = Number(bid.price);
+              if (bid.region) { body.region = bid.region; }
+              if (bid.price) { body.price = Number(bid.price); }
               if (bid.slots) {
                 var slots = Number(bid.slots);
                 var auctionRegion = _.find(auction.regions, function(region) {
@@ -433,7 +432,7 @@ var db = {
               couch.insert(body, cb);
             }
             else {
-              cb({ message: "This auction is not open."}, undefined);
+              cb({ message: 'This auction is not open.'}, undefined);
             }
           }
           else { cb(err, undefined); }
@@ -457,10 +456,10 @@ var db = {
         }
 
         // only update wonSlots, valid, void, and lost
-        if (bid.wonSlots) oldBid.wonSlots = bid.wonSlots;
-        if (bid.invalid) oldBid.invalid = bid.invalid; // admin invalidated
-        if (bid.lost) oldBid.lost = bid.lost;    // don't count at all
-        if (bid.void) oldBid.void = bid.void;    // only count wonSlots
+        if (bid.wonSlots) { oldBid.wonSlots = bid.wonSlots; }
+        if (bid.invalid) { oldBid.invalid = bid.invalid; } // admin invalidated
+        if (bid.lost) { oldBid.lost = bid.lost; } // don't count at all
+        if (bid.void) { oldBid.void = bid.void; } // only count wonSlots
         couch.insert(oldBid, cb);
       }
     });
@@ -500,10 +499,10 @@ var db = {
 
     // validate submitted
     var submitted = false;
-    if (String(body.submitted).toLowerCase()  === "true") {
+    if (String(body.submitted).toLowerCase()  === 'true') {
       submitted = true;
     }
-    else if (String(body.submitted).toLowerCase() === "false") {
+    else if (String(body.submitted).toLowerCase() === 'false') {
       submitted = false;
     }
 
@@ -596,14 +595,14 @@ var db = {
         // validate admin or user
         if (ad.user.admin !== true) {
           if (body.userId !== ad.user.userId) {
-            var userErrorMessage = "Editing another user's ad is not allowed.";
+            var userErrorMessage = 'Editing another user\'s ad is not allowed.';
             return cb(new Error(userErrorMessage), undefined);
           }
         }
 
         // update html if not approved and not submitted or user is admin
         if (ad.user.admin === true || body.approved !== true && body.submitted !== true) {
-          if (ad.html) body.html = validate.html(ad.html);
+          if (ad.html) { body.html = validate.html(ad.html); }
         }
 
         if (ad.css) { body.css = ad.css; }
@@ -630,30 +629,30 @@ var db = {
         // handle both boolean and String true/false
         if (ad.user.admin === true) {
           // admin only booleans
-          if (String(ad.approved).toLowerCase()  === "true") {
+          if (String(ad.approved).toLowerCase()  === 'true') {
             body.approved = true;
           }
-          else if (String(ad.approved).toLowerCase() === "false") {
+          else if (String(ad.approved).toLowerCase() === 'false') {
             body.approved = false;
           }
-          if (String(ad.rejected).toLowerCase()  === "true") {
+          if (String(ad.rejected).toLowerCase()  === 'true') {
             body.rejected = true;
           }
-          else if (String(ad.rejected).toLowerCase() === "false") {
+          else if (String(ad.rejected).toLowerCase() === 'false') {
             body.rejected = false;
           }
         }
         // handle both boolean and String true/false
-        if (String(ad.submitted).toLowerCase()  === "true") {
+        if (String(ad.submitted).toLowerCase()  === 'true') {
           body.submitted = true;
         }
-        else if (String(ad.submitted).toLowerCase() === "false") {
+        else if (String(ad.submitted).toLowerCase() === 'false') {
           body.submitted = false;
         }
-        if (String(ad.inRotation).toLowerCase()  === "true") {
+        if (String(ad.inRotation).toLowerCase()  === 'true') {
           body.inRotation = true;
         }
-        else if (String(ad.inRotation).toLowerCase() === "false") {
+        else if (String(ad.inRotation).toLowerCase() === 'false') {
           body.inRotation = false;
         }
 
@@ -675,7 +674,7 @@ var db = {
         // validate user
         if (ad.user.admin !== true) {
           if (body.userId !== ad.user.userId) {
-            return cb({ message: "Deleting another user's ad is not allowed."}, undefined);
+            return cb({ message: 'Deleting another user\'s ad is not allowed.'}, undefined);
           }
         }
 
@@ -688,7 +687,7 @@ var db = {
     var receipt = {
       metadata: newReceipt.metadata,
       invoiceType: newReceipt.invoiceType,
-      invoiceStatus: "new",
+      invoiceStatus: 'new',
       invoice: newReceipt.invoice || {},
       created_at: new Date().getTime(),
       modified_at: new Date().getTime(),
@@ -741,9 +740,9 @@ var db = {
       modified_at: new Date().getTime(),
       type: 'registeredUser'
     };
-    if (user._id) registeredUser._id = user._id;
-    if (user._rev) registeredUser._rev = user._rev;
-    if (!user.created_at) registeredUser.created_at = new Date().getTime();
+    if (user._id) { registeredUser._id = user._id; }
+    if (user._rev) { registeredUser._rev = user._rev; }
+    if (!user.created_at) { registeredUser.created_at = new Date().getTime(); }
 
     couch.insert(registeredUser, cb);
   },
@@ -786,7 +785,7 @@ var db = {
           air = airs[0];
         }
         else {
-          err = new Error("No Ads In Rotation found.");
+          err = new Error('No Ads In Rotation found.');
           air = undefined;
         }
       }
@@ -807,7 +806,7 @@ var db = {
     });
   },
   upsertAdsInRotation: function(air, cb) {
-    var airId = air.auctionId + "-air";
+    var airId = air.auctionId + '-air';
     couch.get(airId, null, function(err, body) {
       var airInsert = {};
       // air doesn't exist already
@@ -815,13 +814,13 @@ var db = {
         airInsert = air;
         airInsert._id = airId;
         airInsert.modified_at = new Date().getTime();
-        airInsert.type = "adsInRotation";
+        airInsert.type = 'adsInRotation';
       }
       else {
         airInsert = body;
-        if (air.adsStart) airInsert.adsStart = air.adsStart;
-        if (air.adsEnd) airInsert.adsEnd = air.adsEnd;
-        if (air.regions) airInsert.regions = air.regions;
+        if (air.adsStart) { airInsert.adsStart = air.adsStart; }
+        if (air.adsEnd) { airInsert.adsEnd = air.adsEnd; }
+        if (air.regions) { airInsert.regions = air.regions; }
         airInsert.modified_at = new Date().getTime();
       }
 
@@ -874,7 +873,7 @@ var db = {
   },
   getUserInvoices: function(auctionId, userId, cb) {
     var params = {startkey: [auctionId, userId], endkey: [auctionId, userId]};
-    var view = "getUserInvoices";
+    var view = 'getUserInvoices';
     couch.view(config.couchdb.name, view, params, function(err, body) {
       if (!err) {
         var invoices = [];
@@ -980,7 +979,7 @@ var db = {
       if (reservedAd.in_use.toLowerCase() === 'true') {
         reservedAd.in_use = true;
       }
-      else reservedAd.in_use = false;
+      else { reservedAd.in_use = false; }
     }
 
     var ad = {
@@ -1022,7 +1021,7 @@ var db = {
     // ensure that the ad exists first
     couch.get(reservedAd._id, null, function(err, body) {
       if (err) {
-        console.log("This reserved ad does not exist.");
+        console.log('This reserved ad does not exist.');
         return cb(err, undefined);
       }
 
@@ -1034,7 +1033,7 @@ var db = {
         }
 
         // update html if not approved or submitted
-        if (reservedAd.html) body.html = validate.html(reservedAd.html);
+        if (reservedAd.html) { body.html = validate.html(reservedAd.html); }
 
         // css
         if (reservedAd.css) { body.css = reservedAd.css; }
@@ -1061,8 +1060,8 @@ var db = {
 
         // in use
         if (reservedAd.in_use) {
-          if (reservedAd.in_use.toLowerCase() === 'true') body.in_use = true;
-          else body.in_use = false;
+          if (reservedAd.in_use.toLowerCase() === 'true') { body.in_use = true; }
+          else { body.in_use = false; }
         }
 
         // update ad
@@ -1085,7 +1084,7 @@ var db = {
     });
   },
   upsertFactoid: function(newFactoids, cb) {
-    var key = "";
+    var key = '';
     if (newFactoids._id) { key = newFactoids._id; }
     couch.get(key, null, function(err, body) {
       var factoids = {};
@@ -1096,13 +1095,13 @@ var db = {
         factoids.list = newFactoids.list;
         factoids.created_at = new Date().getTime();
         factoids.modified_at = new Date().getTime();
-        factoids.type = "factoids";
+        factoids.type = 'factoids';
       }
       else {
         factoids = body;
-        if (newFactoids.html) factoids.html = validate.html(newFactoids.html);
-        if (newFactoids.css) factoids.css = newFactoids.css;
-        if (newFactoids.list) factoids.list = newFactoids.list;
+        if (newFactoids.html) { factoids.html = validate.html(newFactoids.html); }
+        if (newFactoids.css) { factoids.css = newFactoids.css; }
+        if (newFactoids.list) { factoids.list = newFactoids.list; }
         factoids.modified_at = new Date().getTime();
       }
 
@@ -1127,7 +1126,7 @@ var db = {
           facts = facts[0];
         }
         else {
-          err = new Error("No Factoids found.");
+          err = new Error('No Factoids found.');
           facts = undefined;
         }
       }

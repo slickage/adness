@@ -6,7 +6,7 @@ module.exports = function(req, cb) {
     if (err) {
       console.log('There were no Factoids found. Returning error Factoid.');
       var emptyFact = {};
-      emptyFact.css = "";
+      emptyFact.css = '';
       emptyFact.html = '<div style="text-align:center">There are no Factoids.</div>';
       return cb(null, emptyFact);
     }
@@ -16,7 +16,7 @@ module.exports = function(req, cb) {
       var randomFact = _.sample(facts.list);
 
       // edit html with fact
-      facts.html = facts.html.replace("&lt;%- text %&gt;", randomFact.text);
+      facts.html = facts.html.replace('&lt;%- text %&gt;', randomFact.text);
 
       // return random fact
       delete facts.list;

@@ -16,11 +16,11 @@ module.exports = {
     if (timeTill > 0) {
       // account for setTimeout not being able to handle more than 24 days
       setDaysTimeout(auctionEnd.notifyAuction, timeTill, auction);
-      console.log("Auction " + auction._id + " added to event: auction close.");
+      console.log('Auction ' + auction._id + ' added to event: auction close.');
     }
   },
   updateAuction: function(auction) {
-    console.log("Updating Auction Close Event");
+    console.log('Updating Auction Close Event');
 
     // --- delete the current timer
     var timer = timedEvents[auction._id];
@@ -53,11 +53,11 @@ module.exports = {
     if (timeTill > 0) {
       // account for setTimeout not being able to handle more than 24 days
       setDaysTimeout(recalc.recalculate, timeTill, recalculation);
-      console.log("Recalc: " + recalculation._id + " on round: " + recalculation.round + " scheduled for " + timeTill);
+      console.log('Recalc: ' + recalculation._id + ' on round: ' + recalculation.round + ' scheduled for ' + timeTill);
     }
   },
   updateRecalculation: function(recalculation) {
-    console.log("Updating Recalculation: " + recalculation._id);
+    console.log('Updating Recalculation: ' + recalculation._id);
 
     // --- delete the current timer
     var timer = timedEvents[recalculation._id];

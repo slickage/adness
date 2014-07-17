@@ -15,7 +15,7 @@ module.exports = {
     if (!user) { return cb({message: 'no user found.'}, undefined); }
 
     // build an invoice for the registration fee
-    var webhook = config.site.internalUrl + "/hooks/registration";
+    var webhook = config.site.internalUrl + '/hooks/registration';
     var invoiceForm = invoice.createRegistrationInvoice(user, webhook);
     var data = {
       userId: user.userId,
@@ -23,7 +23,7 @@ module.exports = {
       email: user.email,
       admin: user.admin
     };
-    invoice.createInvoice(data, "registration", invoiceForm, this.completeInvoice);
+    invoice.createInvoice(data, 'registration', invoiceForm, this.completeInvoice);
     return cb(null, {});
   },
   completeInvoice: function(err, results) {
@@ -41,11 +41,11 @@ module.exports = {
     var html = ejs.render(str, data);
 
     // heckle the user for registration fee
-    console.log("Emailing " + metadata.username + " with registration template");
+    console.log('Emailing ' + metadata.username + ' with registration template');
     heckler.email({
       from: config.senderEmail,
       to: metadata.email,
-      subject: "Auction Registration Fee Invoice",
+      subject: 'Auction Registration Fee Invoice',
       html: html
     });
     
@@ -54,12 +54,12 @@ module.exports = {
       userId: metadata.userId,
       username: metadata.username,
       email: metadata.email,
-      registrationStatus: "Invoice Sent.",
+      registrationStatus: 'Invoice Sent.',
       registered: false
     };
     if (metadata.admin) { registeredUser.registered = true; }
-    db.insertRegisteredUser(registeredUser, function(err, results) {
-      if (err) console.log(err);
+    db.insertRegisteredUser(registeredUser, function(err) {
+      if (err) { console.log(err); }
     });
   }
 };

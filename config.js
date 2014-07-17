@@ -20,7 +20,7 @@ var parseBool = function(value) {
     if (Number(value) > 0) { return true; }
     else { return false; }
   }
-  else return Boolean(value);
+  else { return Boolean(value); }
 };
 
 var parseNumber = function(envVar, defaultVar) {

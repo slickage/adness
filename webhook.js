@@ -34,11 +34,11 @@ module.exports = {
         }
         else { validateCall(receipt, cb); }
       },
-      // update receipt's invoiceStatus to "paid"
+      // update receipt's invoiceStatus to 'paid'
       function(receipt, cb) {
         if (alreadyPaid) { return cb(null, receipt); }
         else {
-          receipt.invoiceStatus = "paid";
+          receipt.invoiceStatus = 'paid';
           updateReceipt(receipt, cb);
         }
       },
@@ -60,7 +60,7 @@ module.exports = {
         }
       }],
       // heckler admin with payment and invoice info
-      function(err, results) {
+      function(err) {
         if (err) {
           console.log(err);
           return res.send(500, err.message);
@@ -80,11 +80,11 @@ module.exports = {
         var adminHtml = ejs.render(adminStr, data);
 
         // heckle the admin that reg fee was paid
-        console.log("Emailing Admin: Registration paid for " + regUser.username);
+        console.log('Emailing Admin: Registration paid for ' + regUser.username);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
-          subject: "Registration Fee Paid for " + regUser.username,
+          subject: 'Registration Fee Paid for ' + regUser.username,
           html: adminHtml
         });
 
@@ -93,11 +93,11 @@ module.exports = {
         var userHtml = ejs.render(userStr, data);
 
         // heckle the user that reg fee was paid
-        console.log("Emailing " + regUser.username + ": Registration Paid.");
+        console.log('Emailing ' + regUser.username + ': Registration Paid.');
         heckler.email({
           from: config.senderEmail,
           to: regUser.email,
-          subject: "Registration Fee Paid for " + regUser.username,
+          subject: 'Registration Fee Paid for ' + regUser.username,
           html: userHtml
         });
 
@@ -118,17 +118,17 @@ module.exports = {
       },
       // validate status call 
       function(receipt, cb) {
-        if (receipt.invoiceStatus === "paid") {
+        if (receipt.invoiceStatus === 'paid') {
           alreadyPaid = true;
           return cb(null, receipt);
         }
         else { validateCall(receipt, cb); }
       },
-      // update receipt's invoiceStatus to "paid"
+      // update receipt's invoiceStatus to 'paid'
       function(receipt, cb) {
         if (alreadyPaid) { return cb(null, receipt); }
         else {
-          receipt.invoiceStatus = "paid";
+          receipt.invoiceStatus = 'paid';
           updateReceipt(receipt, cb);
         }
       }],
@@ -142,7 +142,7 @@ module.exports = {
         
         // secondary vaildation
         if (receipt.metadata.auctionId !== auctionId) {
-          return res.send(500, "Invalid Request");
+          return res.send(500, 'Invalid Request');
         }
 
         // build auction winner email template for admins
@@ -159,11 +159,11 @@ module.exports = {
         var adminHtml = ejs.render(adminStr, data);
 
         // heckle the admin that an auction payment was made
-        console.log("Emailing Admin: Payment Cleared for " + receipt.metadata.user.username + " For Auction: " + auctionId);
+        console.log('Emailing Admin: Payment Cleared for ' + receipt.metadata.user.username + ' For Auction: ' + auctionId);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
-          subject: "Payment on Auction: " + auctionId + " by user: " + receipt.metadata.user.username,
+          subject: 'Payment on Auction: ' + auctionId + ' by user: ' + receipt.metadata.user.username,
           html: adminHtml
         });
 
@@ -172,11 +172,11 @@ module.exports = {
         var userHtml = ejs.render(userStr, data);
 
         // heckle the user that an auction payment was made
-        console.log("Emailing " + receipt.metadata.user.username + ": Payment Made For Auction: " + auctionId);
+        console.log('Emailing ' + receipt.metadata.user.username + ': Payment Made For Auction: ' + auctionId);
         heckler.email({
           from: config.senderEmail,
           to: receipt.metadata.user.email,
-          subject: "Payment Received for Auction: " + auctionId,
+          subject: 'Payment Received for Auction: ' + auctionId,
           html: userHtml
         });
         
@@ -193,7 +193,6 @@ function validateCall(receipt, cb) {
     function(err, response, body) {
       if (err) { return cb(err, undefined); }
       
-      var status;
       try {
         // parse body into json (status object)
         var parsedBody = JSON.parse(body);
@@ -203,13 +202,13 @@ function validateCall(receipt, cb) {
           return cb(null, receipt);
         }
         else {
-          var statusError = new Error("Status is not set to paid.");
+          var statusError = new Error('Status is not set to paid.');
           return cb(statusError, undefined);
         }
       }
       catch (error) {
-        var errorMsg = "Could not validate webhook call, received response: ";
-        errorMsg += body + "\n";
+        var errorMsg = 'Could not validate webhook call, received response: ';
+        errorMsg += body + '\n';
         errorMsg += error.message;
         var validateError = new Error(errorMsg );
         return cb(validateError, undefined);
@@ -226,7 +225,7 @@ function getReceipt(receiptId, cb) {
 }
 
 function updateReceipt(receipt, cb) {
-  db.updateReceipt(receipt, function(err, body) {
+  db.updateReceipt(receipt, function(err) {
     if (err) { return cb(err, undefined); }
     return cb(null, receipt);
   });

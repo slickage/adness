@@ -29,8 +29,8 @@ module.exports = function(api) {
       else {
         var bid = models.bid;
         bid.user = req.user; // add current user
-        if (req.body.price) bid.price = req.body.price;
-        if (req.body.slots) bid.slots = req.body.slots;
+        if (req.body.price) { bid.price = req.body.price; }
+        if (req.body.slots) { bid.slots = req.body.slots; }
         db.updateBid(bid, function(err, body) {
           if(err) { console.log(err); res.json(err); }
           else { res.json(body); }
@@ -47,7 +47,7 @@ module.exports = function(api) {
       var bid = req.body;
       bid.user = req.user; // add current user
       bid.regUser = models.registeredUser;
-      db.newBid(bid, function(err, body, header) {
+      db.newBid(bid, function(err, body) {
         if (err) { console.log(err); res.json(err); }
         else { res.json(body); }
       });

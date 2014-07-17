@@ -2,7 +2,6 @@
 'use strict';
 
 var mysql = require('mysql');
-var shacrypt = require('shacrypt');
 var _ = require('lodash');
 var config = require(__dirname + '/../config');
 
@@ -24,7 +23,7 @@ module.exports = {
         var username = '';
 
         // check if username is email
-        if (login.indexOf("@") > 0) {
+        if (login.indexOf('@') > 0) {
           getUsernameFromEmail(connection, login, function(err, results) {
             if (results) { username = results; }
             else { username = login; }
@@ -42,7 +41,7 @@ module.exports = {
 
 function getUsernameFromEmail(connection, email, cb) {
   connection.query(
-    "SELECT memberName from smf_members where emailAddress = ? limit 1",
+    'SELECT memberName from smf_members where emailAddress = ? limit 1',
     [email],
     function(err, rows) {
       if (err) { return cb(err, undefined); }

@@ -58,7 +58,7 @@ module.exports = function(site) {
 };
 
 // index redirect to /sb
-function index (req, res) {
+function index(req, res) {
   // redirect to sb before spa version
   res.redirect(req.browsePrefix);
 }
@@ -190,7 +190,7 @@ function handle404 (req, res) {
 }
 
 // Catch all for any other errors
-function handle500 (err, req, res) {
+function handle500(err, req, res) {
   res.status(err.status || 500);
   var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
   res.render('error', { errorMsg: err.message || 'Internal Server Error',

@@ -10,7 +10,7 @@ module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
   req.model.load('reservedAds', req);
   req.model.end(function(err, models) {
-    if (err) console.log(err);
+    if (err) { console.log(err); }
 
     var minutes = config.antiSnipeMinutes;
 

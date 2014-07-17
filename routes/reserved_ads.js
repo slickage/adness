@@ -56,7 +56,7 @@ module.exports = {
     req.model.end(function(err, models) {
       if (err) {
         console.log(err);
-        return res.redirect("/admin/ads/reserved");
+        return res.redirect('/admin/ads/reserved');
       }
 
       if (models.reservedAd) {
@@ -80,28 +80,28 @@ module.exports = {
   },
   createAd: function(req, res) {
     // admin check
-    if (!req.user.admin) { return res.send(500, "No Soup For You!."); }
+    if (!req.user.admin) { return res.send(500, 'No Soup For You!.'); }
 
     req.body.user = req.user;
 
     // don't allow ads with no regions
     if (req.body.regions.length === 0) {
-      return res.send(500, "No Regions found in this ad.");
+      return res.send(500, 'No Regions found in this ad.');
     }
 
-    db.newReservedAd(req.body, function(err, body, header) {
+    db.newReservedAd(req.body, function(err, body) {
       if (err) { console.log(err); }
       return res.json({ok: true});
     });
   },
   updateAd: function(req, res) {
     // admin check
-    if (!req.user.admin) { return res.send(500, "No Soup For You!.");  }
+    if (!req.user.admin) { return res.send(500, 'No Soup For You!.');  }
     req.model.load('reservedAd', req);
     req.model.end(function(err, models) {
       if (err) {
         console.log(err);
-        return res.send(500, "No Reserved Ad found with this id.");
+        return res.send(500, 'No Reserved Ad found with this id.');
       }
       else {
         var ad = models.reservedAd;
@@ -111,11 +111,11 @@ module.exports = {
           return res.redirect(req.browsePrefix);
         }
 
-        if (req.body.html) ad.html = req.body.html;
-        if (req.body.css) ad.css = req.body.css;
-        if (req.body.regions) ad.regions = req.body.regions;
-        if (req.body.in_use) ad.in_use = req.body.in_use;
-        db.updateReservedAd(ad, function(err, body) {
+        if (req.body.html) { ad.html = req.body.html; }
+        if (req.body.css) { ad.css = req.body.css; }
+        if (req.body.regions) { ad.regions = req.body.regions; }
+        if (req.body.in_use) { ad.in_use = req.body.in_use; }
+        db.updateReservedAd(ad, function(err) {
           if (err) { console.log(err); }
           return res.json({ok: true});
         });
@@ -124,16 +124,16 @@ module.exports = {
   },
   deleteAd: function(req, res) {
     // admin check
-    if (!req.user.admin) { return res.send(500, "No Soup For You!.");  }
+    if (!req.user.admin) { return res.send(500, 'No Soup For You!.');  }
     req.model.load('reservedAd', req);
     req.model.end(function(err, models) {
       if (err) {
         console.log(err);
-        return res.send(500, "No Reserved Ad found with this id.");
+        return res.send(500, 'No Reserved Ad found with this id.');
       }
       else {
         var ad = models.reservedAd;
-        db.deleteReservedAd(ad._id, function(err, body) {
+        db.deleteReservedAd(ad._id, function(err) {
           if (err) { console.log(err); }
           return res.json({ok: true});
         });

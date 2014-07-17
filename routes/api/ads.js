@@ -56,9 +56,9 @@ module.exports = function(api) {
       else {
         var ad = models.ad;
         ad.user = req.user; // add current user
-        if (req.body.html) ad.html = req.body.html;
-        if (req.body.approved) ad.approved = req.body.approved;
-        if (req.body.submitted) ad.submitted = req.body.submitted;
+        if (req.body.html) { ad.html = req.body.html; }
+        if (req.body.approved) { ad.approved = req.body.approved; }
+        if (req.body.submitted) { ad.submitted = req.body.submitted; }
         db.updateAd(ad, function(err, body) {
           if (err) { console.log(err); res.json(err); }
           else { res.json(body); }
@@ -72,7 +72,7 @@ module.exports = function(api) {
   .post(auth, function(req, res) {
     var ad = req.body;
     ad.user = req.user;
-    db.newAd(ad, function(err, body, header) {
+    db.newAd(ad, function(err, body) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
     });

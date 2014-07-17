@@ -18,8 +18,8 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   var user = users[id];
-  if (user) done(null, user);
-  else done(null, false);
+  if (user) { done(null, user); }
+  else { done(null, false); }
 });
 
 passport.use(new LocalStrategy(

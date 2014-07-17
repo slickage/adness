@@ -7,7 +7,7 @@ var moment = require('moment');
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
   req.model.end(function(err, models) {
-    if (err) console.log('error: ' + JSON.stringify(err));
+    if (err) { console.log('error: ' + JSON.stringify(err)); }
 
     var auctions = models.auctionsTimeRelative.past;
     var sortedPast = _.sortBy(auctions, function(auction) {

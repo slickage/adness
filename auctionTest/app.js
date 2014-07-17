@@ -2,8 +2,6 @@
 'use strict';
 
 var charlatan = require('charlatan');
-var request = require('request');
-var fs = require('fs');
 
 // load config file
 var config = require('./config.json');
@@ -51,7 +49,7 @@ var timer = setInterval(function() {
 function randomAuctionTiming() {
 	// find remaining time
 	var currentTime = new Date();
-	var timeDifference = endTime.getTime() - currentTime.getTime(); 
+	var timeDifference = endTime.getTime() - currentTime.getTime();
 
 	// choose a random time within that window
 	var random = Math.random();
@@ -83,8 +81,8 @@ function testAuction() {
 		auction_slots[slotChoice].current_bid = bid;
 		
 		// print out bid
-		var output = 'User: ' + user.name + ' bid ' + minBid + "/" + bid;
-		output += ' on slot number: ' + slot.number; 
+		var output = 'User: ' + user.name + ' bid ' + minBid + '/' + bid;
+		output += ' on slot number: ' + slot.number;
 		console.log(output);
 	});
 }
@@ -100,7 +98,7 @@ function randomSlots() {
 	var slots = [];
 
 	// choose a random number of slots positions to bid on
-	var max = config.numberOfSlots; 
+	var max = config.numberOfSlots;
 	var min = 1; // shift by one to guarantee one slot
 	var numberOfSlots = Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -128,7 +126,7 @@ function randomSlots() {
 
 function randomBid(current_bid) {
 	var bidVariation = Math.ceil(Math.random() * 10); // from 1 -10
-	var bidAdjustment = bidVariation * config.btcStep;  
+	var bidAdjustment = bidVariation * config.btcStep;
 	var bid = current_bid + bidAdjustment;
 	return bid;
 }

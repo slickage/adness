@@ -10,7 +10,7 @@ var request = require('request');
 
 module.exports = {
   recalculate: function(recalculation) {
-    console.log("Running Recalculation for auction: " + recalculation.auctionId);
+    console.log('Running Recalculation for auction: ' + recalculation.auctionId);
 
     var finalRecalc = false;
 
@@ -18,16 +18,16 @@ module.exports = {
     var nextRound = recalculation.round + 1;
     // see if next round exists
     if (nextRound <= config.rounds.maxRounds) {
-      console.log("Incrementing Recalculation to round: " + nextRound + " for Auction: " + recalculation.auctionId);
+      console.log('Incrementing Recalculation to round: ' + nextRound + ' for Auction: ' + recalculation.auctionId);
       // next round
       recalculation.round = nextRound;
       // next expiration
-      var roundValue = config.rounds["round" + recalculation.round];
+      var roundValue = config.rounds['round' + recalculation.round];
       recalculation.expiration = new Date().getTime() + roundValue.timeOffset;
     }
     // next round doesn't exist, call final recalculation
     else {
-      console.log("Running Final Recalculation for Auction: " + recalculation.auctionId);
+      console.log('Running Final Recalculation for Auction: ' + recalculation.auctionId);
       finalRecalc = true; }
 
     /// --- assuming next round exists
@@ -67,13 +67,13 @@ module.exports = {
  * printing errors but continues anyway.
  */
 function checkInvoices(auctionId, cb) {
-  if (!auctionId) { return cb(new Error("AuctionId not found"), undefined); }
+  if (!auctionId) { return cb(new Error('AuctionId not found'), undefined); }
 
   // get all invoices (receipts) for this auction
   db.getAuctionInvoices(auctionId, function(err, receipts) {
     if (err) { console.log(err); receipts = []; }
 
-    console.log("Found " + receipts.length + " invoices.");
+    console.log('Found ' + receipts.length + ' invoices.');
 
     // removed invoices that aren't expired
     var now = new Date().getTime();
@@ -114,14 +114,14 @@ function checkInvoices(auctionId, cb) {
       function(bidsCallback) {
         // modify bids from invoices
         bids = _.values(bids);
-        console.log("Updating " + bids.length + " bids.");
+        console.log('Updating ' + bids.length + ' bids.');
         async.eachSeries(
           bids,
           function(bid, callback) {
-            resolveBid(auctionId, bid, function(bidErr, results) {
+            resolveBid(auctionId, bid, function(bidErr) {
               if (bidErr) { console.log(bidErr); }
 
-              console.log("Resolved Bid: ");
+              console.log('Resolved Bid: ');
               console.log(bid);
 
               // ignore error and continue with next bid
@@ -130,13 +130,13 @@ function checkInvoices(auctionId, cb) {
           },
           function(allBidErr) {
             if (allBidErr) { console.log(allBidErr); }
-            console.log("all bids updated");
+            console.log('all bids updated');
             return bidsCallback(null);
           }
         );
       }
     ],
-    function(err, results) {
+    function(err) {
       // sum up wonSlots in bids
       var wonSlots = 0;
       bids.forEach(function(bid) {
@@ -158,7 +158,7 @@ function resolveReceipt(receipt, cb) {
   getInvoiceStatus(invoice.id, function(err, paid) {
     if (err) { return cb(err, null); }
 
-    console.log("Invoice: " + invoice.id + " - paid = " + paid);
+    console.log('Invoice: ' + invoice.id + ' - paid = ' + paid);
 
     // check invoice paid
     invoicePaid = paid;
@@ -185,8 +185,8 @@ function getInvoiceStatus(invoiceId, cb) {
         var parsedBody;
         try { parsedBody = JSON.parse(body); }
         catch (error) {
-          var errorMsg = "Could not parse response, received response: ";
-          errorMsg += body + "\n";
+          var errorMsg = 'Could not parse response, received response: ';
+          errorMsg += body + '\n';
           errorMsg += error.message;
           var validateError = new Error(errorMsg );
           return cb(validateError, undefined);
@@ -287,7 +287,7 @@ function resolveBid(auctionId, bid, cb) {
 function voidUserBidsPerRegion(auctionId, region, userId, cb) {
   // get all bids for this auction for this user
   db.getUserBidsPerRegion(auctionId, region, userId, function(err, userbids) {
-    if (err) console.log(err);
+    if (err) { console.log(err); }
     if (userbids) {
       async.eachSeries(
         userbids,
@@ -296,7 +296,7 @@ function voidUserBidsPerRegion(auctionId, region, userId, cb) {
           if (userbid.void) { return callback(null); }
           // otherwise update this userbid
           var updateBid = { _id: userbid._id, void: true };
-          db.forceUpdateBidStatus(updateBid, function(updateErr, results) {
+          db.forceUpdateBidStatus(updateBid, function(updateErr) {
             if (updateErr) { console.log(updateErr); }
             return callback(null);
           });
@@ -310,7 +310,7 @@ function voidUserBidsPerRegion(auctionId, region, userId, cb) {
 }
 
 function auctionRecalculation(auctionId, recalculation) {
-  console.log("Recalculating Auction Slots...");
+  console.log('Recalculating Auction Slots...');
   // get the auction object
   db.getAuction(recalculation.auctionId, function(err, auction) {
     if (err) { console.log(err); }
@@ -329,7 +329,7 @@ function auctionRecalculation(auctionId, recalculation) {
 }
 
 function updateRecalculation(recalculation, finalRecalc, wonSlots) {
-  console.log("Updating Recalculation...");
+  console.log('Updating Recalculation...');
 
   db.getAuction(recalculation.auctionId, function(err, auction) {
     if (err) { console.log(err); }
@@ -348,7 +348,7 @@ function updateRecalculation(recalculation, finalRecalc, wonSlots) {
 
     // add one minute to recalculation expiration
     recalculation.expiration = recalculation.expiration + (1000 * 60);
-    db.updateRecalculation(recalculation, function(err, results) {
+    db.updateRecalculation(recalculation, function(err) {
       if (err) { console.log(err); }
     });
 
@@ -356,7 +356,7 @@ function updateRecalculation(recalculation, finalRecalc, wonSlots) {
 }
 
 function voidLeftoverBids(auctionId, cb) {
-  console.log("Voiding any leftover bids...");
+  console.log('Voiding any leftover bids...');
 
   // get all bids for this auction
   db.getBidsPerAuction(auctionId, function(err, bids) {
@@ -379,7 +379,7 @@ function voidLeftoverBids(auctionId, cb) {
 
           // otherwise update this userbid
           var updateBid = { _id: bid._id, lost: true };
-          db.forceUpdateBidStatus(updateBid, function(updateErr, results) {
+          db.forceUpdateBidStatus(updateBid, function(updateErr) {
             if (updateErr) { console.log(updateErr); }
             return callback(null);
           });

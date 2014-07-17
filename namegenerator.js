@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 function randomWord(len)
 {
-  var lowercase = "abcdefghijklmnopqrstuvwxyz";
+  var lowercase = 'abcdefghijklmnopqrstuvwxyz';
   var retval = '';
   for (var i=0; i < len; i++) {
     retval += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
@@ -25,7 +25,7 @@ var generateRandomName = function() {
     if (i === isRandom) {
       do {
         var randomLength = Math.floor(Math.random() * 11);
-        if (randomLength < 6) randomLength += 5; // 5 to 10 length
+        if (randomLength < 6) { randomLength += 5; } // 5 to 10 length
         add = randomWord(randomLength);
       }
       while (_.contains(reservedWords, add)); // try again if random word is a reserved word

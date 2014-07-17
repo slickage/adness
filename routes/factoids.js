@@ -1,6 +1,4 @@
-var _ = require('lodash');
 var moment = require('moment');
-var config = require('../config');
 var db = require('../db');
 
 module.exports = {
@@ -10,7 +8,7 @@ module.exports = {
     req.model.load('factoids', req);
     req.model.end(function(err, models) {
       if (err) {
-        console.log("No Factoids Found, creating new factoids object.");
+        console.log('No Factoids Found, creating new factoids object.');
         models.factoids = {};
       }
 
@@ -34,20 +32,20 @@ module.exports = {
     req.model.load('factoids', req);
     req.model.end(function(err, models) {
       if (err) {
-        console.log("Factoids not found, inserting new Factoids");
+        console.log('Factoids not found, inserting new Factoids');
         models.factoids = {};
       }
       
       var facts = models.factoids;
 
-      if (req.body.html) facts.html = req.body.html;
-      if (req.body.css) facts.css = req.body.css;
-      if (req.body.list) facts.list = req.body.list;
+      if (req.body.html) { facts.html = req.body.html; }
+      if (req.body.css) { facts.css = req.body.css; }
+      if (req.body.list) { facts.list = req.body.list; }
 
-      db.upsertFactoid(facts, function(err, body) {
+      db.upsertFactoid(facts, function(err) {
         if (err) {
           console.log(err);
-          return res.send(500, "Could not update factoids.");
+          return res.send(500, 'Could not update factoids.');
         }
         return res.json({ok: true});
       });

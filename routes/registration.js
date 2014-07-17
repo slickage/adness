@@ -5,7 +5,7 @@ var registration = require('../registration');
 var moment = require('moment');
 
 exports = module.exports = function(req, res) {
-  req.model.load("registeredUser", req);
+  req.model.load('registeredUser', req);
   req.model.end(function(err, models) {
     var view = 'registration';
     var error = '';
@@ -37,7 +37,7 @@ exports = module.exports = function(req, res) {
     }
 
     // register user to given auction
-    registration.invoice(req.user, function(err, results) {
+    registration.invoice(req.user, function(err) {
       if (err) {
         console.log(err);
         view = 'registrationError';

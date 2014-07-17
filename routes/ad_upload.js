@@ -7,7 +7,7 @@ var config = require('../config');
 exports = module.exports = function(req, res) {
   req.model.load('ad', req);
   req.model.end(function(err, models) {
-    if (err) console.log(err);
+    if (err) { console.log(err); }
 
     // cull regions
     var regions = _.pluck(config.regions, 'name');

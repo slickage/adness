@@ -13,7 +13,7 @@ var winnerModifiedTemplate = __dirname + '/../email-templates/notify-winners-mod
 
 module.exports = {
   notifyAuction: function (auction) {
-    console.log("Starting Auction Close Event...");
+    console.log('Starting Auction Close Event...');
 
     // calculate expiration time for invoices
     var roundValue = config.rounds.round1;
@@ -59,7 +59,7 @@ module.exports = {
         round: 1,
         expiration: expiration
       };
-      db.newRecalculation(recalculation, function(err, results) {
+      db.newRecalculation(recalculation, function(err) {
         if (err) { console.log(err); }
       });
     });
@@ -74,20 +74,19 @@ module.exports = {
   },
   // assumes that recalculation has been incremented and expiration updated
   recalculateAuction: function(auction, recalculation, cb) {
-    console.log("Re-Calculating Auction Winners...");
+    console.log('Re-Calculating Auction Winners...');
 
     // error check inputs
-    if (!auction) { return cb(new Error("Auction not found.")); }
-    if (!recalculation) { return cb(new Error("Recalculation not found")); }
+    if (!auction) { return cb(new Error('Auction not found.')); }
+    if (!recalculation) { return cb(new Error('Recalculation not found')); }
 
     // calculate winners for each region of the new recalculation
-    var auctionWinners;
     auction.regions.forEach(function(region) {
       region.winners = _.values(generateWinners(region.primarySlots));
     });
 
     // get the adsInRotation object for this auction if it exists
-    var airId = auction._id + "-air";
+    var airId = auction._id + '-air';
     db.getAdsInRotation(airId, function(err, air) {
       if (err) { return cb(err, undefined); }
       resolveRegions(auction, recalculation, air.regions, cb);
@@ -135,11 +134,11 @@ function resolveRegions(auction, recalculation, airRegions, cb) {
         // less case
         if (differenceFound && auctionWinnerSlots.length === 0) {
           // there's less slots than before, log this
-          console.log("auction winner: ");
+          console.log('auction winner: ');
           console.log(auctionWinner);
-          console.log("Has Less Slots than before.");
-          var lessError = "User: " + auctionWinner.username;
-          lessError += " has less slots than before.";
+          console.log('Has Less Slots than before.');
+          var lessError = 'User: ' + auctionWinner.username;
+          lessError += ' has less slots than before.';
           // return cb(new Error(lessError), undefined);
         }
         // more case
@@ -151,11 +150,11 @@ function resolveRegions(auction, recalculation, airRegions, cb) {
         }
         // less and more case
         else if (differenceFound && auctionWinnerSlots.length > 0) {
-          console.log("auction winner: ");
+          console.log('auction winner: ');
           console.log(auctionWinner);
-          console.log("Has Less and More Slots than before.");
-          var moreError = "User: " + auctionWinner.username;
-          moreError += " has less and more slots than before.";
+          console.log('Has Less and More Slots than before.');
+          var moreError = 'User: ' + auctionWinner.username;
+          moreError += ' has less and more slots than before.';
           return cb(new Error(moreError), undefined);
         }
         // else - same slots case
@@ -165,7 +164,7 @@ function resolveRegions(auction, recalculation, airRegions, cb) {
 
       // calculate discount for this round
       var round = recalculation.round;
-      var roundValue = config.rounds["round" + round];
+      var roundValue = config.rounds['round' + round];
       var discount = roundValue.discount;
 
       // calculate expiration for this recalculation
@@ -176,7 +175,7 @@ function resolveRegions(auction, recalculation, airRegions, cb) {
         // get next round offset
         if ( (round + 1) <= config.rounds.maxRound) {
           round = round + 1;
-          var nextOffset = config.rounds["round" + round].timeOffset;
+          var nextOffset = config.rounds['round' + round].timeOffset;
           expiration = expiration + nextOffset;
         }
       }
@@ -191,9 +190,9 @@ function resolveRegions(auction, recalculation, airRegions, cb) {
         notifyModifiedWinner(winner, expiration, discount, auction._id);
       });
 
-      var message = "Finished Recalculating Auction Slots For: ";
+      var message = 'Finished Recalculating Auction Slots For: ';
       message += auctionWinner.username;
-      message += " in Region: " + auctionRegion.name;
+      message += ' in Region: ' + auctionRegion.name;
       console.log(message);
     });
   });
@@ -249,13 +248,13 @@ function generateBidders(bids) {
 }
 
 function notifyWinner(winner, expiration, discount, auctionId) {
-  console.log("Notifying " + winner.username + " that they've won.");
-  invoiceUser(winner, expiration, discount, auctionId, "auction", handleInvoice);
+  console.log('Notifying ' + winner.username + ' that they\'ve won.');
+  invoiceUser(winner, expiration, discount, auctionId, 'auction', handleInvoice);
 }
 
 function notifyModifiedWinner(winner, expiration, discount, auctionId) {
-  console.log("Notifying " + winner.username + " that they've won more slots.");
-  invoiceUser(winner, expiration, discount, auctionId, "auctionModified", handleModifiedInvoice);
+  console.log('Notifying ' + winner.username + ' that they\'ve won more slots.');
+  invoiceUser(winner, expiration, discount, auctionId, 'auctionModified', handleModifiedInvoice);
 }
 
 function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHandle) {
@@ -303,7 +302,7 @@ function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHan
 }
 
 function notifyBidder(user, auctionId) {
-  console.log("Notifying " + user.username + " that the auction is closed.");
+  console.log('Notifying ' + user.username + ' that the auction is closed.');
   
   // find the next open auction 
   db.auctionsTimeRelative(function(err, auctions) {
@@ -320,11 +319,11 @@ function notifyBidder(user, auctionId) {
     var html = ejs.render(str, data);
     
     // heckle the winners
-    console.log("Emailing " + user.username + " with bidder's template");
+    console.log('Emailing ' + user.username + ' with bidder\'s template');
     heckler.email({
       from: config.senderEmail,
       to: user.email,
-      subject: "Auction " + auctionId + " has ended.",
+      subject: 'Auction ' + auctionId + ' has ended.',
       html: html
     });
   });
@@ -352,11 +351,11 @@ function handleInvoice(err, results) {
   var html = ejs.render(str, data);
   
   // heckle the winners
-  console.log("Emailing " + winner.username + " with winner's template");
+  console.log('Emailing ' + winner.username + ' with winner\'s template');
   heckler.email({
     from: config.senderEmail,
     to: winner.email,
-    subject: "You're a winning bidder for #" + auctionId + ".",
+    subject: 'You\'re a winning bidder for #' + auctionId + '.',
     html: html
   });
 }
@@ -383,11 +382,11 @@ function handleModifiedInvoice(err, results) {
   var html = ejs.render(str, data);
   
   // heckle the winners
-  console.log("Emailing " + winner.username + " with winner's template");
+  console.log('Emailing ' + winner.username + ' with winner\'s template');
   heckler.email({
     from: config.senderEmail,
     to: winner.email,
-    subject: "You've won more slots for #" + auctionId + ".",
+    subject: 'You\'ve won more slots for #' + auctionId + '.',
     html: html
   });
 }
@@ -409,7 +408,7 @@ function upsertAdsInRotation(auction) {
   air.regions = regions;
 
   // insert the ads
-  db.upsertAdsInRotation(air, function(err, body) {
+  db.upsertAdsInRotation(air, function(err) {
     if (err) { console.log(err); }
   });
 }

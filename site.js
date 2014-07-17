@@ -49,7 +49,7 @@ var sessionOpts = {
 
 // development, debug, trust-proxy configs
 var cookieSession = { secure: true, maxAge:86400000 };
-if ('development' == site.get('env')) {
+if ('development' === site.get('env')) {
   cookieSession.secure = false;
   site.use(errorhandler());
 }
@@ -95,34 +95,34 @@ var recalcWorker = new NR.worker({connection: connectionDetails, queues: ['recal
   recalcWorker.start();
 });
 
-auctionWorker.on('start', function(){ console.log("auctionWorker started"); });
-auctionWorker.on('end', function(){ console.log("auctionWorker ended"); });
-auctionWorker.on('cleaning_worker', function(auctionWorker, pid){
-  console.log("cleaning old auctionWorker " + auctionWorker);
+auctionWorker.on('start', function(){ console.log('auctionWorker started'); });
+auctionWorker.on('end', function(){ console.log('auctionWorker ended'); });
+auctionWorker.on('cleaning_worker', function(auctionWorker){
+  console.log('cleaning old auctionWorker ' + auctionWorker);
 });
 auctionWorker.on('job', function(queue, job){
-  console.log("working job " + queue);
+  console.log('working job ' + queue);
 });
 auctionWorker.on('success', function(queue, job, result){
-  console.log("job success " + queue + " >> " + result);
+  console.log('job success ' + queue + ' >> ' + result);
 });
 auctionWorker.on('error', function(queue, job, error){
-  console.log("job failed " + queue + " >> " + error);
+  console.log('job failed ' + queue + ' >> ' + error);
 });
 
-recalcWorker.on('start', function(){ console.log("recalcWorker started"); });
-recalcWorker.on('end', function(){ console.log("recalcWorker ended"); });
-recalcWorker.on('cleaning_worker', function(recalcWorker, pid){
-  console.log("cleaning old recalcWorker " + recalcWorker);
+recalcWorker.on('start', function(){ console.log('recalcWorker started'); });
+recalcWorker.on('end', function(){ console.log('recalcWorker ended'); });
+recalcWorker.on('cleaning_worker', function(recalcWorker){
+  console.log('cleaning old recalcWorker ' + recalcWorker);
 });
 recalcWorker.on('job', function(queue, job){
-  console.log("working job " + queue);
+  console.log('working job ' + queue);
 });
 recalcWorker.on('success', function(queue, job, result){
-  console.log("job success " + queue + " >> " + result);
+  console.log('job success ' + queue + ' >> ' + result);
 });
 recalcWorker.on('error', function(queue, job, error){
-  console.log("job failed " + queue + " >> " + error);
+  console.log('job failed ' + queue + ' >> ' + error);
 });
 
 var queue = new NR.queue({connection: connectionDetails}, jobs, function(){

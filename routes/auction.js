@@ -120,7 +120,7 @@ module.exports = {
     req.model.load('auction', req);
     req.model.load('bids', req);
     req.model.end(function(err, models) {
-      if (err) console.log(err);
+      if (err) { console.log(err); }
 
       var auction = models.auction;
       var bids = models.bids;
@@ -165,9 +165,9 @@ module.exports = {
         // enable auction
         models.auction.enabled = true;
         // save auction
-        db.updateAuction(models.auction, function(err, body, header) {
+        db.updateAuction(models.auction, function(err, body) {
           if (err) { console.log(err); }
-          req.flash('info', "Auction " + body.id + " Enabled.");
+          req.flash('info', 'Auction ' + body.id + ' Enabled.');
           res.end();
         });
       }
@@ -183,9 +183,9 @@ module.exports = {
         // disable auction
         models.auction.enabled = false;
         // save auction
-        db.updateAuction(models.auction, function(err, body, header) {
+        db.updateAuction(models.auction, function(err, body) {
           if (err) { console.log(err); }
-          req.flash('info', "Auction " + body.id + " Disabled.");
+          req.flash('info', 'Auction ' + body.id + ' Disabled.');
           res.end();
         });
       }
@@ -194,9 +194,9 @@ module.exports = {
   newAuction: function(req, res) {
     // adding auctions is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    db.newAuction(req.body, function(err, body, header) {
+    db.newAuction(req.body, function(err, body) {
       if (err) { console.log(err); }
-      req.flash('info', "Auction " + body.id + " Created.");
+      req.flash('info', 'Auction ' + body.id + ' Created.');
       res.end();
     });
   },
@@ -242,13 +242,13 @@ module.exports = {
           });
         }
 
-        if (req.body.start) auction.start = req.body.start;
-        if (req.body.end) auction.end = req.body.end;
-        if (req.body.adsStart) auction.adsStart = req.body.adsStart;
-        if (req.body.adsEnd) auction.adsEnd = req.body.adsEnd;
-        if (req.body.enabled) auction.enabled = req.body.enabled;
-        if (req.body.description) auction.description = req.body.description;
-        if (req.body.regions) auction.regions = req.body.regions;
+        if (req.body.start) { auction.start = req.body.start; }
+        if (req.body.end) { auction.end = req.body.end; }
+        if (req.body.adsStart) { auction.adsStart = req.body.adsStart; }
+        if (req.body.adsEnd) { auction.adsEnd = req.body.adsEnd; }
+        if (req.body.enabled) { auction.enabled = req.body.enabled; }
+        if (req.body.description) { auction.description = req.body.description; }
+        if (req.body.regions) { auction.regions = req.body.regions; }
         db.updateAuction(auction, function(err, body) {
           if (err) { console.log(err); }
 
@@ -259,10 +259,10 @@ module.exports = {
               adsStart: Number(auction.adsStart),
               adsEnd: Number(auction.adsEnd)
             };
-            db.getAdsInRotation(auction._id + "-air", function(err, result) {
+            db.getAdsInRotation(auction._id + '-air', function(err, result) {
               if (result) {
                 db.upsertAdsInRotation(air, function(err, results) {
-                  var message = "Updated AIR object for auction: ";
+                  var message = 'Updated AIR object for auction: ';
                   message += auction._id;
                   console.log(message);
                 });
@@ -271,7 +271,7 @@ module.exports = {
           }
 
           // return 
-          req.flash('info', "Auction " + body.id + " Updated.");
+          req.flash('info', 'Auction ' + body.id + ' Updated.');
           res.end();
         });
       }
@@ -282,7 +282,7 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     db.deleteAuction(req.params.auctionId, function(err, body) {
       if (err) { console.log(err); }
-      req.flash('info', "Auction " + body.id + " Deleted.");
+      req.flash('info', 'Auction ' + body.id + ' Deleted.');
       res.end();
     });
   },
@@ -291,15 +291,15 @@ module.exports = {
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
-      if (err) { console.log(err); message = err.message; httpStatus = 500; }
-
       var httpStatus = 200;
       var message;
       var auction = models.auction;
 
+      if (err) { console.log(err); message = err.message; httpStatus = 500; }
+
       // make sure auction is closed
       if (auction && auction.open) {
-        message += "Auction is still open.";
+        message += 'Auction is still open.';
         console.log(message);
         httpStatus = 500;
       }
@@ -322,12 +322,12 @@ module.exports = {
           recalculation.auctionId = auction._id;
           recalculation.round = config.rounds.maxRounds;
           var now = new Date().getTime();
-          var lastRound = config.rounds["round" + recalculation.round];
+          var lastRound = config.rounds['round' + recalculation.round];
           recalculation.expiration = now + lastRound;
         }
 
         // call re-calculate auction
-        auctionEnd.recalculateAuction(auction, recalculation, function(err, results) {
+        auctionEnd.recalculateAuction(auction, recalculation, function(err) {
           if (err) {
             console.log(err);
             httpStatus = 500;

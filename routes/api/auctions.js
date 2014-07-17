@@ -99,7 +99,7 @@ module.exports = function(api) {
         // enable auction
         models.auction.enabled = true;
         // save auction
-        db.updateAuction(models.auction, function(err, body, header) {
+        db.updateAuction(models.auction, function(err, body) {
           if (err) { console.log(err); res.json(err); }
           else { res.json(body); }
         });
@@ -119,7 +119,7 @@ module.exports = function(api) {
         // enable auction
         models.auction.enabled = false;
         // save auction
-        db.updateAuction(models.auction, function(err, body, header) {
+        db.updateAuction(models.auction, function(err, body) {
           if (err) { console.log(err); res.json(err); }
           else { res.json(body); }
         });
@@ -138,10 +138,10 @@ module.exports = function(api) {
       if (err) { console.log(err); res.json(err); }
       else {
         var auction = models.auction;
-        if (req.body.start) auction.start = req.body.start;
-        if (req.body.end) auction.end = req.body.end;
-        if (req.body.slots) auction.slots = req.body.slots;
-        if (req.body.enabled) auction.enabled = req.body.enabled;
+        if (req.body.start) { auction.start = req.body.start; }
+        if (req.body.end) { auction.end = req.body.end; }
+        if (req.body.slots) { auction.slots = req.body.slots; }
+        if (req.body.enabled) { auction.enabled = req.body.enabled; }
         db.updateAuction(auction, function(err, body) {
           if(err) { console.log(err); res.json(err); }
           else { res.json(body); }
@@ -155,7 +155,7 @@ module.exports = function(api) {
   .post(auth, function(req, res) {
     // creating auctions is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    db.newAuction(req.body, function(err, body, header) {
+    db.newAuction(req.body, function(err, body) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
     });

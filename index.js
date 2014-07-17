@@ -41,14 +41,14 @@ function validateSessionSecret(cb) {
 function validateDBExist(cb) {
   var error = null;
 
-  nano.db.get(dbname, function(err, body) {
+  nano.db.get(dbname, function(err) {
     if (err) {
       // db not found so create it
-      console.log("DB " + dbname + " was not found. ");
-      console.log("Creating DB: " + dbname);
-      nano.db.create(dbname, function(err, body) {
+      console.log('DB ' + dbname + ' was not found. ');
+      console.log('Creating DB: ' + dbname);
+      nano.db.create(dbname, function(err) {
         if (err) {
-          var message = "Could not create DB. Exiting...";
+          var message = 'Could not create DB. Exiting...';
           error = new Error(message);
           return cb(error);
         }

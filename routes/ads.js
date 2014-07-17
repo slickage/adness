@@ -30,7 +30,7 @@ exports = module.exports = {
       return res.redirect(req.browsePrefix);
     }
 
-    db.newAd(req.body, function(err, body, header) {
+    db.newAd(req.body, function(err, body) {
       if (err) { console.log(err); }
       res.redirect(req.browsePrefix);
     });
@@ -74,18 +74,18 @@ exports = module.exports = {
           return res.redirect(req.browsePrefix);
         }
 
-        if (req.body.html) ad.html = req.body.html;
-        if (req.body.css) ad.css = req.body.css;
-        if (req.body.regions) ad.regions = req.body.regions;
+        if (req.body.html) { ad.html = req.body.html; }
+        if (req.body.css) { ad.css = req.body.css; }
+        if (req.body.regions) { ad.regions = req.body.regions; }
 
         if (!ad.user.admin || ad.user.admin && ad.user.userid === ad.userid) {
-          if (req.body.submitted) ad.submitted = req.body.submitted;
+          if (req.body.submitted) { ad.submitted = req.body.submitted; }
           if (req.body.submitted && req.body.submitted.toLowerCase() === 'true') {
             ad.rejected = false;
             ad.approved = false;
           }
         }
-        db.updateAd(ad, function(err, body) {
+        db.updateAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix);
         });
@@ -99,7 +99,7 @@ exports = module.exports = {
       else {
         var ad = models.ad;
         ad.user = req.user; // add current user
-        db.deleteAd(ad, function(err, body) {
+        db.deleteAd(ad, function(err) {
           if (err) { console.log(err); }
           res.json({ ok: true });
         });
@@ -113,7 +113,7 @@ exports = module.exports = {
       else {
         var ad = models.ad;
         ad.user = req.user; // add current user
-        db.deleteAd(ad, function(err, body) {
+        db.deleteAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
@@ -132,7 +132,7 @@ exports = module.exports = {
         ad.approved = true;
         ad.submitted = false;
         ad.rejected = false;
-        db.updateAd(ad, function(err, body) {
+        db.updateAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
@@ -152,7 +152,7 @@ exports = module.exports = {
         ad.rejected = true;
         ad.submitted = false;
         ad.inRotation = false;
-        db.updateAd(ad, function(err, body) {
+        db.updateAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/users/' + req.user.userId);
         });
@@ -167,7 +167,7 @@ exports = module.exports = {
         var ad = models.ad;
         ad.user = req.user; // add current user
         ad.inRotation = true;
-        db.updateAd(ad, function(err, body) {
+        db.updateAd(ad, function(err) {
           if (err) { console.log(err); }
           res.redirect(req.browsePrefix + '/ads/' + ad._id);
         });
@@ -245,12 +245,12 @@ exports = module.exports = {
       // ip -> country code (country)
       var ip = req.query.ip;
       var geo = geoip.lookup(ip);
-      var country = "";
+      var country = '';
       if (geo) { country = geo.country; }
 
       // number Of Ads to return (limit)
       var limit = req.query.limit;
-      if (!limit || limit == '0' ) { limit = 1; }
+      if (!limit || limit === '0' ) { limit = 1; }
 
       // get ads based on region and limit
       // should always return an array even if it is empty or error
@@ -265,9 +265,8 @@ exports = module.exports = {
 function getRandomAds(country, limit, reservedAds, factoid, callback) {
   // get adsInRotation object
   db.getLatestAdsInRotation(function(err, air) {
-    var error;
     if (err) {
-      console.log("There are no user ads to display.");
+      console.log('There are no user ads to display.');
       air = { regions: [] };
     }
 

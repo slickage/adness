@@ -4,10 +4,10 @@
 var moment = require('moment');
 
 module.exports = function(req, res) {
-  req.model.load("userAds", req);
-  req.model.load("profileUser", req);
+  req.model.load('userAds', req);
+  req.model.load('profileUser', req);
   req.model.end(function(err, models) {
-    if (err) console.log('error: ' + JSON.stringify(err));
+    if (err) { console.log('error: ' + JSON.stringify(err)); }
 
     var profileUser = models.profileUser;
     // sort ads
@@ -25,8 +25,8 @@ module.exports = function(req, res) {
     });
 
     // profile name
-    var profileName = "No User Found";
-    var profileId = "";
+    var profileName = 'No User Found';
+    var profileId = '';
     if (profileUser) {
       profileName = profileUser.username;
       profileId = profileUser.userId;
