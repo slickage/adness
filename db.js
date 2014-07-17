@@ -221,7 +221,7 @@ var db = {
         delete body.trueEnd;
         cb(null, body);
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   getBidsPerAuction: function (auctionId, cb) {
@@ -547,11 +547,16 @@ var db = {
     });
   },
   getReviewAds: function(cb) {
-    couch.view(config.couchdb.name, 'reviewAds', function(err, body) {
+    var view = 'reviewAds';
+    var params = { include_docs: true };
+    couch.view(config.couchdb.name, view, params, function(err, body) {
       if (!err) {
+        // using a linked Document so what we want is in doc not value
         var ads = [];
         body.rows.forEach(function(ad) {
-          ads.push(ad.value);
+          if (ad.doc) {
+            ads.push(ad.doc);
+          }
         });
         cb(null, ads);
       }
@@ -559,11 +564,16 @@ var db = {
     });
   },
   getApprovedAds: function(cb) {
-    couch.view(config.couchdb.name, 'approvedAds', function(err, body) {
+    var view = 'approvedAds';
+    var params = { include_docs: true };
+    couch.view(config.couchdb.name, view, params, function(err, body) {
       if (!err) {
+        // using a linked Document so what we want is in doc not value
         var ads = [];
         body.rows.forEach(function(ad) {
-          ads.push(ad.value);
+          if (ad.doc) {
+            ads.push(ad.doc);
+          }
         });
         cb(null, ads);
       }
@@ -571,11 +581,16 @@ var db = {
     });
   },
   getRejectedAds: function(cb) {
-    couch.view(config.couchdb.name, 'rejectedAds', function(err, body) {
+    var view = 'rejectedAds';
+    var params = { include_docs: true };
+    couch.view(config.couchdb.name, view, params, function(err, body) {
       if (!err) {
+        // using a linked Document so what we want is in doc not value
         var ads = [];
         body.rows.forEach(function(ad) {
-          ads.push(ad.value);
+          if (ad.doc) {
+            ads.push(ad.doc);
+          }
         });
         cb(null, ads);
       }
@@ -731,8 +746,8 @@ var db = {
   },
   insertRegisteredUser: function(user, cb) {
     var registeredUser = {
+      _id: user._id.toString(),
       username: user.username,
-      userId: user.userId,
       email: user.email,
       registrationStatus: user.registrationStatus,
       discount_remaining: user.discount_remaining,
@@ -740,25 +755,20 @@ var db = {
       modified_at: new Date().getTime(),
       type: 'registeredUser'
     };
-    if (user._id) { registeredUser._id = user._id; }
     if (user._rev) { registeredUser._rev = user._rev; }
     if (!user.created_at) { registeredUser.created_at = new Date().getTime(); }
-
     couch.insert(registeredUser, cb);
   },
   getRegisteredUser: function(userId, cb) {
-    couch.view(config.couchdb.name, 'registeredUser', { startkey: userId, endkey: userId, limit: 1 }, function(err, body) {
-
+    couch.get(userId.toString(), null, function(err, body) {
       if (err) { return cb(null, undefined); }
       
-      var user;
-      body.rows.forEach(function(row) {
-        // check that this is an registered user
-        if (row.value.type !== 'registeredUser') { return; }
-        else { user = row.value;}
-      });
+      // check that this is an auction
+      if (body.type !== 'registeredUser') {
+        return cb({ message: 'Id is not for an registeredUser.'}, undefined );
+      }
 
-      return cb(null, user);
+      return cb(null, body);
     });
   },
   getLatestAdsInRotation: function(cb) {

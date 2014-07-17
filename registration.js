@@ -51,7 +51,7 @@ module.exports = {
     
     // add registered user with new status
     var registeredUser = {
-      userId: metadata.userId,
+      _id: metadata.userId,
       username: metadata.username,
       email: metadata.email,
       registrationStatus: 'Invoice Sent.',

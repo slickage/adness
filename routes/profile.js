@@ -10,6 +10,7 @@ module.exports = function(req, res) {
     if (err) { console.log('error: ' + JSON.stringify(err)); }
 
     var profileUser = models.profileUser;
+
     // sort ads
     var inRotation = [];
     var approved = [];
@@ -17,35 +18,49 @@ module.exports = function(req, res) {
     var saved = [];
     var rejected = [];
     models.userAds.forEach(function(ad) {
-      if (ad.inRotation === true) { inRotation.push(ad); }
+      if (ad.inRotation === true && ad.approved === true) { inRotation.push(ad); }
       else if (ad.approved === true) { approved.push(ad); }
       else if (ad.rejected === true) { rejected.push(ad); }
       else if (ad.submitted === true) { submitted.push(ad); }
       else { saved.push(ad); }
     });
 
-    // profile name
+    // user is viewing thier own page
+    var isOwnPage = false;
+    if (Number(req.params.userId) === Number(req.user.userId)) {
+      isOwnPage = true;
+    }
+
+    // profile Name and ID
     var profileName = 'No User Found';
     var profileId = '';
     if (profileUser) {
       profileName = profileUser.username;
-      profileId = profileUser.userId;
+      profileId = profileUser._id;
     }
-    else if (Number(req.params.userId) === Number(req.user.userId)) {
+    else if (isOwnPage) {
       profileName = req.user.username;
       profileId = req.user.userId;
     }
 
     // show registration button
     var showRegButton = false;
-    if (!profileUser && Number(req.params.userId) === req.user.userId) {
+    if (!profileUser && isOwnPage) {
       showRegButton = true;
     }
 
-    // user is viewing thier own page
-    var isOwnPage = false;
-    if (Number(req.params.userId) === req.user.userId) {
-      isOwnPage = true;
+    // show registration ad alert
+    var showRegAlert = false;
+    if (!profileUser && isOwnPage || profileUser && !profileUser.registered) {
+      showRegAlert = true;
+    }
+
+    // if there are ads, pull profile name and id from ad
+    if (profileName === 'No User Found' && models.userAds && models.userAds.length > 0) {
+      var userAds = models.userAds;
+      profileName = userAds[0].username;
+      profileId = userAds[0].userId;
+      showRegAlert = true;
     }
 
     // serverTime 
@@ -57,6 +72,7 @@ module.exports = function(req, res) {
       profileId: profileId,
       isOwnPage: isOwnPage,
       showRegButton: showRegButton,
+      showRegAlert: showRegAlert,
       inRotation: inRotation,
       approved: approved,
       rejected: rejected,

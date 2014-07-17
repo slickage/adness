@@ -2,9 +2,26 @@
 'use strict';
 
 var db = require(__dirname + '/../db');
+var _ = require('lodash');
+
 module.exports = function(req, cb) {
-  db.getRejectedAds(function(err, ads) {
-    if (!err) { cb(null, ads); }
-    else { cb(err, []); }
+  db.getRejectedAds(function(err, adsAndUsers) {
+    if (err) { return cb(err, []); }
+    else {
+      // since we're using linked documents
+      // we have a combination of ads and users
+
+      // separate out users
+      var users = [];
+      users = _.remove(adsAndUsers, function(item) {
+        return item.type === 'registeredUser';
+      });
+
+      // the rest is ads
+      var ads = adsAndUsers;
+      
+      var results = { ads: ads, users: users };
+      return cb(null, results);
+    }
   });
 };

@@ -23,12 +23,10 @@ module.exports = {
 
     async.waterfall([
       // get Receipt from the DB
-      function(cb) {
-        getReceipt(receiptId, cb);
-      },
+      function(cb) { getReceipt(receiptId, cb); },
       // validate status call 
       function(receipt, cb) {
-        if (receipt.ivoiceStatus === 'paid') {
+        if (receipt.invoiceStatus === 'paid') {
           alreadyPaid = true;
           return cb(null, receipt);
         }
@@ -47,9 +45,7 @@ module.exports = {
         cachedReceipt = receipt;
 
         if (alreadyPaid) { return cb(null, undefined); }
-        else {
-          getRegUser(receipt, cb);
-        }
+        else { getRegUser(receipt, cb); }
       },
       // update the RegisteredUser
       function(user, cb) {
@@ -66,9 +62,7 @@ module.exports = {
           return res.send(500, err.message);
         }
 
-        if (alreadyPaid) {
-          return res.json({ ok: true });
-        }
+        if (alreadyPaid) { return res.json({ ok: true }); }
 
         // build registration email for admin template
         var data = {
@@ -113,9 +107,7 @@ module.exports = {
 
     async.waterfall([
       // get Receipt from the DB
-      function(cb) {
-        getReceipt(receiptId, cb);
-      },
+      function(cb) { getReceipt(receiptId, cb); },
       // validate status call 
       function(receipt, cb) {
         if (receipt.invoiceStatus === 'paid') {
@@ -244,4 +236,3 @@ function updateRegUser(user, alreadyPaid, cb) {
   delete user.registrationStatus;
   db.insertRegisteredUser(user, cb);
 }
-

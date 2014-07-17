@@ -36,6 +36,12 @@
     </div><!-- /.container-fluid -->
   </nav>
 
+  <% if (showRegAlert) { %>
+    <div class="alert alert-danger" role="alert">
+      Ads created by this account will not be seen by the admins until the registration fee is paid. 
+    </div>
+  <% } %>
+
   <% if (showRegButton) { %>
     <div class="panel panel-warning"> 
       <div class="panel-heading">

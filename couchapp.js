@@ -38,7 +38,7 @@ ddoc.views.auctions = {
 ddoc.views.registeredUser = {
   map: function(doc) {
     if(doc.type === 'registeredUser') {
-      emit(doc.userId, doc);
+      emit([doc._id], doc);
     }
   }
 };
@@ -46,7 +46,10 @@ ddoc.views.registeredUser = {
 ddoc.views.reviewAds = {
   map: function(doc) {
     if(doc.type === 'ad' && doc.submitted === true) {
-      emit([doc.created_at], doc);
+      emit([doc.created_at, 0], null);
+      if (doc.userId) {
+        emit([doc._id, 1], {_id: doc.userId.toString()});
+      }
     }
   }
 };
@@ -54,7 +57,10 @@ ddoc.views.reviewAds = {
 ddoc.views.rejectedAds = {
   map: function(doc) {
     if(doc.type === 'ad' && doc.rejected === true) {
-      emit([doc.created_at], doc);
+      emit([doc.created_at, 0], null);
+      if (doc.userId) {
+        emit([doc._id, 1], {_id: doc.userId.toString()});
+      }
     }
   }
 };
@@ -62,7 +68,10 @@ ddoc.views.rejectedAds = {
 ddoc.views.approvedAds = {
   map: function(doc) {
     if(doc.type === 'ad' && doc.approved === true) {
-      emit([doc.created_at], doc);
+      emit([doc.created_at, 0], null);
+      if (doc.userId) {
+        emit([doc._id, 1], {_id: doc.userId.toString()});
+      }
     }
   }
 };

@@ -195,10 +195,27 @@ exports = module.exports = {
     req.model.load('reviewAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
+      // get the list of ads
+      var ads = models.reviewAds.ads;
+      var users = models.reviewAds.users;
+      var validAds = [];
+
+      // for each ad, check if the user's registered === true
+      ads.forEach(function(ad) {
+        // first find the matching user
+        var matchingUser = _.find(users, function(user) {
+          return user._id === ad.userId.toString();
+        });
+
+        if (matchingUser && matchingUser.registered === true) {
+          validAds.push(ad);
+        }
+      });
+
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('reviewAds', {
-        ads: models.reviewAds,
+        ads: validAds,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});
@@ -210,10 +227,27 @@ exports = module.exports = {
     req.model.load('approvedAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
+      // get the list of ads
+      var ads = models.approvedAds.ads;
+      var users = models.approvedAds.users;
+      var validAds = [];
+
+      // for each ad, check if the user's registered === true
+      ads.forEach(function(ad) {
+        // first find the matching user
+        var matchingUser = _.find(users, function(user) {
+          return user._id === ad.userId.toString();
+        });
+
+        if (matchingUser && matchingUser.registered === true) {
+          validAds.push(ad);
+        }
+      });
+
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('approvedAds', {
-        ads: models.approvedAds,
+        ads: validAds,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});
@@ -225,10 +259,27 @@ exports = module.exports = {
     req.model.load('rejectedAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
+      // get the list of ads
+      var ads = models.rejectedAds.ads;
+      var users = models.rejectedAds.users;
+      var validAds = [];
+
+      // for each ad, check if the user's registered === true
+      ads.forEach(function(ad) {
+        // first find the matching user
+        var matchingUser = _.find(users, function(user) {
+          return user._id === ad.userId.toString();
+        });
+
+        if (matchingUser && matchingUser.registered === true) {
+          validAds.push(ad);
+        }
+      });
+
       // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
       res.render('rejectedAds', {
-        ads: models.rejectedAds,
+        ads: validAds,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user});
