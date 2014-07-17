@@ -429,7 +429,6 @@ function cleanAd(ad) {
 
   // generate random name
   var name = namegen.generateRandomName();
-  name = '#' + name;
 
   // compile and clean csss
   if (!ad.css) { ad.css = ''; }
