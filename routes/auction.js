@@ -31,9 +31,9 @@ module.exports = {
       var bids = models.bids;
       var minutes = config.antiSnipeMinutes;
       var registered = models.auctionUser && models.auctionUser.registered;
-      var regStatus;
-      if (models.auctionUser && models.auctionUser.registrationStatus) {
-        regStatus = models.auctionUser.registrationStatus;
+      var userMessage;
+      if (models.auctionUser && models.auctionUser.userMessage) {
+        userMessage = models.auctionUser.userMessage;
       }
 
       // find all approved ads for this user
@@ -109,7 +109,7 @@ module.exports = {
         bids: bids,
         minutes: minutes,
         registered: registered,
-        regStatus: regStatus,
+        userMessage: userMessage,
         approvedRegions: approvedRegions,
         errorMessage: errorMessage,
         serverTime: serverTime,

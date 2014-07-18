@@ -55,7 +55,7 @@ module.exports = {
       _id: metadata.userId,
       username: metadata.username,
       email: metadata.email,
-      registrationStatus: 'Invoice Sent.',
+      userMessage: 'Invoice Sent.',
       registered: false
     };
     if (metadata.admin) { auctionUser.registered = true; }

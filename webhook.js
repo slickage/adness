@@ -233,6 +233,6 @@ function getAuctUser(receipt, cb) {
 function updateAuctUser(user, alreadyPaid, cb) {
   user.registered = true;
   user.discount_remaining = config.registrationFee;
-  delete user.registrationStatus;
+  delete user.userMessage;
   db.insertAuctionUser(user, cb);
 }

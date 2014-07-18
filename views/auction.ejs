@@ -3,11 +3,11 @@
 <div class="content-page col-sm-12">
 
   <% if (user && auction.open) { %>
-    <div class="text-center" <%if (!registered || regStatus) { %> style="padding-bottom: 15px;" <% } %>>
-      <% if (regStatus) { %>
+    <div class="text-center" <%if (!registered || userMessage) { %> style="padding-bottom: 15px;" <% } %>>
+      <% if (userMessage) { %>
         Current Registration Status: 
         <span class="label label-warning">
-          <%= regStatus %>
+          <%= userMessage %>
         </span>
       <% } else if (!registered) { %>
         <form action="/registration" method="POST">

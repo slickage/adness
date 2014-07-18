@@ -766,7 +766,7 @@ var db = {
       _id: user._id.toString(),
       username: user.username,
       email: user.email,
-      registrationStatus: user.registrationStatus,
+      userMessage: user.userMessage,
       discount_remaining: user.discount_remaining,
       registered: user.registered,
       modified_at: new Date().getTime(),
