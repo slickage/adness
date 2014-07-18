@@ -36,7 +36,6 @@ exports = module.exports = function(req, res) {
       });
     }
 
-    // register user to given auction
     registration.invoice(req.user, function(err) {
       if (err) {
         console.log(err);
