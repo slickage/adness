@@ -12,7 +12,7 @@ var regTemplate = __dirname + '/email-templates/registration.ejs';
 module.exports = {
   invoice: function(user, cb) {
     // validation
-    if (!user) { return cb({message: 'no user found.'}, undefined); }
+    if (!user) { return cb({message: 'Not Logged In.'}, undefined); }
 
     // build an invoice for the registration fee
     var webhook = config.site.internalUrl + '/hooks/registration';

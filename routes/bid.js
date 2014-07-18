@@ -17,11 +17,28 @@ module.exports = {
     req.model.load('userBidsPerRegion', req);
     req.model.load('auctionUser', req);
     req.model.end(function(err, models) {
+      // auction profile
+      var auctionUser = models.auctionUser;
       // previous bids
       var previousBids = models.userBidsPerRegion;
       // current bid
       var bid = req.body;
+      // redirect route
       var redirectRoute = req.browsePrefix + '/auctions/' + bid.auctionId;
+
+      // validate that the user is registered
+      if (!auctionUser || auctionUser && auctionUser.registered !== true) {
+        var registeredErrorMessage = "You are not registered with the Auction Website.";
+        req.flash('error', registeredErrorMessage);
+        return res.redirect(redirectRoute);
+      }
+
+      // validate that user is not suspended
+      if (auctionUser && auctionUser.suspended === true) {
+        var suspendedErrorMessage = "You've been suspended from the auction system. You may not bid on anymore auctions.";
+        req.flash('error', suspendedErrorMessage);
+        return res.redirect(redirectRoute);
+      }
 
       // validate current bid is of correct increment
       var currentBidPrice = bid.price * 100;
@@ -38,7 +55,7 @@ module.exports = {
       var invalidBid = false;
       var highestBidPrice = 0;
       previousBids.forEach(function(oldBid) {
-        if (oldBid.price > bid.price) {
+        if (oldBid.price >= bid.price) {
           invalidBid = true;
           if (oldBid.price > highestBidPrice) {
             highestBidPrice = oldBid.price;
@@ -51,7 +68,7 @@ module.exports = {
         bid.user = req.user;
 
         // append registered User for validation
-        bid.auctUser = models.auctionUser;
+        bid.auctUser = auctionUser;
 
         // save new bid
         db.newBid(bid, function(err) {
