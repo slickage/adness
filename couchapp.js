@@ -35,9 +35,9 @@ ddoc.views.auctions = {
   }
 };
 
-ddoc.views.registeredUser = {
+ddoc.views.auctionUser = {
   map: function(doc) {
-    if(doc.type === 'registeredUser') {
+    if(doc.type === 'auctionUser') {
       emit([doc._id], doc);
     }
   }

@@ -330,8 +330,8 @@ var db = {
   },
   newBid: function(body, cb) {
     // check that user is registered
-    var regUser = body.regUser;
-    if (regUser.registered !== true) {
+    var auctUser = body.auctUser;
+    if (auctUser.registered !== true) {
       var message = 'User is not registered.';
       return cb({ message: message }, undefined);
     }
@@ -761,8 +761,8 @@ var db = {
       else { return cb(err, undefined); }
     });
   },
-  insertRegisteredUser: function(user, cb) {
-    var registeredUser = {
+  insertAuctionUser: function(user, cb) {
+    var auctionUser = {
       _id: user._id.toString(),
       username: user.username,
       email: user.email,
@@ -770,19 +770,19 @@ var db = {
       discount_remaining: user.discount_remaining,
       registered: user.registered,
       modified_at: new Date().getTime(),
-      type: 'registeredUser'
+      type: 'auctionUser'
     };
-    if (user._rev) { registeredUser._rev = user._rev; }
-    if (!user.created_at) { registeredUser.created_at = new Date().getTime(); }
-    couch.insert(registeredUser, cb);
+    if (user._rev) { auctionUser._rev = user._rev; }
+    if (!user.created_at) { auctionUser.created_at = new Date().getTime(); }
+    couch.insert(auctionUser, cb);
   },
-  getRegisteredUser: function(userId, cb) {
+  getAuctionUser: function(userId, cb) {
     couch.get(userId.toString(), null, function(err, body) {
       if (err) { return cb(null, undefined); }
       
       // check that this is an auction
-      if (body.type !== 'registeredUser') {
-        return cb({ message: 'Id is not for an registeredUser.'}, undefined );
+      if (body.type !== 'auctionUser') {
+        return cb({ message: 'Id is not for an auctionUser.'}, undefined );
       }
 
       return cb(null, body);

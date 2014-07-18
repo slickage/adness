@@ -51,15 +51,15 @@ module.exports = {
     });
     
     // add registered user with new status
-    var registeredUser = {
+    var auctionUser = {
       _id: metadata.userId,
       username: metadata.username,
       email: metadata.email,
       registrationStatus: 'Invoice Sent.',
       registered: false
     };
-    if (metadata.admin) { registeredUser.registered = true; }
-    db.insertRegisteredUser(registeredUser, function(err) {
+    if (metadata.admin) { auctionUser.registered = true; }
+    db.insertAuctionUser(auctionUser, function(err) {
       if (err) { console.log(err); }
     });
   }

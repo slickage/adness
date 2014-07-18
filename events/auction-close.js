@@ -258,26 +258,26 @@ function notifyModifiedWinner(winner, expiration, discount, auctionId) {
 }
 
 function invoiceUser(winner, expiration, discount, auctionId, invoiceType, cbHandle) {
-  // get registeredUser to see if there's any discounts
-  db.getRegisteredUser(winner.userId, function(err, regUser) {
+  // get auctionUser to see if there's any discounts
+  db.getAuctionUser(winner.userId, function(err, auctUser) {
     if (err) { console.log(err); }
 
-    if (regUser) {
+    if (auctUser) {
       // compile discounts
       var discounts = [];
       // reg discount
-      if (regUser.discount_remaining > 0) {
+      if (auctUser.discount_remaining > 0) {
         var regDiscount = {
           description: 'Registration Discount',
-          amount: Number(regUser.discount_remaining)
+          amount: Number(auctUser.discount_remaining)
         };
         discounts.push(regDiscount);
 
-        // set regUser discount to zero
-        regUser.discount_remaining = 0;
-        db.insertRegisteredUser(regUser, function(err, results) {
+        // set auctUser discount to zero
+        auctUser.discount_remaining = 0;
+        db.insertAuctionUser(auctUser, function(err, results) {
           if (err) { console.log(err); }
-          if (results) { console.log('Discount used for: ' + regUser.username); }
+          if (results) { console.log('Discount used for: ' + auctUser.username); }
         });
       }
       // given discount

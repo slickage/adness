@@ -5,7 +5,7 @@ var registration = require('../registration');
 var moment = require('moment');
 
 exports = module.exports = function(req, res) {
-  req.model.load('registeredUser', req);
+  req.model.load('auctionUser', req);
   req.model.end(function(err, models) {
     var view = 'registration';
     var error = '';
@@ -25,7 +25,7 @@ exports = module.exports = function(req, res) {
       });
     }
 
-    if (models.registeredUser) {
+    if (models.auctionUser) {
       view = 'registrationError';
       error = 'This user has already been registered';
       return res.render(view, {

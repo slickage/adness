@@ -12,7 +12,7 @@ MC.model('userAds', require('./model/userAds'));
 MC.model('reviewAds', require('./model/reviewAds'));
 MC.model('approvedAds', require('./model/approvedAds'));
 MC.model('rejectedAds', require('./model/rejectedAds'));
-MC.model('registeredUser', require('./model/registeredUser'));
+MC.model('auctionUser', require('./model/auctionUser'));
 MC.model('profileUser', require('./model/profileUser'));
 MC.model('auction_invoices', require('./model/ai_invoices'));
 MC.model('reservedAd', require('./model/reservedAd'));

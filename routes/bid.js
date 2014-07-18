@@ -15,7 +15,7 @@ module.exports = {
   // POST bid
   newBid: function(req, res) {
     req.model.load('userBidsPerRegion', req);
-    req.model.load('registeredUser', req);
+    req.model.load('auctionUser', req);
     req.model.end(function(err, models) {
       // previous bids
       var previousBids = models.userBidsPerRegion;
@@ -51,7 +51,7 @@ module.exports = {
         bid.user = req.user;
 
         // append registered User for validation
-        bid.regUser = models.registeredUser;
+        bid.auctUser = models.auctionUser;
 
         // save new bid
         db.newBid(bid, function(err) {

@@ -17,7 +17,7 @@ module.exports = {
     if (req.user) { req.params.userId = req.user.userId; }
     req.model.load('auction', req);
     req.model.load('bids', req);
-    req.model.load('registeredUser', req);
+    req.model.load('auctionUser', req);
     req.model.load('userAds', req);
     req.model.load('reservedAds', req);
     req.model.end(function(err, models) {
@@ -30,10 +30,10 @@ module.exports = {
       var auction = models.auction;
       var bids = models.bids;
       var minutes = config.antiSnipeMinutes;
-      var registered = models.registeredUser && models.registeredUser.registered;
+      var registered = models.auctionUser && models.auctionUser.registered;
       var regStatus;
-      if (models.registeredUser && models.registeredUser.registrationStatus) {
-        regStatus = models.registeredUser.registrationStatus;
+      if (models.auctionUser && models.auctionUser.registrationStatus) {
+        regStatus = models.auctionUser.registrationStatus;
       }
 
       // find all approved ads for this user

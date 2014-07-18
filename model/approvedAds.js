@@ -14,7 +14,7 @@ module.exports = function(req, cb) {
       // separate out users
       var users = [];
       users = _.remove(adsAndUsers, function(item) {
-        return item.type === 'registeredUser';
+        return item.type === 'auctionUser';
       });
 
       // the rest is ads

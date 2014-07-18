@@ -42,11 +42,11 @@ module.exports = function(api) {
   // create bid
   bids.route('/')
   .post(auth, function(req, res) {
-    req.model.load('registeredUser', req);
+    req.model.load('auctionUser', req);
     req.model.end(function(err, models) {
       var bid = req.body;
       bid.user = req.user; // add current user
-      bid.regUser = models.registeredUser;
+      bid.auctUser = models.auctionUser;
       db.newBid(bid, function(err, body) {
         if (err) { console.log(err); res.json(err); }
         else { res.json(body); }

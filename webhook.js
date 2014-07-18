@@ -9,7 +9,7 @@ var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
 var regAdminTemplate = __dirname + '/email-templates/reg-admin-paid.ejs';
-var regUserTemplate = __dirname + '/email-templates/reg-user-paid.ejs';
+var auctUserTemplate = __dirname + '/email-templates/reg-user-paid.ejs';
 var winAdminTemplate = __dirname + '/email-templates/winner-admin-paid.ejs';
 var winUserTemplate = __dirname + '/email-templates/winner-user-paid.ejs';
 
@@ -18,7 +18,7 @@ module.exports = {
     // get receipt id from the post body
     var receiptId = req.body.token;
     var cachedReceipt;
-    var regUser;
+    var auctUser;
     var alreadyPaid;
 
     async.waterfall([
@@ -40,19 +40,19 @@ module.exports = {
           updateReceipt(receipt, cb);
         }
       },
-      // get the RegisteredUser using the Receipt
+      // get the AuctionUser using the Receipt
       function(receipt, cb) {
         cachedReceipt = receipt;
 
         if (alreadyPaid) { return cb(null, undefined); }
-        else { getRegUser(receipt, cb); }
+        else { getAuctUser(receipt, cb); }
       },
-      // update the RegisteredUser
+      // update the AuctionUser
       function(user, cb) {
         if (alreadyPaid) { return cb(null, undefined); }
         else {
-          regUser = user;
-          updateRegUser(user, alreadyPaid, cb);
+          auctUser = user;
+          updateAuctUser(user, alreadyPaid, cb);
         }
       }],
       // heckler admin with payment and invoice info
@@ -66,7 +66,7 @@ module.exports = {
 
         // build registration email for admin template
         var data = {
-          username: regUser.username,
+          username: auctUser.username,
           invoiceId: cachedReceipt.invoice.id,
           invoiceUrl: config.baron.url
         };
@@ -74,24 +74,24 @@ module.exports = {
         var adminHtml = ejs.render(adminStr, data);
 
         // heckle the admin that reg fee was paid
-        console.log('Emailing Admin: Registration paid for ' + regUser.username);
+        console.log('Emailing Admin: Registration paid for ' + auctUser.username);
         heckler.email({
           from: config.senderEmail,
           to: config.admin.emails,
-          subject: 'Registration Fee Paid for ' + regUser.username,
+          subject: 'Registration Fee Paid for ' + auctUser.username,
           html: adminHtml
         });
 
         // build registration email for user template
-        var userStr = fs.readFileSync(regUserTemplate, 'utf8');
+        var userStr = fs.readFileSync(auctUserTemplate, 'utf8');
         var userHtml = ejs.render(userStr, data);
 
         // heckle the user that reg fee was paid
-        console.log('Emailing ' + regUser.username + ': Registration Paid.');
+        console.log('Emailing ' + auctUser.username + ': Registration Paid.');
         heckler.email({
           from: config.senderEmail,
-          to: regUser.email,
-          subject: 'Registration Fee Paid for ' + regUser.username,
+          to: auctUser.email,
+          subject: 'Registration Fee Paid for ' + auctUser.username,
           html: userHtml
         });
 
@@ -223,16 +223,16 @@ function updateReceipt(receipt, cb) {
   });
 }
 
-function getRegUser(receipt, cb) {
-  db.getRegisteredUser(receipt.metadata.userId, function(err, user) {
+function getAuctUser(receipt, cb) {
+  db.getAuctionUser(receipt.metadata.userId, function(err, user) {
     if (err) { return cb(err, undefined); }
     return cb(null, user);
   });
 }
 
-function updateRegUser(user, alreadyPaid, cb) {
+function updateAuctUser(user, alreadyPaid, cb) {
   user.registered = true;
   user.discount_remaining = config.registrationFee;
   delete user.registrationStatus;
-  db.insertRegisteredUser(user, cb);
+  db.insertAuctionUser(user, cb);
 }
