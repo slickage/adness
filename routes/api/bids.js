@@ -2,9 +2,9 @@
 'use strict';
 
 var auth = require(__dirname + '/../../middleware/ensure-auth');
-var db = require(__dirname + '/../../db');
 var express = require('express');
 var bids = express.Router();
+var bidsCommon = require(__dirname + '/../common/bids');
 
 module.exports = function(api) {
   // view bid
@@ -25,17 +25,11 @@ module.exports = function(api) {
     req.params.bidId = req.body.bidId;
     req.model.load('bid', req);
     req.model.end(function(err, models) {
-      if (err) { console.log(err); res.json(err); }
-      else {
-        var bid = models.bid;
-        bid.user = req.user; // add current user
-        if (req.body.price) { bid.price = req.body.price; }
-        if (req.body.slots) { bid.slots = req.body.slots; }
-        db.updateBid(bid, function(err, body) {
-          if(err) { console.log(err); res.json(err); }
-          else { res.json(body); }
-        });
-      }
+      if (err) { console.log(err); return res.json(err); }
+      bidsCommon.updateBid(req, models, function(err, body) {
+        if(err) { console.log(err); res.json(err); }
+        else { res.json(body); }
+      });
     });
   });
 
@@ -44,10 +38,8 @@ module.exports = function(api) {
   .post(auth, function(req, res) {
     req.model.load('auctionUser', req);
     req.model.end(function(err, models) {
-      var bid = req.body;
-      bid.user = req.user; // add current user
-      bid.auctUser = models.auctionUser;
-      db.newBid(bid, function(err, body) {
+      if (err) { console.log(err); return res.json(err); }
+      bidsCommon.newBid(req, models, function(err, body) {
         if (err) { console.log(err); res.json(err); }
         else { res.json(body); }
       });
@@ -59,9 +51,13 @@ module.exports = function(api) {
   .delete(auth, function(req, res) {
     // deleting bids is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    db.deleteBid(req.params.bidId, function(err, body) {
+
+    req.model.load('bid', req);
+    req.model.end(function(err, models) {
+      bidsCommon.deleteBid(req, models, function(results) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json(body); }
+      else { res.json(results); }
+      });
     });
   });
 

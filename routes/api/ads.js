@@ -2,9 +2,9 @@
 'use strict';
 
 var auth = require(__dirname + '/../../middleware/ensure-auth');
-var db = require(__dirname + '/../../db');
 var express = require('express');
 var ads = express.Router();
+var adsCommon = require(__dirname + '/../common/ads');
 
 module.exports = function(api) {
   // view reserved ads, admin only
@@ -13,7 +13,7 @@ module.exports = function(api) {
     req.model.load('reviewAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json({ ad: models.reviewAds }); }
+      else { res.json(adsCommon.getAdsByType(models.reviewAds)); }
     });
   });
 
@@ -23,7 +23,7 @@ module.exports = function(api) {
     req.model.load('approvedAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json({ ad: models.approvedAds }); }
+      else { res.json(adsCommon.getAdsByType(models.approvedAds)); }
     });
   });
 
@@ -33,7 +33,7 @@ module.exports = function(api) {
     req.model.load('rejectedAds', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json({ ad: models.rejectedAds }); }
+      else { res.json(adsCommon.getAdsByType(models.rejectedAds)); }
     });
   });
 
@@ -43,7 +43,7 @@ module.exports = function(api) {
     req.model.load('ad', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
-      else { res.json({ ad: models.ad }); }
+      else { res.json(adsCommon.getAd(models)); }
     });
   });
 
@@ -54,12 +54,7 @@ module.exports = function(api) {
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
       else {
-        var ad = models.ad;
-        ad.user = req.user; // add current user
-        if (req.body.html) { ad.html = req.body.html; }
-        if (req.body.approved) { ad.approved = req.body.approved; }
-        if (req.body.submitted) { ad.submitted = req.body.submitted; }
-        db.updateAd(ad, function(err, body) {
+        adsCommon.updateAd(req, models, function(err, body) {
           if (err) { console.log(err); res.json(err); }
           else { res.json(body); }
         });
@@ -72,7 +67,7 @@ module.exports = function(api) {
   .post(auth, function(req, res) {
     var ad = req.body;
     ad.user = req.user;
-    db.newAd(ad, function(err, body) {
+    adsCommon.newAd(req, function(err, body) {
       if (err) { console.log(err); res.json(err); }
       else { res.json(body); }
     });
@@ -81,13 +76,13 @@ module.exports = function(api) {
   // delete an ad
   ads.route('/:adId')
   .delete(auth, function(req, res) {
+            console.log('deleting....');
+
     req.model.load('ad', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.json(err); }
       else {
-        var ad = models.ad;
-        ad.user = req.user; // add current user
-        db.deleteAd(ad, function(err, body) {
+        adsCommon.deleteAd(req, models, function(err, body) {
           if (err) { console.log(err); res.json(err); }
           else { res.json(body); }
         });

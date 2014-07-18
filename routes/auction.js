@@ -1,18 +1,11 @@
 /* jshint node: true */
 'use strict';
 
-var db = require(__dirname + '/../db');
-var _ = require('lodash');
+var auctionsCommon = require(__dirname + '/common/auctions');
 var moment = require('moment');
-var config = require('../config');
-var probability = require('../auction_probability');
-var auctionEnd = require('../events/auction-close');
 
 module.exports = {
   showAuction: function(req, res) {
-    // show any errors
-    var errorMessage = req.flash('error');
-
     // move userId over for userAds
     if (req.user) { req.params.userId = req.user.userId; }
     req.model.load('auction', req);
@@ -25,97 +18,13 @@ module.exports = {
         console.log(err);
         return res.redirect(req.browsePrefix);
       }
-
-      // template variables
-      var auction = models.auction;
-      var bids = models.bids;
-      var minutes = config.antiSnipeMinutes;
-      var registered = models.auctionUser && models.auctionUser.registered;
-      var userMessage;
-      if (models.auctionUser && models.auctionUser.userMessage) {
-        userMessage = models.auctionUser.userMessage;
-      }
-
-      // find all approved ads for this user
-      var userAds = models.userAds;
-      var approvedAds = _.filter(userAds, function(ad) {
-        return ad.approved === true;
-      });
-
-      // get all regions for all approved ads
-      var approvedRegions = [];
-      approvedAds.forEach(function(ad) {
-        approvedRegions = approvedRegions.concat(ad.regions);
-      });
-      approvedRegions = _.uniq(approvedRegions);
-
-      // find lowest price for each auction region
-      auction.regions.forEach(function(region) {
-        // find latest price for this region
-        var latestPrice;
-        // first check if there are slots open
-        if (region.slots > region.primarySlots.length) { latestPrice = 0.50; }
-        else {
-          // otherwise find the lowest price
-          var bidLength = region.winningBids.length - 1;
-          latestPrice = region.winningBids[bidLength].price + 0.05;
-          latestPrice = Number(latestPrice).toFixed(2);
-        }
-        region.latestPrice = latestPrice;
-      });
-
-      // number of reservedSlots and auction probabilities
-      var reservedAds = models.reservedAds || [];
-      probability.probability(auction, reservedAds);
-
-      // update start and end time 
-      var startTime = moment(auction.start).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      startTime += ' (' + moment(auction.start).fromNow() + ')';
-      auction.startFormatted = startTime;
-      var endTime = moment(auction.end).utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-      endTime += ' (' + moment(auction.end).fromNow() + ')';
-      auction.endFormatted = endTime;
-      
-      var adsStartTime = moment(auction.adsStart).utc();
-      adsStartTime = adsStartTime.format('YYYY MMMM D, h:mm:ss A ZZ');
-      adsStartTime += ' (' + moment(auction.adsStart).utc().fromNow() + ')';
-      auction.adsStart = adsStartTime;
-      var adsEndTime = moment(auction.adsEnd).utc();
-      adsEndTime = adsEndTime.format('YYYY MMMM D, h:mm:ss A ZZ');
-      adsEndTime += ' (' + moment(auction.adsEnd).utc().fromNow() + ')';
-      auction.adsEnd = adsEndTime;
-
-      // remove first item because it's the auction
-      models.bids.splice(0, 1);
-      // sort bids by time
-      bids = _.sortBy(bids, function(bid) { return bid.created_at; });
-
-      // update creation time for bids
-      bids.forEach(function(bid) {
-        var bidTime = moment(bid.created_at).utc().format('YYYY MMMMM D, h:mm:ss A ZZ');
-        bid.created_at = bidTime + ' (' + moment(bid.created_at).fromNow() + ')';
-      });
-
-      // serverTime 
-      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-
-      // add target="_blank" to auction description
-      var targetBlank = '<a target="_blank"';
-      auction.description = auction.description.replace('<a', targetBlank);
-
       // render view
-      res.render('auction', {
-        auction: auction,
-        bids: bids,
-        minutes: minutes,
-        registered: registered,
-        userMessage: userMessage,
-        approvedRegions: approvedRegions,
-        errorMessage: errorMessage,
-        serverTime: serverTime,
-        browsePrefix: req.browsePrefix,
-        user: req.user,
-      });
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      var data = auctionsCommon.showAuction(req, models);
+      data.serverTime = serverTime;
+      data.browsePrefix = req.browsePrefix;
+      data.user = req.user;
+      res.render('auction', data);
     });
   },
   editAuction: function(req, res) {
@@ -125,38 +34,12 @@ module.exports = {
     req.model.load('bids', req);
     req.model.end(function(err, models) {
       if (err) { console.log(err); }
-
-      var auction = models.auction;
-      var bids = models.bids;
-
-      // cull regions
-      var regions = _.pluck(config.regions, 'name');
-      
-      // pull all the regions in bids
-      var bidRegions = [];
-      bids.forEach(function(bid) {
-        bidRegions.push(bid.region);
-        return;
-      });
-      bidRegions = _.uniq(bidRegions);
-
-      // for each region, mark if region has a bid
-      auction.regions.forEach(function(region) {
-        if (_.contains(bidRegions, region.name)) {
-          region.hasBids = true;
-        }
-      });
-
-      // serverTime 
       var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-
-      res.render('auctionEdit', {
-        auction: auction,
-        regions: regions,
-        serverTime: serverTime,
-        browsePrefix: req.browsePrefix,
-        user: req.user
-      });
+      var data = auctionsCommon.editAuction(req, models);
+      data.serverTime = serverTime;
+      data.browsePrefix = req.browsePrefix;
+      data.user = req.user;
+      res.render('auctionEdit', data);
     });
   },
   enableAuction: function(req, res) {
@@ -166,10 +49,7 @@ module.exports = {
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
       else {
-        // enable auction
-        models.auction.enabled = true;
-        // save auction
-        db.updateAuction(models.auction, function(err, body) {
+        auctionsCommon.setAuctionEnabled(true, models, function(err, body) {
           if (err) { console.log(err); }
           req.flash('info', 'Auction ' + body.id + ' Enabled.');
           res.end();
@@ -184,10 +64,7 @@ module.exports = {
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
       else {
-        // disable auction
-        models.auction.enabled = false;
-        // save auction
-        db.updateAuction(models.auction, function(err, body) {
+        auctionsCommon.setAuctionEnabled(false, models, function(err, body) {
           if (err) { console.log(err); }
           req.flash('info', 'Auction ' + body.id + ' Disabled.');
           res.end();
@@ -198,7 +75,7 @@ module.exports = {
   newAuction: function(req, res) {
     // adding auctions is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    db.newAuction(req.body, function(err, body) {
+    auctionsCommon.newAuction(req, function(err, body) {
       if (err) { console.log(err); }
       req.flash('info', 'Auction ' + body.id + ' Created.');
       res.end();
@@ -213,68 +90,8 @@ module.exports = {
     req.model.end(function(err, models) {
       if (err) { console.log(err); res.redirect('/admin'); }
       else {
-        var auction = models.auction;
-        var bids = models.bids;
-
-        // validate bids regions (need in the api call)
-        if (req.body.regions) {
-          // get all region names from bids
-          var bidRegions = [];
-          bids.forEach(function(bid) {
-            bidRegions.push(bid.region);
-            return;
-          });
-          bidRegions = _.uniq(bidRegions);
-
-          // get existing regions with bids
-          var regionsWithBids = [];
-          auction.regions.forEach(function(region) {
-            if (_.contains(bidRegions, region.name)) {
-              regionsWithBids.push(region);
-            }
-          });
-
-          // make sure regions in regionsWithBids are in the req.body.regions
-          var reqRegionNames = _.pluck(req.body.regions, 'name');
-          regionsWithBids.forEach(function(region) {
-            if (!_.contains(reqRegionNames, region.name)) {
-              delete region.winningBids;
-              delete region.primarySlots;
-              delete region.secondarySlots;
-              req.body.regions.push(region);
-            }
-          });
-        }
-
-        if (req.body.start) { auction.start = req.body.start; }
-        if (req.body.end) { auction.end = req.body.end; }
-        if (req.body.adsStart) { auction.adsStart = req.body.adsStart; }
-        if (req.body.adsEnd) { auction.adsEnd = req.body.adsEnd; }
-        if (req.body.enabled) { auction.enabled = req.body.enabled; }
-        if (req.body.description) { auction.description = req.body.description; }
-        if (req.body.regions) { auction.regions = req.body.regions; }
-        db.updateAuction(auction, function(err, body) {
-          if (err) { console.log(err); }
-
-          if (body) {
-            // update air object 
-            var air = {
-              auctionId: auction._id,
-              adsStart: Number(auction.adsStart),
-              adsEnd: Number(auction.adsEnd)
-            };
-            db.getAdsInRotation(auction._id + '-air', function(err, result) {
-              if (result) {
-                db.upsertAdsInRotation(air, function(err, results) {
-                  var message = 'Updated AIR object for auction: ';
-                  message += auction._id;
-                  console.log(message);
-                });
-              }
-            });
-          }
-
-          // return 
+        auctionsCommon.updateAuction(req, models, function(err, body) {
+          if (err) { console.log(err); return res.end();}
           req.flash('info', 'Auction ' + body.id + ' Updated.');
           res.end();
         });
@@ -284,61 +101,22 @@ module.exports = {
   deleteAuction: function(req, res) {
     // deleting auctions is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
-    db.deleteAuction(req.params.auctionId, function(err, body) {
+    auctionsCommon.deleteAuction(req, function(err, body) {
       if (err) { console.log(err); }
       req.flash('info', 'Auction ' + body.id + ' Deleted.');
       res.end();
     });
   },
-  recalculateAuction: function(req,res) {
+  recalculateAuction: function(req, res) {
     // enabling auctions is an admin only function
     if (!req.user.admin) { return res.redirect(req.browsePrefix); }
     req.model.load('auction', req);
     req.model.end(function(err, models) {
-      var httpStatus = 200;
       var message;
-      var auction = models.auction;
-
+      var httpStatus = 200;
       if (err) { console.log(err); message = err.message; httpStatus = 500; }
-
-      // make sure auction is closed
-      if (auction && auction.open) {
-        message += 'Auction is still open.';
-        console.log(message);
-        httpStatus = 500;
-      }
-
-      // figure out the current recalcultion round
-      db.getRecalculations(function(err, results) {
-        if (err) {
-          console.log(err);
-          httpStatus = 500;
-        }
-
-        // find recalculation for this auction
-        var recalculation = _.find(results, function(result) {
-          return auction && auction._id === result.auctionId;
-        });
-
-        // if no recalculation found, run with max round params
-        if (!recalculation) {
-          recalculation = {};
-          recalculation.auctionId = auction._id;
-          recalculation.round = config.rounds.maxRounds;
-          var now = new Date().getTime();
-          var lastRound = config.rounds['round' + recalculation.round];
-          recalculation.expiration = now + lastRound;
-        }
-
-        // call re-calculate auction
-        auctionEnd.recalculateAuction(auction, recalculation, function(err) {
-          if (err) {
-            console.log(err);
-            httpStatus = 500;
-          }
-          else { message = {ok: true}; }
-          return res.send(httpStatus, message);
-        });
+      auctionsCommon.recalculateAuction(req, message, httpStatus, models, function(status, msg) {
+        res.send(status, msg);
       });
     });
   }
