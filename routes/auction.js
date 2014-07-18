@@ -10,6 +10,9 @@ var auctionEnd = require('../events/auction-close');
 
 module.exports = {
   showAuction: function(req, res) {
+    // show any errors
+    var errorMessage = req.flash('error');
+
     // move userId over for userAds
     if (req.user) { req.params.userId = req.user.userId; }
     req.model.load('auction', req);
@@ -108,6 +111,7 @@ module.exports = {
         registered: registered,
         regStatus: regStatus,
         approvedRegions: approvedRegions,
+        errorMessage: errorMessage,
         serverTime: serverTime,
         browsePrefix: req.browsePrefix,
         user: req.user,

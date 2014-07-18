@@ -334,7 +334,9 @@ var db = {
 
           // validate input
           if (!validate.createBid(body.price, body.slots)) {
-            return cb({ message: 'Bid parameters were not valid.' }, undefined);
+            var inputErrorMessage = 'Bid parameters were not valid.';
+            var inputError = new Error(inputErrorMessage);
+            return cb(inputError, undefined);
           }
 
           // validate bid region against auction regions
@@ -372,10 +374,12 @@ var db = {
         }
         else {
           // auction is not open
-          cb({ message: 'Auction is not open.' }, undefined);
+          var auctionErrorMessage = 'Auction is not open';
+          var auctionError = new Error(auctionErrorMessage);
+          return cb(auctionError, undefined);
         }
       }
-      else { cb(err, undefined); }
+      else { return cb(err, undefined); }
     });
   },
   updateBid: function(bid, cb) {

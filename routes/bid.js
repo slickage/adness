@@ -14,15 +14,62 @@ var invalidTemplate = __dirname + '/../email-templates/user-invalidated.ejs';
 module.exports = {
   // POST bid
   newBid: function(req, res) {
+    req.model.load('userBidsPerRegion', req);
     req.model.load('registeredUser', req);
     req.model.end(function(err, models) {
+      // previous bids
+      var previousBids = models.userBidsPerRegion;
+      // current bid
       var bid = req.body;
-      bid.user = req.user; // add current user
-      bid.regUser = models.registeredUser;
-      db.newBid(bid, function(err) {
-        if (err) { console.log(err); }
-        res.redirect(req.browsePrefix + '/auctions/' + bid.auctionId);
+      var redirectRoute = req.browsePrefix + '/auctions/' + bid.auctionId;
+
+      // validate current bid is of correct increment
+      var currentBidPrice = bid.price;
+      var minIncrement = 0.05;
+      var modulusBid = Number(currentBidPrice % 0.05).toFixed(2);
+      console.log(modulusBid);
+      if (modulusBid > 0) {
+        var incrementErrorMessage = "Bid Price is not of increment: ";
+        incrementErrorMessage += 0.05;
+        req.flash('error', incrementErrorMessage);
+        return res.redirect(redirectRoute);
+      }
+
+      // validate that this new bid is of higher price than before
+      var invalidBid = false;
+      var highestBidPrice = 0;
+      previousBids.forEach(function(oldBid) {
+        if (oldBid.price > bid.price) {
+          invalidBid = true;
+          if (oldBid.price > highestBidPrice) {
+            highestBidPrice = oldBid.price;
+          }
+        }
       });
+
+      if (!invalidBid) {
+        // append current user for validation
+        bid.user = req.user;
+
+        // append registered User for validation
+        bid.regUser = models.registeredUser;
+
+        // save new bid
+        db.newBid(bid, function(err) {
+          if (err) {
+            console.log(err);
+            req.flash('error', err.message);
+          }
+          return res.redirect(redirectRoute);
+        });
+      }
+      else {
+        var message = 'Your last bid had a price that was lower ';
+        message += 'than your previous highest bid price of ';
+        message += highestBidPrice;
+        req.flash('error', message);
+        return res.redirect(redirectRoute);
+      }
     });
   },
   updateBid: function(req, res) {

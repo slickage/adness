@@ -19,3 +19,4 @@ MC.model('reservedAd', require('./model/reservedAd'));
 MC.model('reservedAds', require('./model/reservedAds'));
 MC.model('factoids', require('./model/factoids'));
 MC.model('randomFactoid', require('./model/randomFactoid'));
+MC.model('userBidsPerRegion', require('./model/userBidsPerRegion'));
