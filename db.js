@@ -275,6 +275,19 @@ var db = {
             if (bid.region === region.name) { return true; }
           });
 
+          // filter out highest bid per user
+          var users = {};
+          regionBids.forEach(function(regionBid) {
+            if (users[regionBid.user.userId]) {
+              var currentHighestBid = users[regionBid.user.userId];
+              if (regionBid.price > currentHighestBid.price) {
+                users[regionBid.user.userId] = regionBid;
+              }
+            }
+            else { users[regionBid.user.userId] = regionBid; }
+          });
+          regionBids = _.values(users);
+
           // figure out winning bids
           var results = biddingAlg(Number(region.slots), regionBids);
           // add winning bids, primarySlots and secondarySlots to this region

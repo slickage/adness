@@ -24,10 +24,9 @@ module.exports = {
       var redirectRoute = req.browsePrefix + '/auctions/' + bid.auctionId;
 
       // validate current bid is of correct increment
-      var currentBidPrice = bid.price;
-      var minIncrement = 0.05;
-      var modulusBid = Number(currentBidPrice % 0.05).toFixed(2);
-      console.log(modulusBid);
+      var currentBidPrice = bid.price * 100;
+      var minIncrement = 0.05 * 100;
+      var modulusBid = Number(currentBidPrice % minIncrement).toFixed(2);
       if (modulusBid > 0) {
         var incrementErrorMessage = "Bid Price is not of increment: ";
         incrementErrorMessage += 0.05;
