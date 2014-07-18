@@ -1,6 +1,10 @@
 {
   "name": "adness-api",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slickage/adness.git"
+  },
   "description": "",
   "main": "index.js",
   "engines": {
