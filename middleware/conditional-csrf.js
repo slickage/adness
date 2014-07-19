@@ -6,6 +6,9 @@ module.exports = function(req, res, next) {
   if ( null !== req.path.match(/^\/api/) ) {
     return next();
   }
+  else if ( null !== req.path.match(/^\/hooks/) ) {
+    return next();
+  }
   else {
     // otherwise generate a csrf token to res.locals
     res.locals.csrftoken = req.csrfToken();
