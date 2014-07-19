@@ -88,6 +88,7 @@
           <% if (registered && (approvedRegions.indexOf(region.name) > -1)) { %>
             <div class="row bidding">
               <form role="form" method="post" action="/sb/bids">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <input type="hidden" name="auctionId" value="<%= auction._id %>">
                 <input type="hidden" name="region" value="<%= region.name %>">
 

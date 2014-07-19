@@ -302,11 +302,15 @@ function submitAuction() {
   var regionsValid = validateRegions(regions);
   if (!regionsValid) { return; }
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   // ajax post call to server to create auction
   $.ajax({
     type: 'POST',
     url: '/sb/auctions',
     data: {
+      _csrf: csrf,
       start: valid.auctionStart,
       end: valid.auctionEnd,
       adsStart: valid.adsStart,
@@ -339,11 +343,15 @@ function updateAuction() {
   var regionsValid = validateRegions(regions);
   if (!regionsValid) { return; }
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   // ajax post call to server to create auction
   $.ajax({
     type: 'POST',
     url: '/sb/auctions/edit',
     data: {
+      _csrf: csrf,
       auctionId: id,
       start: valid.auctionStart,
       end: valid.auctionEnd,
@@ -368,7 +376,10 @@ function auctionEnable(event) {
   event.preventDefault();
   var link = event.target;
   var auctionId = $(link).data("id");
+  // csrf
+  var csrf = $('#_csrf').val();
   $.post('/sb/auctions/enable/' + auctionId,
+    { _csrf: csrf },
     function(data) { location.reload(); });
 }
 
@@ -378,7 +389,10 @@ function auctionDisable(event) {
   event.preventDefault();
   var link = event.target;
   var auctionId = $(link).data("id");
+  // csrf
+  var csrf = $('#_csrf').val();
   $.post('/sb/auctions/disable/' + auctionId,
+    { _csrf: csrf },
     function(data) { location.reload(); });
 }
 
@@ -386,9 +400,12 @@ function auctionDisable(event) {
 $('#deleteAuctionButton').on('click', auctionDelete);
 function auctionDelete() {
   var auctionId = $("#deleteAuctionId").val();
+  // csrf
+  var csrf = $('#_csrf').val();
   $.ajax({
     url: '/sb/auctions/' + auctionId,
     type: "DELETE",
+    data: { _csrf: csrf },
     success: function(data) { location.reload(); },
     error: function(err) {
       alert("There was an issue deleting this auction.");
@@ -414,7 +431,10 @@ $('.approveAd').on('click', approveAd);
 function approveAd(element) {
   var button = element.target;
   var adId = $(button).data("id");
+  // csrf
+  var csrf = $('#_csrf').val();
   $.post('/sb/ads/' + adId + '/approve',
+    { _csrf: csrf },
     function(data) { location.reload(); });
 }
 
@@ -423,7 +443,10 @@ $('.rejectAd').on('click', rejectAd);
 function rejectAd(element) {
   var button = element.target;
   var adId = $(button).data("id");
+  // csrf
+  var csrf = $('#_csrf').val();
   $.post('/sb/ads/' + adId + '/reject',
+    { _csrf: csrf },
     function(data) { location.reload(); });
 }
 
@@ -510,8 +533,12 @@ function updateFacts() {
     list.push(factoid);
   });
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   // build data object
   var data = {
+    _csrf: csrf,
     html: html,
     css: css,
     list: list
@@ -543,9 +570,13 @@ function deleteAd(element) {
 
   var url = "/admin/ads/reserved/" + adId;
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   $.ajax({
     type: "DELETE",
     url: url,
+    data: { _csrf: csrf },
     success: function(data) {
       window.location = "/admin/ads/reserved";
     },
@@ -576,9 +607,13 @@ $('#deleteBidButton').on('click', deleteBid);
 function deleteBid() {
   var bidId = $("#deleteBidId").val();
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   $.ajax({
     url: "/sb/bids/" + bidId,
     type: "DELETE",
+    data: { _csrf: csrf },
     success: function(data) {
       $('#deleteBidModal').modal('hide');
 
@@ -612,9 +647,13 @@ function recalculateAuction(element) {
   }
   var auctionId = $(button).data("id");
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   $.ajax({
     url: "/admin/auctions/recalculate/" + auctionId,
     type: "POST",
+    data: { _csrf: csrf },
     success: function(data) {
       alert("Auction has been re-calculated.");
       location.reload();

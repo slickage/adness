@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/datetimepicker/bootstrap-datetimepicker.css">
   </head>
   <body>
+    <input id="_csrf" type="hidden" name="_csrf" value="<%= csrftoken %>">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -123,6 +124,7 @@
                   </div>
                 <% } else { %>
                   <form class="form-inline" role="form" method="post" action="/login">
+                    <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                     <div class="form-group">
                       <input name="username" type="username" class="form-control" placeholder="Username">
                     </div>

@@ -11,6 +11,7 @@
         </span>
       <% } else if (!registered) { %>
         <form action="/registration" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrftoken %>">
           <button class="btn btn-success">
             Please Click Here to Register to bid
           </button>

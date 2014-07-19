@@ -14,6 +14,8 @@ var express = require('express'),
     rateLimiter = require('rate-limiter'),
     RedisStore = require('connect-redis')(session),
     helmet = require('helmet'),
+    csrf = require('csurf'),
+    cCsrf = require('./middleware/conditional-csrf'),
     // expressJwt = require('express-jwt'),
     site = express(), // this site!
     // authentication
@@ -85,6 +87,8 @@ site.use(helmet.csp({
   defaultSrc: ["'self'"],
   styleSrc: ["'self'", "'unsafe-inline'"]
 }));
+site.use(csrf());
+site.use(cCsrf);
 site.use(express.static(path.join(__dirname, 'public')));
 require(__dirname + '/routes')(site);
 

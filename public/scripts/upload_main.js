@@ -82,7 +82,11 @@ function submitForReview() {
     return;
   }
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   var data = {
+    _csrf: csrf,
     submitted: submit,
     css: css,
     html: html,
@@ -128,7 +132,11 @@ function submitReservedAd() {
     return;
   }
 
+  // csrf
+  var csrf = $('#_csrf').val();
+
   var data = {
+    _csrf: csrf,
     in_use: in_use,
     css: css,
     html: html,

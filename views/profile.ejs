@@ -51,6 +51,7 @@
         It looks like you're trying to view your own page but you haven't registered with us yet. <br />
         Please click the button below to register with us. <br /><br />
         <form action="/registration" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrftoken %>">
           <button class="btn btn-success">
             Please Click Here to Register
           </button>

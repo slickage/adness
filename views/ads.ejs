@@ -28,12 +28,14 @@
           <% if (ad.inRotation === true) { %>
             <div class="btn-group">
               <form action="<%= browsePrefix %>/ads/<%= ad._id %>/outRotation" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-primary">Remove from rotation</button>
               </form>
             </div>
           <% } else { %>
             <div class="btn-group">
               <form action="<%= browsePrefix %>/ads/<%= ad._id %>/inRotation" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-primary">Add to rotation</button>
               </form>            
             </div>
@@ -50,6 +52,7 @@
 
         <div class="btn-group">
           <form action="<%= browsePrefix %>/ads/<%= ad._id %>/delete" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>">
             <button class="btn btn-danger">
               Delete
             </button>
@@ -70,6 +73,7 @@
           <% if (ad.approved === true) { %>
             <div class="btn-group">
               <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-danger">
                   Reject
                 </button>
@@ -78,6 +82,7 @@
           <% } else if (ad.rejected === true ) { %>
             <div class="btn-group">
               <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-success">
                   Approve
                 </button>
@@ -86,6 +91,7 @@
           <% } else { %>
             <div class="btn-group">
               <form action="<%= browsePrefix%>/ads/<%= ad._id %>/approve" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-success">
                   Approve
                 </button>
@@ -93,6 +99,7 @@
             </div>
             <div class="btn-group">
               <form action="<%= browsePrefix%>/ads/<%= ad._id %>/reject" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>">
                 <button class="btn btn-danger">
                   Reject
                 </button>
