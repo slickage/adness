@@ -109,5 +109,6 @@ module.exports = {
     admin: parseBool(process.env.FAKEAUTH_ADMIN) || false
   },
   debugMode: parseBool(process.env.DEBUG_MODE) || false,
-  registrationFee: parseNumber(process.env.REGISTRATION_FEE, 0.01)
+  registrationFee: parseNumber(process.env.REGISTRATION_FEE, 0.01),
+  enableAPI: parseBool(process.env.ENABLE_API) || false
 };

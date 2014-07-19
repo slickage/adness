@@ -46,7 +46,9 @@ module.exports = function(site) {
   );
 
   // API routes
-  site.use('/api', api);
+  if (config.enableAPI) {
+    site.use('/api', api);
+  }
 
   // webhooks
   site.post('/hooks/registration', webhook.registration);
