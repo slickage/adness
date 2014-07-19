@@ -1,0 +1,20 @@
+
+<div style="width: 90%; margin: auto;">
+  <strong>Your bid has been removed from Auction: <%= auctionId %></strong>
+  <br>
+  An administrator has found your bid in violation of the terms of this auction. For this reason, all your bid and any associated invoices have been invalidated. If you have already paid an invoice, please contact an administator for a refund.
+  <br><br>
+
+  <% if (invoices && invoices.length > 0) { %>
+    Here is a list of invalidated invoices: <br>
+    <% invoices.forEach(function(invoice) { %>
+      <%= invoice %><br>
+    <% }) %>
+  <% } %>
+</div>
+
+<br><br>
+Thank you for participating in this auction. 
+<br><br>
+
+<em>This is a automated email. Please do not reply to this email.</em>

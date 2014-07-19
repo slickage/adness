@@ -9,78 +9,78 @@ var config = require('../../config');
 var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
-var invalidTemplate = __dirname + '/../../email-templates/user-invalidated.ejs';
+var invalidTemplate = __dirname + '/../../email-templates/invalid-bid.ejs';
 
 module.exports = {
   newBid: function(req, models, cb) {
-          // auction profile
-      var auctionUser = models.auctionUser;
-      // previous bids
-      var previousBids = models.userBidsPerRegion;
-      // current bid
-      var bid = req.body;
-      // redirect route
+    // auction profile
+    var auctionUser = models.auctionUser;
+    // previous bids
+    var previousBids = models.userBidsPerRegion;
+    // current bid
+    var bid = req.body;
+    // redirect route
 
-      // validate that the user is registered
-      if (!auctionUser || auctionUser && auctionUser.registered !== true) {
-        var registeredErrorMessage = 'You are not registered with the Auction Website.';
-        req.flash('error', registeredErrorMessage);
-        return cb();
-      }
+    // validate that the user is registered
+    if (!auctionUser || auctionUser && auctionUser.registered !== true) {
+      var registeredErrorMessage = 'You are not registered with the Auction Website.';
+      req.flash('error', registeredErrorMessage);
+      return cb();
+    }
 
-      // validate that user is not suspended
-      if (auctionUser && auctionUser.suspended === true) {
-        var suspendedErrorMessage = 'You\'ve been suspended from the auction system. You may not bid on anymore auctions.';
-        req.flash('error', suspendedErrorMessage);
-        return cb();
-      }
+    // validate that user is not suspended
+    if (auctionUser && auctionUser.suspended === true) {
+      var suspendedErrorMessage = 'You\'ve been suspended from the auction system. You may not bid on anymore auctions.';
+      req.flash('error', suspendedErrorMessage);
+      return cb();
+    }
 
-      // validate current bid is of correct increment
-      var currentBidPrice = bid.price * 100;
-      var minIncrement = 0.05 * 100;
-      var modulusBid = Number(currentBidPrice % minIncrement).toFixed(2);
-      if (modulusBid > 0) {
-        var incrementErrorMessage = 'Bid Price is not of increment: ';
-        incrementErrorMessage += 0.05;
-        req.flash('error', incrementErrorMessage);
-        return cb();
-      }
+    // validate current bid is of correct increment
+    var currentBidPrice = bid.price * 100;
+    var minIncrement = 0.05 * 100;
+    var modulusBid = Number(currentBidPrice % minIncrement).toFixed(2);
+    if (modulusBid > 0) {
+      var incrementErrorMessage = 'Bid Price is not of increment: ';
+      incrementErrorMessage += 0.05;
+      req.flash('error', incrementErrorMessage);
+      return cb();
+    }
 
-      // validate that this new bid is of higher price than before
-      var invalidBid = false;
-      var highestBidPrice = 0;
-      previousBids.forEach(function(oldBid) {
-        if (oldBid.price >= bid.price) {
-          invalidBid = true;
-          if (oldBid.price > highestBidPrice) {
-            highestBidPrice = oldBid.price;
-          }
+    // validate that this new bid is of higher price than before
+    var invalidBid = false;
+    var highestBidPrice = 0;
+    previousBids.forEach(function(oldBid) {
+      if (oldBid.price >= bid.price) {
+        invalidBid = true;
+        if (oldBid.price > highestBidPrice) {
+          highestBidPrice = oldBid.price;
         }
-      });
-
-      if (!invalidBid) {
-        // append current user for validation
-        bid.user = req.user;
-
-        // append registered User for validation
-        bid.auctUser = auctionUser;
-
-        // save new bid
-        db.newBid(bid, function(err) {
-          if (err) {
-            console.log(err);
-            req.flash('error', err.message);
-          }
-          return cb();
-        });
       }
-      else {
-        var message = 'Your last bid had a price that was lower ';
-        message += 'than your previous highest bid price of ';
-        message += highestBidPrice;
-        req.flash('error', message);
+    });
+
+    if (!invalidBid) {
+      // append current user for validation
+      bid.user = req.user;
+
+      // append registered User for validation
+      bid.auctUser = auctionUser;
+
+      // save new bid
+      db.newBid(bid, function(err) {
+        if (err) {
+          console.log(err);
+          req.flash('error', err.message);
+        }
         return cb();
-      }
+      });
+    }
+    else {
+      var message = 'Your last bid had a price that was lower ';
+      message += 'than your previous highest bid price of ';
+      message += highestBidPrice;
+      req.flash('error', message);
+      return cb();
+    }
   },
   updateBid: function(req, models, cb) {
     var bid = models.bid;
@@ -94,53 +94,34 @@ module.exports = {
     var bid = models.bid;
     var auctionId = bid.auctionId;
     var userId = bid.user.userId;
-    var region = bid.region;
     var username = bid.user.username;
     var email = bid.user.email;
 
-    async.series([
-      function(callback) {
-        invalidateUserBids(auctionId, region, userId, callback);
-      },
-      function(callback) {
-        invalidateUserInvoices(auctionId, region, userId, callback);
+    // first invalidate bid
+    db.deleteBid(bid._id, function(err, results) {
+      if (err) {
+        console.log(err);
+        return (err, undefined);
       }
-    ],
-    function(err, results) {
-      results = _.flatten(results);
-      notifyInvalidBidUser(results, auctionId, region, username, email);
-      return cb(results);
+      if (results) {
+        // then void respective invoice
+        invalidateUserInvoices(auctionId, bid._id, userId, function(err, invoiceMessages) {
+          if (err) {
+            console.log(err);
+            return (err, undefined);
+          }
+          if (invoiceMessages) {
+            // email the user about the invalid bid
+            notifyInvalidBidUser(invoiceMessages, auctionId, bid._id, username, email);
+            return cb(null, invoiceMessages);
+          }
+        });
+      }
     });
   }
 };
 
-function invalidateUserBids(auctionId, region, userId, cb) {
-  // get all bids for this auction for this user
-  db.getUserBidsPerRegion(auctionId, region, userId, function(err, userbids) {
-    if (err) { console.log(err); }
-
-    var messages = [];
-
-    if (userbids) {
-      async.eachSeries(
-        userbids,
-        function(userbid, callback) {
-          // check if bid is void already
-          if (userbid.invalid) { return callback(null); }
-          // otherwise invalidate this bid
-          db.deleteBid(userbid._id, callback);
-          // add a message about invalidated bid
-          messages.push('Bid: ' + userbid._id + ' was invalidated.');
-        },
-        function(allBidErr) { if (allBidErr) { console.log(allBidErr); } }
-      );
-    }
-
-    return cb(err, messages);
-  });
-}
-
-function invalidateUserInvoices(auctionId, region, userId, cb) {
+function invalidateUserInvoices(auctionId, bidId, userId, cb) {
   // get all invoices for this bid
   db.getUserInvoices(auctionId, userId, function(err, invoices) {
     if (err) { console.log(err); return cb(err, []); }
@@ -151,13 +132,19 @@ function invalidateUserInvoices(auctionId, region, userId, cb) {
     async.eachSeries(
       invoices,
       function(invoice, callback) {
-        // check invoice region
+        var voidInvoice = false;
+        // check invoice for bidId
         var lineItems = invoice.metadata.user.lineItems;
-        var invoiceRegion;
-        if (lineItems && lineItems[0]) {
-          invoiceRegion = lineItems[0].region;
+        if (lineItems) {
+          lineItems.forEach(function(lineItem) {
+            if (lineItem.bidId === bidId) { voidInvoice = true; }
+          });
         }
-        if (invoiceRegion !== region) { return callback(null);  }
+
+        // break out if voidInvoice === false
+        if (voidInvoice === false) {
+          return callback(null);
+        }
 
         // invalidate invoice
         var invoiceId = invoice.invoice.id;
@@ -202,23 +189,23 @@ function invalidateInvoice(invoiceId, cb) {
   );
 }
 
-function notifyInvalidBidUser(results, auctionId, region, username, email) {
+function notifyInvalidBidUser(invoices, auctionId, bidId, username, email) {
   // build email template
   var data = {
-    results: results,
+    bidId: bidId,
+    invoices: invoices,
     auctionId: auctionId,
-    username: username,
-    region: region
+    username: username
   };
   var str = fs.readFileSync(invalidTemplate, 'utf8');
   var html = ejs.render(str, data);
   
   // heckle the winners
-  console.log('Emailing ' + username + ' with invalidating user template');
+  console.log('Emailing ' + username + ' with invalid bid template');
   heckler.email({
     from: config.senderEmail,
     to: email,
-    subject: 'Your bid has been invalidated in auction: ' + auctionId,
+    subject: 'Your bid:' + bidId + ', has been invalidated in auction: ' + auctionId,
     html: html
   });
 }

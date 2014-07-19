@@ -230,7 +230,7 @@
       <div class="modal-body">
         <input type="hidden" id="deleteBidId">
         <p>Are you sure you want to invalidate this Bid?</p>
-        <p>Invalidating this bid will also invalidate all bids from this user for this auction region. It will also try to void all invoices for all bids invalidated.</p>
+        <p>Invalidating this bid will also void any associated invoices.</p>
         <p>If the bidder has already paid an invoice that this process will try to invalidate, refunds may have to be provided manually.</p>
       </div>
       <div class="modal-footer">
@@ -252,15 +252,23 @@
       type: "DELETE",
       success: function(data) {
         $('#deleteBidModal').modal('hide');
-        var message = "Here is a list of bids and invoices affected: \n";
-        data.forEach(function(datum) {
-          message += datum + '\n';
-        });
+
+        var message = "";
+        if (data && data.length > 0) {
+          message = "Here is a list of invoices affected: \n";
+          data.forEach(function(datum) {
+            message += datum + '\n';
+          });
+        }
+        else {
+          message = "No Invoices were affected by this invalidation.";
+        }
         alert(message);
+        
         location.reload();
       },
       error: function(err) {
-       alert("There was an issue deleting this bid.");
+       alert("There was an issue deleting this bid.\n" + err.message);
        console.log(err);
       }
     });

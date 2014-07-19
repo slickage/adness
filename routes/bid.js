@@ -36,8 +36,9 @@ module.exports = {
 
     req.model.load('bid', req);
     req.model.end(function(err, models) {
-      bidsCommon.deleteBid(req, models, function(results) {
-        res.json(results);
+      bidsCommon.deleteBid(req, models, function(err, results) {
+        if (err) { res.send(500, err.message); }
+        if (results) { res.json(results); }
       });
     });
   }
