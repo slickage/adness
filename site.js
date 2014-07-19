@@ -13,6 +13,7 @@ var express = require('express'),
     flash = require('connect-flash'),
     rateLimiter = require('rate-limiter'),
     RedisStore = require('connect-redis')(session),
+    helmet = require('helmet'),
     // expressJwt = require('express-jwt'),
     site = express(), // this site!
     // authentication
@@ -36,6 +37,7 @@ var express = require('express'),
 var rlRules = [ ['login', 'all', 10, 60, true] ];
 
 // session options
+var cookieSession = { secure: true, httpOnly: true, maxAge:86400000 };
 var sessionOpts = {
   store: new RedisStore({
     host: config.redis.host,
@@ -48,7 +50,6 @@ var sessionOpts = {
 };
 
 // development, debug, trust-proxy configs
-var cookieSession = { secure: true, maxAge:86400000 };
 if ('development' === site.get('env')) {
   cookieSession.secure = false;
   site.use(errorhandler());
@@ -79,6 +80,11 @@ site.use(passport.initialize());
 site.use(passport.session());
 site.use(rateLimiter.expressMiddleware(rlRules));
 site.use(flash());
+site.use(helmet({ csp: false, nocache: false }));
+site.use(helmet.csp({
+  defaultSrc: ["'self'"],
+  styleSrc: ["'self'", "'unsafe-inline'"]
+}));
 site.use(express.static(path.join(__dirname, 'public')));
 require(__dirname + '/routes')(site);
 

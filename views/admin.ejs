@@ -120,7 +120,7 @@
             </div>
 
             <div class="col-sm-2 auction_add_button">
-              <button class="btn btn-primary btn-block" onclick="addRegion();">
+              <button id="addRegionButton" class="btn btn-primary btn-block">
                 Add Region
               </button>
             </div>
@@ -151,7 +151,7 @@
       <!-- Auction submit -->
       <div class="row">
         <div class="col-sm-offset-8 col-sm-4 auction_add_button">
-          <button class="btn btn-success btn-block" onclick="submitAuction();">
+          <button class="btn btn-success btn-block submitAuction">
             Add Auction
           </button>
         </div>
@@ -202,12 +202,12 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="auctionDisable(event, '<%=auctionsOpen[i]._id%>');">
+                  <a href="#" class="disableAuctionLink" data-id="<%=auctionsOpen[i]._id%>">
                     Disable
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="loadDelete('<%= auctionsOpen[i]._id%>');">
+                  <a href="#" class="loadDeleteAuction" data-id="<%= auctionsOpen[i]._id%>">
                     Delete
                   </a>
                 </li>
@@ -257,12 +257,12 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="auctionEnable(event, '<%=auctionsClosed[i]._id%>');">
+                  <a href="#" class="enableAuctionLink" data-id="<%=auctionsClosed[i]._id%>">
                     Enable
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="loadDelete('<%= auctionsClosed[i]._id%>');">
+                  <a href="#" class="loadDeleteAuction" data-id="<%= auctionsClosed[i]._id%>">
                     Delete
                   </a>
                 </li>
@@ -312,7 +312,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="loadDelete('<%= auctionsFuture[i]._id%>');">
+                  <a href="#" class="loadDeleteAuction" data-id="<%= auctionsFuture[i]._id%>">
                     Delete
                   </a>
                 </li>
@@ -362,7 +362,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="loadDelete('<%= auctionsPast[i]._id%>');">
+                  <a href="#" class="loadDeleteAuction" data-id="<%= auctionsPast[i]._id%>">
                     Delete
                   </a>
                 </li>
@@ -392,70 +392,10 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-danger" onclick="auctionDelete(event);">Delete</button>
+        <button id="deleteAuctionButton" type="button" class="btn btn-danger">
+          Delete
+        </button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-
-<script type="text/javascript">
-  function submitAuction(event) {
-    // input validation
-    var valid = auctionValidation();
-    if(!valid) { return; }
-
-    // grab region
-    var regions = gatherRegions();
-    var regionsValid = validateRegions(regions);
-    if (!regionsValid) { return; }
-
-    // ajax post call to server to create auction
-    $.ajax({
-      type: "POST",
-      url: '<%= browsePrefix %>/auctions',
-      data: {
-        start: valid.auctionStart,
-        end: valid.auctionEnd,
-        adsStart: valid.adsStart,
-        adsEnd: valid.adsEnd,
-        description: valid.description,
-        regions: regions
-      },
-      success: function() {
-        location.reload();
-      },
-      error: function() {
-        alert("There was an error creating the auction.");
-      }
-    });
-  }
-
-  function auctionEnable(ev, auctionId) {
-    ev.preventDefault();
-    $.post("<%= browsePrefix %>/auctions/enable/" + auctionId, 
-      function(data) { location.reload(); });
-  }
-
-  function auctionDisable(ev, auctionId) {
-    ev.preventDefault();
-    $.post("<%= browsePrefix %>/auctions/disable/" + auctionId, 
-      function(data) { location.reload(); });
-  }
-
-  function auctionDelete(ev) {
-    var auctionId = $("#deleteAuctionId").val();
-    ev.preventDefault();
-    $.ajax({
-      url: "<%= browsePrefix %>/auctions/" + auctionId, 
-      type: "DELETE",
-      success: function(data) { location.reload(); },
-      error: function(err) { alert("There was an issue deleting this auction."); console.log(err); } 
-    });
-  }
-
-  function loadDelete(auctionId) {
-    $('#deleteAuctionId').val(auctionId);
-    $('#deleteAuctionModal').modal('show');
-  }
-</script>

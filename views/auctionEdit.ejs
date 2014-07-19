@@ -104,7 +104,7 @@
             </div>
 
             <div class="col-sm-2 auction_add_button">
-              <button class="btn btn-primary btn-block" onclick="addRegion();">
+              <button id="addRegionButton" class="btn btn-primary btn-block">
                 Add Region
               </button>
             </div>
@@ -127,7 +127,7 @@
                       <td><%= region.slots %></td>
                       <td class="text-center">
                         <% if (!region.hasBids) { %>
-                          <button class="btn btn-xs btn-danger" onclick="removeRegion(this);">
+                          <button class="btn btn-xs btn-danger">
                             <span class="glyphicon glyphicon-remove"></span>
                           </button>
                         <% } %>
@@ -156,7 +156,7 @@
           </div>
         </div>
         <div class="col-sm-4 auction_add_button">
-          <button class="btn btn-success btn-block" onclick="updateAuction();">
+          <button class="btn btn-success btn-block updateAuction">
             Update Auction
           </button>
         </div>

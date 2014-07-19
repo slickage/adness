@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="/css/main.css">
   </head>
   <body>
+    <!-- hidden ad info for editing -->
+    <input id="adId" type="hidden" value="<% if (ad) { %><%= ad._id %><% } %>">
+    <input id="userId" type="hidden" value="<%= user.userId %>">
+
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -69,10 +73,10 @@
 
           <div class="btn-group btn-group-justified">
             <div class="btn-group">
-              <button class="btn btn-default pull-right" onclick="submitForReview(false);">Add But don't Use</button>
+              <button class="btn btn-default pull-right submitReservedAd" data-use="false">Add But don't Use</button>
             </div>
             <div class="btn-group">
-              <button class="btn btn-success pull-right" onclick="submitForReview(true);">Add and use right away</button>
+              <button class="btn btn-success pull-right submitReservedAd" data-use="true">Add and use right away</button>
             </div>
           </div>
         </div>
@@ -92,96 +96,6 @@
     <script src="/scripts/codemirror/mode/xml/xml.js"></script>
     <script src="/scripts/codemirror/mode/javascript/javascript.js"></script>
     <script src="/scripts/caja/html-sanitizer-minified.js"></script>
-
-    <!-- custom scripts -->
-    <script>
-      var textArea = document.getElementById("upload-code");
-      var htmlCodeMirror = CodeMirror.fromTextArea(textArea, {
-        mode:  "htmlmixed",
-        indentWithTabs: false,
-        tabSize: 2,
-        lineNumbers: true
-      });
-      htmlCodeMirror.setSize(null, 150);
-      // on change event: update preview and clean html
-      htmlCodeMirror.on("change", function(cm, change) { convert(); });
-
-      var textAreaCSS = document.getElementById("upload-css");
-      var cssCodeMirror = CodeMirror.fromTextArea(textAreaCSS, {
-        mode:  "htmlmixed",
-        indentWithTabs: false,
-        tabSize: 2,
-        lineNumbers: true
-      });
-      cssCodeMirror.setSize(null, 150);
-      // on change event: update preview and clean html
-      cssCodeMirror.on("change", function(cm, change) { convert(); });
-
-      function convert() {
-        // add CSS to head of this page
-        // raw css
-        var raw_css = cssCodeMirror.getValue();
-        // style tag in head
-        var cssHolder = $('style[title="temp css"]');
-        if (cssHolder.length) {
-          cssHolder.empty();
-          cssHolder.html(raw_css);
-        }
-        else {
-          // style doesn't exist so create it
-          var head = document.getElementsByTagName('head')[0];
-          var css = document.createElement('style');
-          css.title = 'temp css';
-          css.type = 'text/css';
-          css.innerHTML = raw_css;
-          head.appendChild(css);
-        }
-
-        // scrub the raw html for any security leaks
-        var raw_html = htmlCodeMirror.getValue();
-        function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
-        function idX(id) { return id }
-        var parsedHtml = html_sanitize(raw_html, urlX, idX);
-
-        // inject the parsed html into the page
-        var preview = document.getElementById('preview');
-        preview.innerHTML = parsedHtml;
-      }
-
-      function submitForReview(in_use) {
-        var html = $("#preview").html();
-        var css = cssCodeMirror.getValue();;
-
-        // get blacklist values
-        var regions = [];
-        $('.region').each(function(index, value) {
-          if ($(value).prop('checked')) { regions.push(value.id); }
-        });
-        if (regions.length === 0) {
-          alert('You need to add at least one region.');
-          return;
-        }
-
-        var data = {
-          in_use: in_use,
-          css: css,
-          html: html,
-          regions: regions
-        }
-
-        var url = "/admin/ads/reserved/<% if(ad) { %><%= ad._id %><% } %>";
-
-        $.ajax({
-          type: "POST", 
-          url: url, 
-          data: data,
-          success: function(data) {
-            window.location = "/admin/ads/reserved";
-          } 
-        });
-      }
-
-      $( document ).ready(function() { convert(); });
-    </script>
+    <script src="/scripts/upload_main.js"></script>
   </body>
 </html>

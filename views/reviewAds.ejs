@@ -51,24 +51,24 @@
           <div class="pull-right">
             <% if (ad.approved === true) { %>
               <div class="btn-group">
-                <button class="btn btn-danger" onclick="rejectAd(event, '<%= ad._id %>');">
+                <button class="btn btn-danger rejectAd" data-id="<%= ad._id %>">
                   Reject
                 </button>
               </div>
             <% } else if (ad.rejected === true ) { %>
               <div class="btn-group">
-                <button class="btn btn-success" onclick="approveAd(event, '<%= ad._id %>');">
+                <button class="btn btn-success approveAd" data-id="<%= ad._id %>">
                   Approve
                 </button>
               </div>
             <% } else { %>
               <div class="btn-group">
-                <button class="btn btn-success" onclick="approveAd(event, '<%= ad._id %>');">
+                <button class="btn btn-success approveAd" data-id="<%= ad._id %>">
                   Approve
                 </button>
               </div>
               <div class="btn-group">
-                <button class="btn btn-danger" onclick="rejectAd(event, '<%= ad._id %>');">
+                <button class="btn btn-danger rejectAd" data-id="<%= ad._id %>">
                   Reject
                 </button>
               </div>
@@ -81,17 +81,3 @@
   <% } %>
 
 </div>
-
-<script type="text/javascript">
-  function approveAd(ev, adId) {
-    ev.preventDefault();
-    $.post("<%= browsePrefix %>/ads/" + adId + "/approve", 
-      function(data) { location.reload(); });
-  }
-
-  function rejectAd(ev, adId) {
-    ev.preventDefault();
-    $.post("<%= browsePrefix %>/ads/" + adId + "/reject",
-      function(data) { location.reload(); });
-  }
-</script>

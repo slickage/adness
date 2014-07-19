@@ -62,7 +62,7 @@
                   <td><%- fact.text %></td>
                   <td><%= fact.user %></td>
                   <td>
-                    <button class="btn btn-xs btn-danger" onclick="removeFact(this);">
+                    <button class="btn btn-xs btn-danger">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </td>
@@ -79,7 +79,8 @@
         <strong>Add New Factoids:</strong>
         <textarea name="newFact" id="newFact" class="form-control" autofocus="autofocus"></textarea>
         <br>
-        <button class="btn btn-success" onclick="addFact();">
+        <input id="addFactoidUsername" type="hidden" value="<%= user.username %>">
+        <button id="addFactoidButton" class="btn btn-success">
           Add Facts
         </button>
       </div>
@@ -88,7 +89,7 @@
 
     <div class="panel-footer clearfix">
       <div class="pull-right" style="padding-left: 15px;">
-        <button class="btn btn-danger" onclick="updateFacts();">
+        <button id="updateFactsButton" class="btn btn-danger">
           Save
         </button>
       </div>
@@ -96,99 +97,3 @@
   </div>
 
 </div>
-
-<!-- custom scripts -->
-<script>
-  function addFact() {
-    // get textarea text
-    var factElement = document.getElementById('newFact');
-    var newFacts = factElement.value;
-    
-    // separate each fact by newline
-    var factArray = newFacts.split('\n');
-
-    // clear table if contents is only No Current Facts
-    $('#factTable tbody tr').each(function(index, value) {
-      var fact = $(this).find('td:nth-child(1)').text();
-      // remove "No Current Facts"
-      if (fact === 'No Current Facts') { $(this).remove(); }
-    });
-
-    // add each fact 
-    factArray.forEach(function(fact) {
-      // add each one to the table
-      var html = '<tr><td>';
-      html += fact;
-      html += '</td><td>';
-      html += '<%= user.username %>';
-      html += '</td>';
-      html += '<td>';
-      html += '<button class="btn btn-xs btn-danger" onclick="removeFact(this);">';
-      html += '<span class="glyphicon glyphicon-remove"></span></button></td>';
-      html += '</tr>';
-      $('#factTable tbody').append(html);
-    });
-
-    // clear input
-    factElement.value = '';
-  }
-
-  function removeFact(element) {
-    var parentRow = $(element).closest('tr');
-    parentRow.remove();
-  }
-
-  function updateFacts() {
-    var url = "/admin/ads/factoids";
-
-    // get html 
-    var rawHtml = document.getElementById('html').value;
-    function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
-    function idX(id) { return id }
-    var html = html_sanitize(rawHtml, urlX, idX);
-    // validate html for text include
-    var textIndex = html.indexOf('%- text %');
-    if (textIndex < 0) {
-      var error = "HTML does not have a &lt;%- text %&gt; in it.";
-      error = error.replace("&lt;", "<").replace("&gt;", ">");
-      alert(error);
-      return;
-    }
-
-    // get css
-    var css = document.getElementById('css').value;
-
-    // get all the facts
-    var list = [];
-    $('#factTable tbody tr').each(function(index, value) {
-      var fact = $(this).find('td:nth-child(1)').text();
-      var user = $(this).find('td:nth-child(2)').text();
-
-      // build region json object
-      var factoid = { text: fact, user: user };
-      list.push(factoid);
-    });
-
-    // build data object
-    var data = {
-      html: html,
-      css: css,
-      list: list
-    }
-
-    // send request
-    $.ajax({
-      type: "POST", 
-      url: url,
-      data: data,
-      success: function(data) {
-        window.location = "/admin/ads/factoids";
-      },
-      error: function() {
-        var message = "There was a problem updating factoids.\n";
-        message += data;
-        alert(message);
-      }
-    });
-  }
-</script>

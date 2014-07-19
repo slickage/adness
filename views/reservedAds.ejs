@@ -40,8 +40,7 @@
         Ad: <%= ad._id %>
       </div>
 
-      <div class="panel-body">
-        
+      <div class="panel-body">  
         <div class="row cardTitle">
           <h4>
             Regions: <%= ad.regions %>
@@ -65,8 +64,8 @@
           <strong>Ad Preview (without css applied): </strong><br>
           <%- ad.html %>
         </div>
-
       </div>
+
       <div class="panel-footer clearfix">
         <div class="pull-right" style="padding-left: 15px;">
           <a href="/admin/ads/reserved/<%= ad._id %>/edit" class="btn btn-primary">
@@ -74,7 +73,7 @@
           </a>
         </div>
         <div class="pull-right" style="padding-left: 15px;">
-          <button class="btn btn-danger" onclick="deleteAd('<%= ad._id %>');">
+          <button id="deleteReservedAdButton" class="btn btn-danger" data-id="<%= ad._id %>">
             Delete
           </button>
         </div>
@@ -83,23 +82,3 @@
   <% }) %>
 
 </div>
-
-<!-- custom scripts -->
-<script>
-  function deleteAd(id) {
-    var url = "/admin/ads/reserved/" + id;
-
-    $.ajax({
-      type: "DELETE", 
-      url: url,
-      success: function(data) {
-        window.location = "/admin/ads/reserved";
-      },
-      error: function() {
-        var message = "There was a problem trying to delete this ad.\n";
-        message += data;
-        alert(message);
-      }
-    });
-  }
-</script>

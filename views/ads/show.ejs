@@ -8,7 +8,7 @@
           <%= ad._id %>
         </a>
       </span>
-      <% if (user.admin === true) { %>
+      <% if (user && user.admin === true) { %>
         <span class="cardHeaderRight">
           <a href="<%= browsePrefix %>/ads/<%= ad._id %>/edit"><div class="glyphicon glyphicon-edit"></div> Edit</a>
         </span>

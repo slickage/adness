@@ -134,7 +134,7 @@
                 </div>
                 <div class="col-sm-2"><%= slot.price %> BTC</div>
                 <div class="col-sm-2">
-                  <button class="btn btn-danger btn-xs" onclick="loadDelete('<%= slot._id %>');">
+                  <button class="btn btn-danger btn-xs loadDeleteBid" data-id="<%= slot._id %>">
                     <span class="glyphicon glyphicon-remove"></span>
                   </button>
                 </div>
@@ -209,7 +209,7 @@
         </div>
         <div class="col-sm-6">
           <div class="pull-right">
-            <button class="btn btn-default btn-sm" onclick="recalculateAuction('<%= auction._id %>');">
+            <button id="recalAuctionButton" class="btn btn-default btn-sm" data-id="<%= auction._id %>">
               <span class="glyphicon glyphicon-refresh"></span>
             </button>
           </div>
@@ -237,60 +237,10 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-danger" onclick="deleteBid(event);">Delete</button>
+        <button id="deleteBidButton" type="button" class="btn btn-danger">
+          Delete
+        </button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<script type="text/javascript">
-  function deleteBid(ev) {
-    var bidId = $("#deleteBidId").val();
-    ev.preventDefault();
-    $.ajax({
-      url: "<%= browsePrefix %>/bids/" + bidId, 
-      type: "DELETE",
-      success: function(data) {
-        $('#deleteBidModal').modal('hide');
-
-        var message = "";
-        if (data && data.length > 0) {
-          message = "Here is a list of invoices affected: \n";
-          data.forEach(function(datum) {
-            message += datum + '\n';
-          });
-        }
-        else {
-          message = "No Invoices were affected by this invalidation.";
-        }
-        alert(message);
-        
-        location.reload();
-      },
-      error: function(err) {
-       alert("There was an issue deleting this bid.\n" + err.message);
-       console.log(err);
-      }
-    });
-  }
-
-  function recalculateAuction(auctionId) {
-    $.ajax({
-      url: "/admin/auctions/recalculate/" + auctionId, 
-      type: "POST",
-      success: function(data) { 
-        alert("Auction has been re-calculated.");
-        location.reload();
-      },
-      error: function(err) {
-       alert("There was an issue recalculating this auction.");
-       console.log(err);
-      }
-    });
-  }
-
-  function loadDelete(bidId) {
-    $('#deleteBidId').val(bidId);
-    $('#deleteBidModal').modal('show');
-  }
-</script>
