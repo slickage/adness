@@ -23,7 +23,17 @@ module.exports = {
 
     async.waterfall([
       // get Receipt from the DB
-      function(cb) { getReceipt(receiptId, cb); },
+      function(cb) { getReceipt(receiptId, function (err) {
+        if (err) {
+          if (err.status_code && err.status_code === 404) {
+            cb(new Error(req.ip + ' registration webhook invalid receiptId: ' + receiptId));
+          }
+          else {
+            cb(err);
+          }
+        }
+        });
+      },
       // validate status call 
       function(receipt, cb) {
         if (receipt.invoiceStatus === 'paid') {
@@ -107,7 +117,17 @@ module.exports = {
 
     async.waterfall([
       // get Receipt from the DB
-      function(cb) { getReceipt(receiptId, cb); },
+      function(cb) { getReceipt(receiptId, function (err) {
+        if (err) {
+          if (err.status_code && err.status_code === 404) {
+            cb(new Error(req.ip + ' auction webhook invalid receiptId: ' + receiptId));
+          }
+          else {
+            cb(err);
+          }
+        }
+        });
+      },
       // validate status call 
       function(receipt, cb) {
         if (receipt.invoiceStatus === 'paid') {
