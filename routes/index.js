@@ -8,6 +8,7 @@ var webhook = require(__dirname + '/../webhook');
 var auth = require(__dirname + '/../middleware/ensure-auth');
 var passport = require(__dirname + '/../passport');
 var prefix = config.sbPrefix;
+var csrf = require('csurf');
 
 module.exports = function(site) {
   // VIEWS - StarBurst general routes
@@ -175,12 +176,17 @@ function addAdminRoutes(site) {
 function handle404 (req, res) {
   res.status(404);
   if (req.accepts('html')) {
-    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-    res.render('error', {
-      errorMsg: '404 Not Found',
-      serverTime: serverTime,
-      browsePrefix: req.browsePrefix,
-      user: req.user
+    // add csrf token in case it doesn't exists
+    var csrftokenizer = (csrf())(req, res, function(err) {
+      // error doesn't matter since we're sending an error page
+      res.locals.csrftoken = req.csrfToken();
+      var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+      res.render('error', {
+        errorMsg: '404 Not Found',
+        serverTime: serverTime,
+        browsePrefix: req.browsePrefix,
+        user: req.user
+      });
     });
   }
   else if (req.accepts('json')) {
@@ -194,10 +200,15 @@ function handle404 (req, res) {
 // Catch all for any other errors
 function handle500(err, req, res) {
   res.status(err.status || 500);
-  var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
-  res.render('error', { errorMsg: err.message || 'Internal Server Error',
-    serverTime: serverTime,
-    browsePrefix: req.browsePrefix,
-    user: req.user
+  var csrftokenizer = (csrf())(req, res, function(err) {
+    // error doesn't matter since we're sending an error page
+    res.locals.csrftoken = req.csrfToken();
+    var serverTime = moment().utc().format('YYYY MMMM D, h:mm:ss A ZZ');
+    res.render('error', {
+      errorMsg: err.message || 'Internal Server Error',
+      serverTime: serverTime,
+      browsePrefix: req.browsePrefix,
+      user: req.user
+    });
   });
 }
