@@ -8,59 +8,115 @@ var ejs = require('ejs');
 var fs = require('fs');
 var heckler = require('heckler');
 var regTemplate = __dirname + '/email-templates/registration.ejs';
+var async = require('async');
 
-module.exports = {
-  invoice: function(user, cb) {
+function updateAuctUser(user, userMessage, cb) {
+  if (!userMessage) {
+    delete user.userMessage;
+  }
+  else {
+    user.userMessage = userMessage;
+  }
+  db.insertAuctionUser(user, cb);
+}
+
+function addUser(user, cb) {
     // validation
-    if (!user) { return cb({message: 'Not Logged In.'}, undefined); }
-
-    // build an invoice for the registration fee
-    var webhook = config.site.internalUrl + '/hooks/registration';
-    var invoiceForm = invoice.createRegistrationInvoice(user, webhook);
-    var data = {
-      userId: user.userId,
+    if (!user) { return cb({message: 'Not Logged In.'}); }
+    // Add auction user
+    var auctionUser = {
+      _id: user.userId,
       username: user.username,
       email: user.email,
-      admin: user.admin
+      admin: user.admin,
+      registered: false
     };
-    invoice.createInvoice(data, 'registration', invoiceForm, this.completeInvoice);
-    return cb(null, {});
-  },
-  completeInvoice: function(err, results) {
-    if (err) { return console.log(err); }
-    
-    var invoice = results.invoice;
-    var metadata = results.receipt.metadata;
-
-    // build registration email template
+    // Admin is automatically eligible to bid
+    if (user.admin) { auctionUser.registered = true; }
+    db.insertAuctionUser(auctionUser, function(err) {
+      if (err) {
+        if (err.error && err.error === 'conflict' ) {
+          // Harmless collision
+          console.log('DEBUG registration.addUser() Document update conflict:');
+          return cb({message: 'You clicked Register too fast.  Reload the homepage.'});
+        }
+        else {
+          console.log(err);
+          return cb({message: 'Database Error'});
+        }
+      }
+      else {
+        // submit registration fee invoice
+        var webhook = config.site.internalUrl + '/hooks/registration';
+        var invoiceForm = invoice.createRegistrationInvoice(user, webhook);
+        var data = {
+          userId: user.userId,
+          username: user.username,
+          email: user.email,
+          admin: user.admin
+        };
+        invoice.createInvoice(data, 'registration', invoiceForm, function (err, result) {
+          if (err) {
+            console.log(err);
+            return cb({message: 'Temporary failure: createInvoice failed to submit the invoice to Baron.  After this is fixed the invoice will be submitted and you will receive an e-mail.'});
+          }
+          else {
+            completeInvoice(null, result);
+            cb(null);
+          }
+        });
+      }
+    });
+}
+function completeInvoice(err, result) {
+    // build registration email
     var data = {
-      invoiceId: invoice.id,
+      invoiceId: result.invoice.id,
       invoiceUrl: config.baron.url,
       registrationFee: config.registrationFee
     };
     var str = fs.readFileSync(regTemplate, 'utf8');
     var html = ejs.render(str, data);
 
-    // heckle the user for registration fee
-    console.log('Emailing ' + metadata.username + ' with registration template');
-    heckler.email({
-      from: config.senderEmail,
-      to: metadata.email,
-      subject: 'Auction Registration Fee Invoice',
-      html: html
+    var metadata = result.receipt.metadata;
+    var user;
+
+    async.waterfall([
+      function(cb) {
+        // heckle the user for registration fee
+        console.log('Emailing ' + metadata.username + ' with registration email-templates');
+        heckler.email({
+          from: config.senderEmail,
+          to: metadata.email,
+          subject: 'Auction Registration Fee Invoice',
+          html: html
+        });
+        cb();
+      },
+      function(cb) {
+        // obtain user from the database
+        db.getAuctionUser(metadata.userId, function (err, dbUser) {
+          if (err) {
+            console.log('completeInvoice() getAuctionUser(): ' + JSON.stringify(err));
+            cb();
+          }
+          else {
+            user = dbUser;
+            cb();
+          }
+        });
+      },
+      function(cb) {
+        // Add status to user
+        updateAuctUser(user, 'Registration Fee Required.  [<a href="' + config.baron.url + '/invoices/' + result.invoice.id + '" target="_blank">View Invoice</a>]', cb);
+      }
+    ],
+    function() {
+      return;
     });
-    
-    // add registered user with new status
-    var auctionUser = {
-      _id: metadata.userId,
-      username: metadata.username,
-      email: metadata.email,
-      userMessage: 'Invoice Sent.',
-      registered: false
-    };
-    if (metadata.admin) { auctionUser.registered = true; }
-    db.insertAuctionUser(auctionUser, function(err) {
-      if (err) { console.log(err); }
-    });
-  }
+}
+
+module.exports = {
+  addUser: addUser,
+  completeInvoice: completeInvoice
 };

@@ -3,7 +3,7 @@
     <% if (userMessage) { %>
       Current Account Status:
       <span class="label label-warning">
-        <%= userMessage %>
+        <%- userMessage %>
       </span>
     <% } else if (!registered) { %>
       <form action="/registration" method="POST">

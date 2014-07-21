@@ -36,7 +36,7 @@ exports = module.exports = function(req, res) {
       });
     }
 
-    registration.invoice(req.user, function(err) {
+    registration.addUser(req.user, function(err) {
       if (err) {
         console.log(err);
         view = 'registrationError';
