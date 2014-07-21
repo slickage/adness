@@ -58,7 +58,7 @@ function createInvoice(metadata, invoiceType, invoice, cb) {
     if (err) { return cb(err, undefined); }
     // add the receipt's id as the webhook token 
     if (invoice.webhooks) { invoice.webhooks.token = savedReceipt._id; }
-    generateInvoice(invoice, savedReceipt, true, cb);
+    postInvoice(invoice, savedReceipt, true, cb);
   });
 }
 
@@ -75,7 +75,7 @@ function generateReceipt(receipt, cb) {
   });
 }
 
-function generateInvoice(invoice, receipt, queue, cb) {
+function postInvoice(invoice, receipt, queue, cb) {
   // send invoice to baron and get invoice id
   request.post(
     {
@@ -87,6 +87,7 @@ function generateInvoice(invoice, receipt, queue, cb) {
       if (err) {
         if (queue) {
           console.log('Encountered an Error, Queuing Invoice...');
+          delete invoice.api_key;
           var newInvoice = { invoice: invoice, receipt: receipt };
           db.newQueuedInvoice(newInvoice, function(err) {
             if (err) { console.log(err); }
@@ -106,8 +107,8 @@ function saveInvoice(receipt, originalInvoice, body, queue, cb) {
   try { invoice = JSON.parse(body); }
   catch (error) {
     if (queue) {
-      console.log('Encountered an Error, Queuing Invoice...');
-      var newInvoice = { invoice: invoice, receipt: receipt };
+      console.log('Response from Baron invoice post was invalid JSON, Queuing Invoice...');
+      var newInvoice = { invoice: originalInvoice, receipt: receipt };
       db.newQueuedInvoice(newInvoice, function(err) {
         if (err) { console.log(err); }
       });
@@ -160,7 +161,8 @@ function retryInvoice(queuedInvoice, cb) {
   var invoice = queuedInvoice.invoice;
   var receipt = queuedInvoice.receipt;
   receipt.queuedInvoiceId = queuedInvoice._id;
-  generateInvoice(invoice, receipt, false, function(err, results) {
+  invoice.api_key = config.baron.key;
+  postInvoice(invoice, receipt, false, function(err, results) {
     if (err) { console.log('retryInvoice: ' + err); }
     else {
       var invoiceType = results.receipt.invoiceType;
