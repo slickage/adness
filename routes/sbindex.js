@@ -9,8 +9,15 @@ var config = require('../config');
 module.exports = function(req, res) {
   req.model.load('auctionsTimeRelative', req);
   req.model.load('reservedAds', req);
+  req.model.load('auctionUser', req);
   req.model.end(function(err, models) {
     if (err) { console.log(err); }
+
+    var registered = models.auctionUser && models.auctionUser.registered;
+    var userMessage;
+    if (models.auctionUser && models.auctionUser.userMessage) {
+      userMessage = models.auctionUser.userMessage;
+    }
 
     var minutes = config.antiSnipeMinutes;
 
@@ -53,7 +60,9 @@ module.exports = function(req, res) {
       minutes: minutes,
       serverTime: serverTime,
       browsePrefix: req.browsePrefix,
-      user: req.user
+      user: req.user,
+      userMessage: userMessage,
+      registered: registered
     });
   });
 };

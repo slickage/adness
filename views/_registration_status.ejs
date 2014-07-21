@@ -1,0 +1,17 @@
+<% if (user) { %>
+  <div class="text-center" <%if (!registered || userMessage) { %> style="padding-bottom: 15px;" <% } %>>
+    <% if (userMessage) { %>
+      Current Account Status:
+      <span class="label label-warning">
+        <%= userMessage %>
+      </span>
+    <% } else if (!registered) { %>
+      <form action="/registration" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>">
+        <button class="btn btn-success">
+          Please Click Here to Register to bid
+        </button>
+      </form>
+    <% } %>
+  </div>
+<% } %>

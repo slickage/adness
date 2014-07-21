@@ -2,22 +2,8 @@
 
 <div class="content-page col-sm-12">
 
-  <% if (user && auction.open) { %>
-    <div class="text-center" <%if (!registered || userMessage) { %> style="padding-bottom: 15px;" <% } %>>
-      <% if (userMessage) { %>
-        Current Registration Status: 
-        <span class="label label-warning">
-          <%= userMessage %>
-        </span>
-      <% } else if (!registered) { %>
-        <form action="/registration" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrftoken %>">
-          <button class="btn btn-success">
-            Please Click Here to Register to bid
-          </button>
-        </form>
-      <% } %>
-      <br>
+  <% include _registration_status %>
+  <% if (auction.open) { %>
       <strong>
         Reminder: For each region in an auction, at least one approved ad for that region is also necessary to bid.
       </strong>
