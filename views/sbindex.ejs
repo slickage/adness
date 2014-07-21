@@ -1,9 +1,9 @@
 <% layout('sblayout') %>
 
 <div class="content-page col-sm-12">
+  <% include _registration_status %>
 <% if (auctionsOpen.length > 0) { %>
 
-  <% include _registration_status %>
   <% auctionsOpen.forEach(function(auction) { %>
     <% include auctions/index_show %>
   <% }) %>
