@@ -780,7 +780,6 @@ var db = {
     couch.get(userId.toString(), null, function(err, body) {
       if (err) { return cb(null, undefined); }
       
-      // check that this is an auction
       if (body.type !== 'auctionUser') {
         return cb({ message: 'Id is not for an auctionUser.'}, undefined );
       }
