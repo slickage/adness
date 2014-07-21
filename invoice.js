@@ -84,43 +84,60 @@ function postInvoice(invoice, receipt, queue, cb) {
       form: invoice
     },
     function(err, response, body) {
-      if (err) {
-        if (queue) {
-          console.log('Encountered an Error, Queuing Invoice...');
-          delete invoice.api_key;
-          var newInvoice = { invoice: invoice, receipt: receipt };
-          db.newQueuedInvoice(newInvoice, function(err) {
-            if (err) { console.log(err); }
-          });
-        }
+      parseBaronResponse(err, body, function(err, response) {
+        if (err) {
+          if (queue) {
+            console.log('Encountered an Error, Queuing Invoice...');
+            delete invoice.api_key;
+            var newInvoice = { invoice: invoice, receipt: receipt };
+            db.newQueuedInvoice(newInvoice, function(err) {
+              if (err) { console.log(err); }
+            });
+          }
 
-        return cb(err, undefined);
-      }
-      else { saveInvoice(receipt, invoice, body, queue, cb); }
+          return cb(err, undefined);
+        }
+        else {
+          saveInvoice(receipt, invoice, response, queue, cb);
+        }
+      });
     }
   );
 }
 
-function saveInvoice(receipt, originalInvoice, body, queue, cb) {
-  // parse body into json (invoice)
-  var invoice;
-  try { invoice = JSON.parse(body); }
-  catch (error) {
-    if (queue) {
-      console.log('Response from Baron invoice post was invalid JSON, Queuing Invoice...');
-      var newInvoice = { invoice: originalInvoice, receipt: receipt };
-      db.newQueuedInvoice(newInvoice, function(err) {
-        if (err) { console.log(err); }
-      });
-    }
+function parseBaronResponse(postErr, body, cb) {
+  // Pass through request.post error
+  if (postErr) { return cb(postErr, null); }
 
-    var errorMsg = 'Could not generate an invoice, received response: ';
-    errorMsg += body + '\n';
-    errorMsg += error.message;
-    var invoiceError = new Error(errorMsg);
-    return cb(invoiceError, undefined);
+  // Check for invalid JSON or unexpected Baron response
+  var baronResponse;
+  var invalidBody = false;
+  var jsonParseError;
+  try { baronResponse = JSON.parse(body); }
+  catch (error) {
+    jsonParseError = error;
+  }
+  var errorMsg = 'Invalid response from Baron: ';
+  if (jsonParseError) {
+    errorMsg += body + jsonParseError.message;
+  }
+  else {
+    // Validate response from Baron
+    if (!baronResponse.ok || baronResponse.ok === false || !baronResponse.id || !baronResponse.rev) {
+      errorMsg += "missing ok: true, _id or _rev: " + body;
+      invalidBody = true;
+    }
   }
 
+  // Pass back error or valid response
+  if (jsonParseError || invalidBody) {
+    var invoiceError = new Error(errorMsg);
+    cb(invoiceError, undefined);
+  }
+  else { cb(null, baronResponse); }
+}
+
+function saveInvoice(receipt, originalInvoice, invoice, queue, cb) {
   console.log('Invoice ' + invoice.id + ' created for Receipt: ' + receipt._id);
 
   // update receipt with new invoice
@@ -141,7 +158,7 @@ function queuedInvoices(callback) {
     function (cb) {
       db.getAllQueuedInvoices(cb);
     },
-    // iterative through and call each queuedInvoice
+    // iterate through and call each queuedInvoice
     function (invoices, cb) {
       async.eachSeries(invoices, function(queuedInvoice, innerCb) {
         retryInvoice(queuedInvoice, innerCb);
