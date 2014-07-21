@@ -65,14 +65,14 @@ function probability(auction, reservedAds) {
     // total slots for this region
     var totalSlots = Number(region.slots) + Number(globalSlots) + reservedSlots;
     region.probability = '1 in ' + totalSlots;
-    region.chances = (1 / totalSlots).toFixed(5) + '%';
+    region.chances = (100 * 1 / totalSlots).toFixed(5) + '%';
 
     // add global probablities and chances to global region
     auctionGlobalRegions.forEach(function(globalRegion) {
       var probability = '\n 1 in ' + totalSlots;
       globalRegion.probability.push(probability);
 
-      var chances = '\n ' + (1 / totalSlots).toFixed(5) + '% in ' + region.name;
+      var chances = '\n ' + (100 * 1 / totalSlots).toFixed(5) + '% in ' + region.name;
       globalRegion.chances.push(chances);
     });
   });
@@ -101,7 +101,7 @@ function probability(auction, reservedAds) {
     var probability = ' 1 in ' + globalSlots;
     globalRegion.probability.push(probability);
 
-    var chances = ' ' + (1 / globalSlots).toFixed(5) + '% for everywhere else';
+    var chances = ' ' + (100 * 1 / globalSlots).toFixed(5) + '% for everywhere else';
     globalRegion.chances.push(chances);
   });
   auction.regions = auction.regions.concat(auctionGlobalRegions);
