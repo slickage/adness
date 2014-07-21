@@ -19,7 +19,6 @@ module.exports = {
     var previousBids = models.userBidsPerRegion;
     // current bid
     var bid = req.body;
-    // redirect route
 
     // validate that the user is registered
     if (!auctionUser || auctionUser && auctionUser.registered !== true) {
@@ -34,6 +33,11 @@ module.exports = {
       req.flash('error', suspendedErrorMessage);
       return cb();
     }
+
+    // pull out invalid bids from previous bids
+    _.remove(previousBids, function(bid) {
+      return bid.invalid === true || bid.lost === true;
+    });
 
     // validate current bid is of correct increment
     var currentBidPrice = bid.price * 100;
