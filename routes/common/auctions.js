@@ -73,13 +73,32 @@ module.exports = {
 
     // remove first item because it's the auction
     models.bids.splice(0, 1);
-    // sort bids by time
-    bids = _.sortBy(bids, function(bid) { return bid.created_at; });
 
-    // update creation time for bids
-    bids.forEach(function(bid) {
-      var bidTime = moment(bid.created_at).utc().format('YYYY MMMMM D, h:mm:ss A ZZ');
-      bid.created_at = bidTime + ' (' + moment(bid.created_at).fromNow() + ')';
+    // separate bids by region
+    var sortedBids = {};
+    // for each region in the auction
+    auction.regions.forEach(function(region) {
+      // get the region name
+      var regionName = region.name;
+
+      // get all the bids for this region
+      var regionBids = _.filter(bids, function(bid) {
+        return bid.region === regionName;
+      });
+
+      // sort bids by time
+      regionBids = _.sortBy(regionBids, function(bid) {
+        return bid.created_at;
+      });
+
+      // update creation time for bids
+      regionBids.forEach(function(bid) {
+        var bidTime = moment(bid.created_at).utc().format('YYYY MMMMM D, h:mm:ss A ZZ');
+        bid.created_at = bidTime + ' (' + moment(bid.created_at).fromNow() + ')';
+      });
+
+      // set all the bids to sortedBids
+      sortedBids[regionName] = regionBids;
     });
 
     // add target="_blank" to auction description
@@ -89,7 +108,7 @@ module.exports = {
     // render view
     return {
       auction: auction,
-      bids: bids,
+      bids: sortedBids,
       minutes: minutes,
       registered: registered,
       userMessage: userMessage,

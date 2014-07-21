@@ -52,17 +52,17 @@
     <!-- Auction Regions -->
     <div class="row">
       <% if (errorMessage.length > 0) { %>
-        <br />
+        <br /><br />
         <div class="alert alert-danger text-center" role="alert">
           <strong><%= errorMessage %></strong>
         </div>
       <% } else { %>
-        <br /><br />
       <% } %>
     </div>
 
     <div class="row">
       <% auction.regions.forEach(function(region) { %>
+        <br /><br />
         <strong><%= region.name %> Bids</strong><br />
         <%= Number(region.slots) %> slots are for auction.<br />
         <%= Number(region.reservedSlots) %> universal reserved slots.<br />
