@@ -26,7 +26,6 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     process.nextTick(function () {
       if (config.fakeAuth.enabled) {
-        console.log(config.fakeAuth);
         users[username] = {
           username: username,
           userId: config.fakeAuth.userId,
