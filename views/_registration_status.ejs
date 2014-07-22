@@ -2,7 +2,7 @@
   <div class="text-center" <%if (!registered || userMessage) { %> style="padding-bottom: 15px;" <% } %>>
     <% if (userMessage) { %>
       Current Account Status:
-      <span class="label label-warning">
+      <span class="label label-warning label-warning-status">
         <%- userMessage %>
       </span>
     <% } else if (!registered) { %>

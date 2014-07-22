@@ -108,7 +108,7 @@ function completeInvoice(err, result) {
       },
       function(cb) {
         // Add status to user
-        updateAuctUser(user, 'Registration Fee Required.  [<a href="' + config.baron.url + '/invoices/' + result.invoice.id + '" target="_blank">View Invoice</a>]', cb);
+        updateAuctUser(user, 'Registration Fee Required. &nbsp;&nbsp;<a href="' + config.baron.url + '/invoices/' + result.invoice.id + '" target="_blank">View Invoice</a>', cb);
       }
     ],
     function() {

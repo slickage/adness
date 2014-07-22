@@ -10,6 +10,13 @@ body {
 .panel-primary > .panel-heading { text-shadow: 0 0; }
 .navbar { border-radius: 0; }
 hr { border-top: 1px solid #ccc; }
+
+/* -- Common ------------------------------------------- */
+.label-warning-status {
+  font-size: 100%;
+  text-shadow: none;
+}
+
 /* -- Main layout code --------------------------------- */
 
 /* header */
