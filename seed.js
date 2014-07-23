@@ -130,5 +130,5 @@ var seed = function() {
   }
 
 
-  console.log('Seeding data to: ' + config.couchdb.url);
+  console.log('Seeding data to: ' + db.getCouchUrl());
 };
