@@ -43,6 +43,11 @@ function validateDBExist(cb) {
 
   nano.db.get(dbname, function(err) {
     if (err) {
+      if (err.error && err.reason === 'You are not authorized to access this db.' ) {
+        console.log('CouchDB Error: ' + err.reason + '  ' + config.couchdb.url + '/' + dbname);
+        process.exit(255);
+      }
+      console.log(err);
       // db not found so create it
       console.log('DB ' + dbname + ' was not found. ');
       console.log('Creating DB: ' + dbname);
