@@ -2,7 +2,7 @@
 'use strict';
 
 var config = require('./config');
-var nano = require('nano')(config.couchdb.url);
+var nano = require('nano')(getCouchUrl());
 var couch = nano.use(config.couchdb.name);
 var biddingAlg = require('./bidding');
 var validate = require('./validation');
@@ -1159,8 +1159,18 @@ var db = {
 
      return cb(err, facts);
     });
-  }
+  },
+  getCouchUrl: getCouchUrl
 };
+
+function getCouchUrl() {
+  var credentials = '';
+  if (config.couchdb.user && config.couchdb.pass) {
+    credentials = encodeURIComponent(config.couchdb.user) + ':' + encodeURIComponent(config.couchdb.pass) + '@';
+  }
+  var couchUrl = config.couchdb.proto + "://" + credentials + config.couchdb.host;
+  return couchUrl;
+}
 
 module.exports = db;
 

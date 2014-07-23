@@ -2,7 +2,8 @@
 'use strict';
 
 var config = require('./config');
-var nano = require('nano')(config.couchdb.url);
+var db = require('./db');
+var nano = require('nano')(db.getCouchUrl());
 var couchapp = require('couchapp');
 var ddoc = require('./couchapp');
 var dbname = config.couchdb.name;
@@ -24,10 +25,8 @@ nano.db.get(dbname, function(err) {
       return process.exit(1);
     }
     else {
-      // build couchDB url
-      var db = config.couchdb.url + '/' + dbname;
       // install db ddoc
-      couchapp.createApp(ddoc, db, function(app) {
+      couchapp.createApp(ddoc, db.getCouchUrl(), function(app) {
         app.push();
         couch = nano.use(dbname);
         seed();
