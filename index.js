@@ -2,20 +2,14 @@
 'use strict';
 
 var config = require('./config');
-var db = require('./db');
-var nano = require('nano')(db.getCouchUrl());
-var couchapp = require('couchapp');
-var ddoc = require('./couchapp');
-var dbname = config.couchdb.name;
 var async = require('async');
-// Increment when model changes in an incompatible way
-var dbVersion = 1;
+var dbinit = require('./db-init');
 
 // Initialization Sanity Checks
 async.waterfall([
   validateSessionSecret,
-  validateDBExist,
-  checkDBVersion,
+  dbinit.validateDBExist,
+  dbinit.checkDBVersion,
   ],
   function(err) {
     if (err) {
@@ -25,7 +19,6 @@ async.waterfall([
     else { buildSite(); }
   }
 );
-
 
 function validateSessionSecret(cb) {
   var secret = config.sessionSecret;
@@ -37,75 +30,6 @@ function validateSessionSecret(cb) {
   }
   
   return cb(error);
-}
-
-function validateDBExist(cb) {
-  var error = null;
-
-  nano.db.get(dbname, function(err) {
-    if (err) {
-      if (err.error && err.error === 'unauthorized' ) {
-        console.log('CouchDB Error: ' + err.reason + '  ' + err.request.uri);
-        process.exit(255);
-      }
-      console.log(err);
-      // db not found so create it
-      console.log('DB ' + dbname + ' was not found. ');
-      console.log('Creating DB: ' + dbname);
-      nano.db.create(dbname, function(err) {
-        if (err) {
-          var message = 'Could not create DB. Exiting...';
-          error = new Error(message);
-          return cb(error);
-        }
-        else {
-          // install db ddoc
-          couchapp.createApp(ddoc, db.getCouchUrl(), function(app) {
-            app.push();
-            return cb();
-          });
-        }
-      });
-    }
-    else { return cb(); }
-  });
-}
-
-function checkDBVersion(cb) {
-  var couch = nano.use(config.couchdb.name);
-  couch.get('db_version', function(err, dbVersionObj) {
-    if (!err) {
-      if (dbVersionObj.version !== dbVersion) {
-        // Upgrade needed
-        // TODO: Replace with db conversion function
-        var error = new Error('Adness Database Requires Upgrade.');
-        return cb(error);
-      }
-      else {
-        console.log('Adness Database version ' + dbVersionObj.version);
-        return cb();
-      }
-    }
-    else {
-      if (err.reason &&
-          err.reason === 'missing' ||
-          err.reason === 'deleted') {
-        // insert
-        dbVersionObj = {};
-        dbVersionObj._id = 'db_version';
-        dbVersionObj.version = dbVersion;
-        couch.insert(dbVersionObj, function() {
-          console.log('Adness Database version ' + dbVersionObj.version);
-          return cb();
-        });
-      }
-      else {
-        // FATAL other error
-        console.log('checkDbVersion Fatal Error');
-        return cb(err);
-      }
-    }
-  });
 }
 
 function buildSite() {

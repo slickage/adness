@@ -4,36 +4,13 @@
 var config = require('./config');
 var db = require('./db');
 var nano = require('nano')(db.getCouchUrl());
-var couchapp = require('couchapp');
-var ddoc = require('./couchapp');
+var ddoc = require('./ddoc');
+var dbinit = require('./db-init');
 var dbname = config.couchdb.name;
 var couch;
 
-// check for db 
-nano.db.get(dbname, function(err) {
-  if (!err) {
-    couch = nano.use(dbname);
-    return seed();
-  }
-
-  // db not found so create it
-  console.log('Creating DB: ' + dbname);
-  nano.db.create(dbname, function(err) {
-    if (err) {
-      console.log('DB ' + dbname + ' was not found.');
-      console.log('Could not create DB. Exiting...');
-      return process.exit(1);
-    }
-    else {
-      // install db ddoc
-      couchapp.createApp(ddoc, db.getCouchUrl(), function(app) {
-        app.push();
-        couch = nano.use(dbname);
-        seed();
-      });
-    }
-  });
-});
+// check for db
+dbinit.validateDBExist(seed);
 
 var seed = function() {
   var start = new Date();
