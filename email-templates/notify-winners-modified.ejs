@@ -1,22 +1,21 @@
-<h1>Congratulations <%= user.username %>!</h1>
-<strong>You've won <%= user.lineItems.length %> more ad slot(s) in auction: <%= auctionId %>!</strong>
+<strong>You've won <%= user.lineItems.length %> more ad slot(s) in auction <%= auctionId %>!</strong>
 
 <hr>
 
 <div style="width: 90%; margin: auto;">
-  You are being contacted again because more slots became availble and you were next on the list of potential auction winners. 
+  Because an advertiser failed to pay for their ads on time, their slots have become available, and you have a chance to buy them. You have a reduced window of time in which to pay for these ads, but your original bid has been discounted somewhat to offset this. These extra slots are exactly the same as regular slots -- they do not have reduced ad time.
 
-  Please promptly pay for the extra slot(s) you've won. We've provided a link below to a second invoice for just the extra slots. This invoice will expire on: <%= expiration %>.
+  Please promptly pay for the slot(s) you've won using the invoice link below. This invoice will expire on: <%= expiration %>. If you do not pay in time, you will lose your chance at these slots, though you will not be penalized further.
   <br><br>
   <a href="<%= invoiceUrl %>/invoices/<%= invoiceId %>">
     Click here to view your invoice.
   </a>
   <br><br>
-  Please ensure that the ads you want on the forum are in rotation. Ads submitted and approved but not marked "in rotation" will not be shown on the forum. Once your payment clears, ads marked "In Rotation" in your profile page will be used on the forum. 
+  Please ensure that the ads you want on the forum are in rotation. Ads submitted and approved but not marked "in rotation" will not be advertised. Once your payment clears and the ad period begins, ads marked "In Rotation" on your profile page will start being displayed in the forum's ad area. If you have more ads than slots, then the forum will randomly rotate between your ads. Your ads can be updated during the ad period, though modifications and new ads require approval.
 </div>
 
 <br><br>
-Thank you for participating in this auction. 
+Thanks for participating in this auction!
 <br><br>
 
 <em>This is a automated email. Please do not reply to this email.</em>

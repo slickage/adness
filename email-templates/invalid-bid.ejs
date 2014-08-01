@@ -1,8 +1,8 @@
 
 <div style="width: 90%; margin: auto;">
-  <strong>Your bid has been removed from Auction: <%= auctionId %></strong>
+  <strong>Your bid has been removed from auction <%= auctionId %></strong>
   <br>
-  An administrator has found your bid in violation of the terms of this auction. For this reason, all your bid and any associated invoices have been invalidated. If you have already paid an invoice, please contact an administator for a refund.
+  One or more of your bids has been removed by an administrator. If you didn't already know about this, then you should be contacted shortly with more info.
   <br><br>
 
   <% if (invoices && invoices.length > 0) { %>
@@ -10,6 +10,7 @@
     <% invoices.forEach(function(invoice) { %>
       <%= invoice %><br>
     <% }) %>
+    <br>If you have already paid an invalidated invoice, contact an administator for a refund.
   <% } %>
 </div>
 
