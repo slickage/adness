@@ -69,7 +69,10 @@ function submitForReview() {
   var button = event.target;
   var submit = $(button).data("submit");
   
-  var html = $("#preview").html();
+  var raw_html = htmlCodeMirror.getValue();
+  function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+  function idX(id) { return id; }
+  var html = html_sanitize(raw_html, urlX, idX);
   var css = cssCodeMirror.getValue();
 
   // get blacklist values
@@ -119,7 +122,10 @@ function submitReservedAd() {
   var button = event.target;
   var in_use = $(button).data("use");
 
-  var html = $("#preview").html();
+  var raw_html = htmlCodeMirror.getValue();
+  function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+  function idX(id) { return id; }
+  var html = html_sanitize(raw_html, urlX, idX);
   var css = cssCodeMirror.getValue();
 
   // get blacklist values
