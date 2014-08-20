@@ -22,7 +22,7 @@
     
     <div class="row cardSpacing">
       <strong>Ad HTML: </strong><br>
-      <%= ad.html %>
+      <%=: ad.html | replace:/&/gi,'&amp;' %>
       <br><br>
       <strong> Ad CSS: </strong><br>
       <%= ad.css %>

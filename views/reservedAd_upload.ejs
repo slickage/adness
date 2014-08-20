@@ -41,7 +41,7 @@
             <br>
 
             HTML:
-            <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+            <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%-: ad.html | replace:/&/gi,'&amp;' %><% } %></textarea>
 
             <br>
             

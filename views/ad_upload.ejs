@@ -61,8 +61,9 @@
               <textarea name="css" id="upload-css" rows="3"><% if(ad && ad.html) { %><%- ad.css %><% } %></textarea>
 
               <br>
+
               HTML:
-              <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%- ad.html %><% } %></textarea>
+              <textarea name="html" id="upload-code" rows="3"><% if(ad && ad.html) { %><%-: ad.html | replace:/&/gi,'&amp;' %><% } %></textarea>
 
               <br>
               

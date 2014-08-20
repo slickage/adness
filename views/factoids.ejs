@@ -38,9 +38,9 @@
     
         <strong>Factoid HTML:</strong><br />
         <em>
-          Put "&lt;%- text %&gt;" in the HTML where you want the factoid to appear, or just enter "&lt;%- text %&gt;" 
+          Put "&amp;lt;%- text %&amp;gt;" in the HTML where you want the factoid to appear, or just enter "&amp;lt;%- text %&amp;gt;" 
         </em>
-        <textarea name="html" id="html" class="form-control" autofocus="autofocus"><% if (factoids.html){ %><%= factoids.html %><% } %></textarea>
+        <textarea name="html" id="html" class="form-control" autofocus="autofocus"><% if (factoids.html){ %><%-: factoids.html | replace:/&/gi,'&amp;' %><% } %></textarea>
       </div>
 
       <br /><hr /><br />

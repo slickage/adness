@@ -1131,6 +1131,11 @@ var db = {
         factoids.modified_at = new Date().getTime();
       }
 
+      factoids.list = factoids.list.map(function(listItem) {
+        listItem.text = validate.html(listItem.text);
+        return listItem;
+      });
+
       couch.insert(factoids, cb);
     });
   },

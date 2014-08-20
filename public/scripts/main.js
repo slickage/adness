@@ -494,7 +494,7 @@ function addFact() {
 }
 
 // append click handler to last tr in factTable
-$('#factTable tbody tr').on('click', removeFact);
+$('#factTable tbody tr td button').on('click', removeFact);
 function removeFact(element) {
   var parentRow = $(element.target).closest('tr');
   parentRow.remove();
@@ -525,12 +525,18 @@ function updateFacts() {
   // get all the facts
   var list = [];
   $('#factTable tbody tr').each(function(index, value) {
-    var fact = $(this).find('td:nth-child(1)').text();
+    var fact = $(this).find('td:nth-child(1)').html();
     var user = $(this).find('td:nth-child(2)').text();
 
     // build region json object
     var factoid = { text: fact, user: user };
     list.push(factoid);
+  });
+
+  list.forEach(function(listItem) {
+    function urlX(url) { if(/^https?:\/\//.test(url)) { return url; }}
+    function idX(id) { return id; }
+    listItem.text = html_sanitize(listItem.text, urlX, idX);
   });
 
   // csrf
