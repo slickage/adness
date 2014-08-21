@@ -65,7 +65,7 @@ function convert() {
 
 // append click handler the submit ad buttons
 $('.submitAd').on('click', submitForReview);
-function submitForReview() {
+function submitForReview(event) {
   var button = event.target;
   var submit = $(button).data("submit");
   
@@ -118,7 +118,7 @@ function submitForReview() {
 
 // append click handler to the submit reserved ad buttons
 $('.submitReservedAd').on('click', submitReservedAd);
-function submitReservedAd() {
+function submitReservedAd(event) {
   var button = event.target;
   var in_use = $(button).data("use");
 
